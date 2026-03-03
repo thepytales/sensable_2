@@ -161,10 +161,10 @@
       /* Container 16:9 Glassmorphism High-End */
       .home-container {
           position: relative; z-index: 10;
-          width: 960px; max-width: 95vw;
-          min-height: 540px;
+          width: 1350px; max-width: 95vw; /* Verbreitert für 3 Spalten */
+          min-height: 580px;
           display: grid;
-          grid-template-columns: 1fr 1fr; /* 50/50 Layout wie in der Vorlage */
+          grid-template-columns: 1.1fr 1fr 1fr; /* 3 Spalten Layout */
           background: #111113; /* Solides, sehr dunkles Grau statt starkem Glas-Effekt */
           border-radius: 20px;
           
@@ -189,12 +189,59 @@
           position: relative;
       }
       
-      /* Rechte Seite */
-      .home-right {
+      /* Mittlere Seite (ehemals Rechts) */
+      .home-middle {
           padding: 50px 40px;
           display: flex; flex-direction: column;
           gap: 30px;
+          border-right: 1px solid rgba(255,255,255,0.04);
       }
+
+      /* Neue Rechte Seite (Lernmodule) */
+      .home-right {
+          padding: 50px 40px;
+          display: flex; flex-direction: column;
+      }
+
+      /* Lernmodule Styling */
+      .module-list {
+          display: flex; flex-direction: column; gap: 12px;
+          overflow-y: auto; padding-right: 5px; margin-top: 10px;
+      }
+      .module-card {
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 12px;
+          padding: 16px;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+          display: flex; gap: 15px; align-items: center;
+      }
+      .module-card:hover {
+          background: rgba(59, 130, 246, 0.1);
+          border-color: rgba(59, 130, 246, 0.3);
+          transform: translateY(-2px);
+      }
+      .module-icon {
+          width: 42px; height: 42px; border-radius: 10px;
+          background: rgba(0,0,0,0.3);
+          display: flex; align-items: center; justify-content: center;
+          color: var(--primary);
+          flex-shrink: 0; border: 1px solid rgba(255,255,255,0.05);
+      }
+      .module-content { flex-grow: 1; }
+      .module-content h4 {
+          margin: 0 0 4px 0; color: white; font-size: 13px;
+      }
+      .module-content p {
+          margin: 0; color: #9ca3af; font-size: 11px; line-height: 1.4;
+      }
+      .module-status {
+          font-size: 9px; text-transform: uppercase; font-weight: 700;
+          padding: 3px 6px; border-radius: 4px; display: inline-block; margin-top: 6px;
+      }
+      .status-active { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+      .status-locked { background: rgba(255, 255, 255, 0.05); color: #6b7280; border: 1px solid rgba(255,255,255,0.1); }
 
       /* NEU: Split-Button CSS */
       .split-load-wrapper {
@@ -335,6 +382,7 @@
       .stagger-2 { opacity: 0; animation: fadeUp 0.6s ease forwards 0.6s; }
       .stagger-3 { opacity: 0; animation: fadeUp 0.6s ease forwards 0.8s; }
       .stagger-4 { opacity: 0; animation: fadeUp 0.6s ease forwards 1.0s; }
+      .stagger-5 { opacity: 0; animation: fadeUp 0.6s ease forwards 1.2s; }
 
       @keyframes fadeUp {
           from { opacity: 0; transform: translateY(15px); }
@@ -355,7 +403,7 @@
           font-weight: 500;
       }
       
-      @media (max-width: 850px) {
+      @media (max-width: 1150px) {
           .mobile-warning {
               display: block;
           }
@@ -364,7 +412,7 @@
               overflow-y: auto;
               max-height: 90vh;
           }
-          .home-left {
+          .home-left, .home-middle {
               border-right: none;
               border-bottom: 1px solid rgba(255, 255, 255, 0.04);
           }
@@ -768,7 +816,7 @@
       body.sim-tritanopia canvas { filter: url(#filter-tritanopia); }
 
       /* Container für Overlays */
-      #vision-overlay-container { 
+      #vision-overlay-container {
           position: absolute; inset: 0; pointer-events: none; z-index: 5; 
       }
       
@@ -1379,7 +1427,7 @@
             </div>
         </div>
 
-        <div class="home-right stagger-3" style="display: flex; flex-direction: column; gap: 24px;">
+        <div class="home-middle stagger-3" style="display: flex; flex-direction: column; gap: 24px;">
             
             <div class="feature-box" style="margin: 0;">
                 <div class="section-label">Allgemein & Support</div>
@@ -1468,6 +1516,71 @@
             </div>
 
         </div>
+
+        <div class="home-right stagger-5">
+            <div class="section-label" style="margin-bottom: 5px;">WISSEN & TRAINING</div>
+            <p style="font-size: 12px; color: #9ca3af; line-height: 1.5; margin-bottom: 20px;">Vertiefen Sie Ihr Wissen mit unseren interaktiven Lernmodulen. Weitere Inhalte folgen in Kürze.</p>
+            
+            <div class="module-list">
+                
+                <div class="module-card" style="opacity: 0.6; cursor: default;">
+                    <div class="module-icon" style="color: #6b7280;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    </div>
+                    <div class="module-content">
+                        <h4>Hörschädigung</h4>
+                        <p>Grundlagen, Auswirkungen und inklusive Didaktik im Raum</p>
+                        <span class="module-status status-locked">Demnächst</span>
+                    </div>
+                </div>
+
+                <div class="module-card" style="opacity: 0.6; cursor: default;">
+                    <div class="module-icon" style="color: #6b7280;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </div>
+                    <div class="module-content">
+                        <h4>Sehbeeinträchtigung</h4>
+                        <p>Medizinische Ursachen und barrierefreie Raumgestaltung</p>
+                        <span class="module-status status-locked">Demnächst</span>
+                    </div>
+                </div>
+
+                <div class="module-card" style="opacity: 0.6; cursor: default;">
+                    <div class="module-icon" style="color: #6b7280;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                    </div>
+                    <div class="module-content">
+                        <h4>Assistive Technologien</h4>
+                        <p>Digitale und physische Hilfsmittel richtig im Unterricht einsetzen</p>
+                        <span class="module-status status-locked">Demnächst</span>
+                    </div>
+                </div>
+
+                <div class="module-card" style="opacity: 0.6; cursor: default;">
+                    <div class="module-icon" style="color: #6b7280;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                    </div>
+                    <div class="module-content">
+                        <h4>Tactonom</h4>
+                        <p>Interaktives Lernen mit taktilen Grafiken und Audio-Feedback</p>
+                        <span class="module-status status-locked">Demnächst</span>
+                    </div>
+                </div>
+
+                <div class="module-card" style="opacity: 0.6; cursor: default;">
+                    <div class="module-icon" style="color: #6b7280;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="M8 10h.01"></path><path d="M12 10h.01"></path><path d="M16 10h.01"></path></svg>
+                    </div>
+                    <div class="module-content">
+                        <h4>AVA</h4>
+                        <p>Live-Untertitel und Transkriptionen für Videokonferenzen und Treffen</p>
+                        <span class="module-status status-locked">Demnächst</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
       </div>
     </div>
 
@@ -2170,21 +2283,6 @@
           </div>
       </div>
     </div>
-
-    <script type="module" src="script.js"></script>
-
-    <div id="project-info-modal" style="position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 10000; display: none; align-items: center; justify-content: center; pointer-events: auto;">
-      <div class="pwa-glass-box" style="width: 900px; max-width: 95vw; height: 85vh; max-height: 800px; display: flex; flex-direction: column; background: #18181b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);">
-          <div class="pwa-header" style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border-radius: 16px 16px 0 0;">
-              <div style="display: flex; align-items: center; gap: 12px;">
-                  <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); display: flex; align-items: center; justify-content: center; color: #f59e0b;">
-                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                  </div>
-                  <div>
-                      <h2 style="margin: 0; font-size: 18px; font-weight: 600; color: #f3f4f6; letter-spacing: 0.5px;">Projekt ELMeKS.digital</h2>
-                  </div>
-              </div>
-              <button onclick="document.getElementById('project-info-modal').style.display = 'none'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #9ca3af; width: 36px; height: 36px; border-radius: 8px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';
 
     <script type="module" src="script.js"></script>
 
