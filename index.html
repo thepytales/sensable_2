@@ -1319,60 +1319,80 @@
             </div>
             
             <div class="section-label" style="margin-bottom: 15px;">PLANUNGSMODUS</div>
-            <div class="action-buttons stagger-2" style="margin-bottom: 30px;">
-                <button class="big-btn highlight" style="background: var(--primary); border-color: var(--primary);" onclick="app.startStandardPlanner()">
-                    <span>Neuen Raum planen</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <div class="action-buttons stagger-2" style="margin-bottom: 35px; display: flex; flex-direction: column; gap: 12px;">
+                
+                <button onclick="app.startStandardPlanner()" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; color: #fff; transition: all 0.2s; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" onmouseover="this.style.background='rgba(59, 130, 246, 0.2)'; this.style.borderColor='rgba(59, 130, 246, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(59, 130, 246, 0.1)'; this.style.borderColor='rgba(59, 130, 246, 0.3)'; this.style.transform='translateY(0)';">
+                    <span style="display: flex; align-items: center; gap: 10px;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        Neuen Raum planen
+                    </span>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
                 </button>
                 
-                <div class="split-load-wrapper" id="planner-split-wrapper">
-                    <button id="btn-planner-load" class="big-btn ghost load-filename-btn" onclick="document.getElementById('file-input').click()">
-                        <span id="planner-load-text">Plan laden</span>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="planner-load-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                <div class="split-load-wrapper" id="planner-split-wrapper" style="display: flex; gap: 8px;">
+                    <button id="btn-planner-load" class="load-filename-btn" onclick="document.getElementById('file-input').click()" style="flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255, 255, 255, 0.2)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255, 255, 255, 0.08)';">
+                        <span style="display: flex; align-items: center; gap: 10px;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" id="planner-load-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                            <span id="planner-load-text" style="display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;">Plan laden</span>
+                        </span>
                     </button>
-                    <button id="btn-planner-confirm" class="load-confirm-btn planner" onclick="app.confirmLoad('planner')">Laden</button>
+                    <button id="btn-planner-confirm" class="load-confirm-btn planner" style="background: rgba(59, 130, 246, 0.9); border: 1px solid #3b82f6; border-radius: 12px; padding: 0 20px; color: white; font-weight: bold; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);" onclick="app.confirmLoad('planner')">Laden</button>
                 </div>
 
-                <button class="big-btn ghost" onclick="app.startTutorial('planner')">
-                    <span>Tutorial: Planer</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                <button onclick="app.startTutorial('planner')" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: #9ca3af; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255, 255, 255, 0.2)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'; this.style.color='#9ca3af'; this.style.borderColor='rgba(255, 255, 255, 0.08)';">
+                    <span style="display: flex; align-items: center; gap: 10px;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                        Tutorial: Planer
+                    </span>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
                 </button>
             </div>
 
             <div class="section-label" style="margin-bottom: 15px;">SZENARIOMODUS</div>
-            <div class="action-buttons stagger-3">
-                <button class="big-btn highlight" style="background: #10b981; border-color: #10b981;" onclick="app.startScenarioEditor()">
-                    <span>Neues Szenario erstellen</span>
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <div class="action-buttons stagger-3" style="display: flex; flex-direction: column; gap: 12px;">
+                
+                <button onclick="app.startScenarioEditor()" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; color: #fff; transition: all 0.2s; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" onmouseover="this.style.background='rgba(16, 185, 129, 0.2)'; this.style.borderColor='rgba(16, 185, 129, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'; this.style.borderColor='rgba(16, 185, 129, 0.3)'; this.style.transform='translateY(0)';">
+                    <span style="display: flex; align-items: center; gap: 10px;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#34d399" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                        Neues Szenario erstellen
+                    </span>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
                 </button>
                 
-                <div class="split-load-wrapper" id="scenario-split-wrapper">
-                    <button id="btn-scenario-load" class="big-btn ghost load-filename-btn" onclick="document.getElementById('scenario-file-input').click()">
-                        <span id="scenario-load-text" style="max-width: 220px; overflow: hidden; text-overflow: ellipsis;">Szenario laden</span>
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" id="scenario-load-icon"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                <div class="split-load-wrapper" id="scenario-split-wrapper" style="display: flex; gap: 8px;">
+                    <button id="btn-scenario-load" class="load-filename-btn" onclick="document.getElementById('scenario-file-input').click()" style="flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255, 255, 255, 0.2)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255, 255, 255, 0.08)';">
+                        <span style="display: flex; align-items: center; gap: 10px;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" id="scenario-load-icon"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                            <span id="scenario-load-text" style="display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;">Szenario laden</span>
+                        </span>
                     </button>
-                    <button id="btn-scenario-confirm" class="load-confirm-btn scenario" onclick="app.confirmLoad('scenario')">Laden</button>
+                    <button id="btn-scenario-confirm" class="load-confirm-btn scenario" style="background: rgba(16, 185, 129, 0.9); border: 1px solid #10b981; border-radius: 12px; padding: 0 20px; color: white; font-weight: bold; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);" onclick="app.confirmLoad('scenario')">Laden</button>
                 </div>
 
-                <button class="big-btn ghost" onclick="app.startTutorial('editor')">
-                    <span>Tutorial: Szenariomodus</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                <button onclick="app.startTutorial('editor')" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: #9ca3af; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255, 255, 255, 0.2)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'; this.style.color='#9ca3af'; this.style.borderColor='rgba(255, 255, 255, 0.08)';">
+                    <span style="display: flex; align-items: center; gap: 10px;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                        Tutorial: Szenariomodus
+                    </span>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
                 </button>
             </div>
         </div>
 
-        <div class="home-right stagger-3" style="display: flex; flex-direction: column; gap: 28px;">
+        <div class="home-right stagger-3" style="display: flex; flex-direction: column; gap: 24px;">
             
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-                <button onclick="document.getElementById('pwa-modal').classList.add('active')" class="big-btn ghost" style="justify-content: center; background: transparent; border: 1px solid rgba(59, 130, 246, 0.3); color: white;">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    <span style="font-size: 13px; letter-spacing: 0.5px;">ANWENDUNG HERUNTERLADEN</span>
-                </button>
-
-                <button onclick="app.toggleChatbot()" class="big-btn ghost" style="justify-content: center; background: transparent; border: 1px solid rgba(16, 185, 129, 0.3); color: white;">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    <span style="font-size: 13px; letter-spacing: 0.5px;">OFFENE FRAGEN? CHAT STARTEN</span>
-                </button>
+            <div class="feature-box" style="margin: 0;">
+                <div class="section-label">Allgemein & Support</div>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="document.getElementById('pwa-modal').classList.add('active')" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 12px; font-weight: 500;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        App installieren
+                    </button>
+                    <button onclick="app.toggleChatbot()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 12px; font-weight: 500;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Chat-Support
+                    </button>
+                </div>
             </div>
 
             <div class="feature-box" style="margin: 0;">
@@ -1427,14 +1447,24 @@
                 </ul>
             </div>
 
-            <div class="feedback-area" style="border-top: 1px solid rgba(255,255,255,0.05); margin-top: auto; padding-top: 25px; display: flex; flex-direction: column; align-items: center; gap: 18px;">
-                <div>
-                    <span style="color: #6b7280; font-size: 12px;">Haben Sie Ideen oder Wünsche?</span><br>
-                    <a href="mailto:dominik.toepper@tu-dresden.de" class="feedback-link" style="font-size: 13px; font-weight: 600;">dominik.toepper@tu-dresden.de</a>
+            <div class="feature-box" style="margin-top: auto; margin-bottom: 0;">
+                <div class="section-label">Kontakt & Rechtliches</div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <a href="mailto:dominik.toepper@tu-dresden.de" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #d1d5db; text-decoration: none; font-size: 13px; font-weight: 500; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
+                        <span>Kontakt</span>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </a>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="document.getElementById('project-info-modal').style.display = 'flex'" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 12px; font-weight: 500;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            ELMeKS.digital
+                        </button>
+                        <button onclick="document.getElementById('privacy-modal').style.display = 'flex'" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 12px; font-weight: 500;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            Impressum
+                        </button>
+                    </div>
                 </div>
-                <button onclick="document.getElementById('privacy-modal').style.display = 'flex'" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #9ca3af; padding: 8px 18px; border-radius: 20px; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-family: inherit; font-weight: 600;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#9ca3af'; this.style.borderColor='rgba(255,255,255,0.08)'">
-                    Datenschutz & Impressum
-                </button>
             </div>
 
         </div>
@@ -2021,47 +2051,140 @@
                       </div>
                       <div style="grid-column: 1 / -1;">
                           <span style="font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 4px;">Institution / Adresse</span>
-                          <span style="color: #d1d5db; font-size: 14px;">TU DRESDEN, Münchner Str. 1, 
-01069 Dresden</span>
+                          <span style="color: #d1d5db; font-size: 14px;">TU DRESDEN, Münchner Str. 1, 01069 Dresden</span>
                       </div>
                   </div>
               </div>
 
               <div style="display: flex; flex-direction: column; gap: 20px;">
-                  
                   <div style="padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                      <h4 style="color: #f3f4f6; margin: 0 0 8px 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
-                          <span style="color: #10b981;">●</span> Lokale Verarbeitung
+                      <h4 style="color: #f3f4f6; margin: 0 0 8px 0; font-size: 15px; display: flex; align-items: center;">
+                          Lokale Verarbeitung
                       </h4>
                       <p style="margin: 0; color: #9ca3af; font-size: 13px;">Diese Anwendung ist als reine "Client-Side-Only" Applikation konzipiert. Die gesamte Verarbeitung von Planungsdaten findet direkt auf Ihrem Endgerät im Browser statt. Wir erheben, speichern oder verarbeiten keine personenbezogenen Daten von Ihnen.</p>
                   </div>
-
                   <div style="padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                      <h4 style="color: #f3f4f6; margin: 0 0 8px 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
-                          <span style="color: #3b82f6;">●</span> Hosting (GitHub Pages)
+                      <h4 style="color: #f3f4f6; margin: 0 0 8px 0; font-size: 15px; display: flex; align-items: center;">
+                          Hosting (GitHub Pages)
                       </h4>
                       <p style="margin: 0; color: #9ca3af; font-size: 13px;">Diese Webseite wird über GitHub Pages gehostet. Anbieter ist die GitHub Inc., USA. Wenn Sie diese Webseite aufrufen, erfasst GitHub technisch bedingt Ihre IP-Adresse und weitere Log-Daten. <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" style="color: #60a5fa; text-decoration: none; border-bottom: 1px dotted #60a5fa;">Weitere Infos zum Datenschutz bei GitHub</a>.</p>
                   </div>
-
                   <div style="padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                      <h4 style="color: #f3f4f6; margin: 0 0 8px 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
-                          <span style="color: #f59e0b;">●</span> Web Speech API (Spracherkennung)
+                      <h4 style="color: #f3f4f6; margin: 0 0 8px 0; font-size: 15px; display: flex; align-items: center;">
+                          Web Speech API (Spracherkennung)
                       </h4>
-                      <p style="margin: 0; color: #9ca3af; font-size: 13px;">Wenn Sie die optionale Spracheingabe nutzen, werden Ihre Audiodaten zur Umwandlung in Text an die Server Ihres Browser-Herstellers (z. B. Google, Apple) gesendet. Die Nutzung erfordert Ihre vorherige, ausdrückliche Zustimmung (Opt-in) direkt in der App.</p>
+                      <p style="margin: 0; color: #9ca3af; font-size: 13px;">Wenn Sie die optionale Spracheingabe nutzen, werden Ihre Audiodaten zur Umwandlung in Text an die Server Ihres Browser-Herstellers gesendet. Die Nutzung erfordert Ihre vorherige, ausdrückliche Zustimmung (Opt-in).</p>
                   </div>
-
                   <div>
-                      <h4 style="color: #f3f4f6; margin: 0 0 8px 0; font-size: 15px; display: flex; align-items: center; gap: 8px;">
-                          <span style="color: #8b5cf6;">●</span> Lokaler Speicher (Cache)
+                      <h4 style="color: #f3f4f6; margin: 0 0 8px 0; font-size: 15px; display: flex; align-items: center;">
+                          Lokaler Speicher (Cache)
                       </h4>
                       <p style="margin: 0; color: #9ca3af; font-size: 13px;">Diese App verwendet den "Local Storage" und einen "Service Worker" (Cache) Ihres Browsers ausschließlich für technische Einstellungen und die Offline-Verfügbarkeit der Programm-Dateien. Es werden keine Tracking-Cookies eingesetzt.</p>
                   </div>
-
               </div>
-
           </div>
       </div>
     </div>
+
+    <div id="project-info-modal" style="position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 10000; display: none; align-items: center; justify-content: center; pointer-events: auto;">
+      <div class="pwa-glass-box" style="width: 900px; max-width: 95vw; height: 85vh; max-height: 800px; display: flex; flex-direction: column; background: #18181b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);">
+          <div class="pwa-header" style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border-radius: 16px 16px 0 0;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); display: flex; align-items: center; justify-content: center; color: #3b82f6;">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </div>
+                  <div>
+                      <h2 style="margin: 0; font-size: 18px; font-weight: 600; color: #f3f4f6; letter-spacing: 0.5px;">Projekt ELMeKS.digital</h2>
+                  </div>
+              </div>
+              <button onclick="document.getElementById('project-info-modal').style.display = 'none'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #9ca3af; width: 36px; height: 36px; border-radius: 8px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.color='#9ca3af'">✕</button>
+          </div>
+          <div class="pwa-content" style="flex-grow: 1; overflow-y: auto; padding: 30px; color: #d1d5db; line-height: 1.6; font-size: 14px; background: #111113;">
+              
+              <div style="margin-bottom: 25px;">
+                  <h3 style="color: white; margin-top: 0; margin-bottom: 10px; font-size: 18px;">Einstiegslösungen für Lehrkräftefortbildungen zur Medienkompetenzentwicklung in Sachsen</h3>
+                  <p style="color: #9ca3af; margin: 0; font-size: 13px;">mit Fokus auf die Fachbereiche Sozialpädagogik, Gesundheit und Pflege sowie Physiotherapie.</p>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+                  <div>
+                      <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Projektbeschreibung</h4>
+                      <p style="margin-bottom: 25px; text-align: justify;">Das Projektvorhaben ELMeKS.digital zielt darauf ab, mittels eines Webportals mit individuellen Einstiegs- und Unterstützungsangeboten die Motivation und Aktivitäten von Lehrkräften an sächsischen Berufsschulen in freier Trägerschaft zur eigenen Weiterqualifizierung zum digital gestützten Unterrichten zu fördern, um ihre Medienkompetenz nachhaltig zu erhöhen. Dieser Lösungsansatz basiert auf dem Umstand, dass Lehrkräfte digitale Medien in ihrem Unterricht bis dato nur eingeschränkt einsetzen und hinsichtlich bereits bestehender, überwiegend selbstgesteuerter (Online-)Fortbildungsangebote eine grundlegende Orientierung und Anleitung sowie einen hohen Bezug zu den Bedarfen und Herausforderungen ihrer täglichen Praxis benötigen. Die Einstiegsszenarien unterstützen sie dabei, indem sie gezielt zu bestehenden (Online-)Fortbildungs- und Vernetzungsangeboten sowie Anwendungsbeispielen mit hoher individueller Passfähigkeit hinführen. Sie verweisen auch auf ein (Online-)Lernmodul zur Förderung der Kenntnisse und Fähigkeiten der Lehrkräfte hinsichtlich der inklusiven Gestaltung ihres Unterrichts durch den Einsatz von digitalen Medien, das ebenfalls im Vorhaben entwickelt wird.</p>
+                      
+                      <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Unsere Ziele</h4>
+                      <ul style="padding-left: 20px; margin-bottom: 25px; color: #d1d5db;">
+                          <li style="margin-bottom: 8px;"><strong>Entwicklung eines bedarfsgerechten Webportals</strong> für Lehrkräfte an sächsischen Berufsschulen in freier Trägerschaft, welches schrittweise an den Einsatz digitaler Medien im Unterricht heranführt.</li>
+                          <li style="margin-bottom: 8px;"><strong>Sensibilisierung und Qualifizierung</strong> der Lehrkräfte für die Nutzung digitaler Medien durch niedrigschwellige Einstiegsszenarien und Anwendungsbeispiele.</li>
+                          <li><strong>Vernetzung</strong> der berufsbildenden Lehrkräfte in Sachsen.</li>
+                      </ul>
+
+                      <h4 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">News</h4>
+                      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                          <strong style="color: white; display: block; margin-bottom: 5px;">Transfertagung 2025 :// Transfer gedacht – Transfer gelebt</strong>
+                          <span style="font-size: 11px; color: #9ca3af; display: block; margin-bottom: 8px;">9. Dezember 2025</span>
+                          <p style="margin: 0; font-size: 13px;">„Transfer in der Bildung verstehen und gestalten“ – unter diesem Motto lud der Kompetenzverbund lernen:digital am 04. und 05. Dezember zur Transfertagung 2025 nach Berlin. Im Zentrum: Wie Bildungsforschung und Bildungspraxis wirksam zusammenkommen – über Projekte, Plattformen, Personen und Prozesse hinweg.</p>
+                      </div>
+                      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 15px;">
+                          <strong style="color: white; display: block; margin-bottom: 5px;">6. Quartalstreffen :// Usability im Fokus</strong>
+                          <span style="font-size: 11px; color: #9ca3af; display: block; margin-bottom: 8px;">11. November 2025</span>
+                          <p style="margin: 0; font-size: 13px;">Das mittlerweile sechste Quartalstreffen des Projekts ELMeKS.digital fand am 29. Oktober im Lehr-Lern-Raum Inklusion an der TU Dresden (ADEU) statt. Da zuvor einige Usability-Testungen durchgeführt wurden, lag der thematische Schwerpunkt dieses Treffens auf der weiteren Verbesserung und Evaluation der Nutzendenfreundlichkeit.</p>
+                      </div>
+                  </div>
+
+                  <div>
+                      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; margin-bottom: 20px; border-left: 3px solid #3b82f6;">
+                          <h4 style="color: white; margin: 0 0 10px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Förderung</h4>
+                          <span style="color: #9ca3af; font-size: 13px; display: block; margin-bottom: 4px;">Förderzeitraum:</span>
+                          <span style="color: #f3f4f6; font-size: 14px; font-weight: 600;">01.02.2024 – 31.01.2027</span>
+                      </div>
+
+                      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; margin-bottom: 20px; border-left: 3px solid #3b82f6;">
+                          <h4 style="color: white; margin: 0 0 15px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Projektteam</h4>
+                          <div style="margin-bottom: 12px;">
+                              <strong style="color: #f3f4f6; font-size: 13px;">TU Dresden, CODIP</strong>
+                              <div style="font-size: 11px; color: #9ca3af; line-height: 1.3;">(Projektleitung & Umsetzung)</div>
+                          </div>
+                          <div style="margin-bottom: 12px;">
+                              <strong style="color: #f3f4f6; font-size: 13px;">AFBB Akademie gGmbH</strong>
+                              <div style="font-size: 11px; color: #9ca3af; line-height: 1.3;">(Berufliche Praxis & Content)</div>
+                          </div>
+                          <div style="margin-bottom: 12px;">
+                              <strong style="color: #f3f4f6; font-size: 13px;">DRK Bildungswerk Sachsen</strong>
+                              <div style="font-size: 11px; color: #9ca3af; line-height: 1.3;">(Berufliche Praxis & Content)</div>
+                          </div>
+                          <div>
+                              <strong style="color: #f3f4f6; font-size: 13px;">TU Dresden, Professur Allg. Didaktik</strong>
+                              <div style="font-size: 11px; color: #9ca3af; line-height: 1.3;">(Expertise Inklusion & Content)</div>
+                          </div>
+                      </div>
+
+                      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; border-left: 3px solid #3b82f6;">
+                          <h4 style="color: white; margin: 0 0 15px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Kontakt</h4>
+                          <strong style="color: #f3f4f6; font-size: 14px; display: block; margin-bottom: 4px;">Michelle Pippig</strong>
+                          <span style="color: #9ca3af; font-size: 12px; display: block; margin-bottom: 10px;">TU Dresden CODIP<br>Projektkoordinatorin</span>
+                          <span style="color: #9ca3af; font-size: 12px; display: block; margin-bottom: 4px;">Telefon: +49 (351) 463–40721</span>
+                          <a href="mailto:michelle.pippig@tu-dresden.de" style="color: #60a5fa; text-decoration: none; font-size: 12px; transition: color 0.2s;" onmouseover="this.style.color='#3b82f6'" onmouseout="this.style.color='#60a5fa'">michelle.pippig@tu-dresden.de</a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+
+    <div id="project-info-modal" style="position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 10000; display: none; align-items: center; justify-content: center; pointer-events: auto;">
+      <div class="pwa-glass-box" style="width: 900px; max-width: 95vw; height: 85vh; max-height: 800px; display: flex; flex-direction: column; background: #18181b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);">
+          <div class="pwa-header" style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border-radius: 16px 16px 0 0;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); display: flex; align-items: center; justify-content: center; color: #f59e0b;">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </div>
+                  <div>
+                      <h2 style="margin: 0; font-size: 18px; font-weight: 600; color: #f3f4f6; letter-spacing: 0.5px;">Projekt ELMeKS.digital</h2>
+                  </div>
+              </div>
+              <button onclick="document.getElementById('project-info-modal').style.display = 'none'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #9ca3af; width: 36px; height: 36px; border-radius: 8px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)';
 
     <script type="module" src="script.js"></script>
 
