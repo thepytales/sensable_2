@@ -1523,25 +1523,23 @@
             
             <div class="module-list">
                 
-                <div class="module-card" style="opacity: 0.6; cursor: default;">
-                    <div class="module-icon" style="color: #6b7280;">
+                <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('hoeren')">
+                    <div class="module-icon" style="color: #10b981;">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
                     </div>
                     <div class="module-content">
                         <h4>Hörschädigung</h4>
                         <p>Grundlagen, Auswirkungen und inklusive Didaktik im Raum</p>
-                        <span class="module-status status-locked">Demnächst</span>
                     </div>
                 </div>
 
-                <div class="module-card" style="opacity: 0.6; cursor: default;">
-                    <div class="module-icon" style="color: #6b7280;">
+                <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('sehen')">
+                    <div class="module-icon" style="color: #10b981;">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     </div>
                     <div class="module-content">
                         <h4>Sehbeeinträchtigung</h4>
                         <p>Medizinische Ursachen und barrierefreie Raumgestaltung</p>
-                        <span class="module-status status-locked">Demnächst</span>
                     </div>
                 </div>
 
@@ -1556,25 +1554,23 @@
                     </div>
                 </div>
 
-                <div class="module-card" style="opacity: 0.6; cursor: default;">
-                    <div class="module-icon" style="color: #6b7280;">
+                <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('tactonom')">
+                    <div class="module-icon" style="color: #10b981;">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
                     </div>
                     <div class="module-content">
                         <h4>Tactonom</h4>
                         <p>Interaktives Lernen mit taktilen Grafiken und Audio-Feedback</p>
-                        <span class="module-status status-locked">Demnächst</span>
                     </div>
                 </div>
 
-                <div class="module-card" style="opacity: 0.6; cursor: default;">
-                    <div class="module-icon" style="color: #6b7280;">
+                <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('ava')">
+                    <div class="module-icon" style="color: #10b981;">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="M8 10h.01"></path><path d="M12 10h.01"></path><path d="M16 10h.01"></path></svg>
                     </div>
                     <div class="module-content">
                         <h4>AVA</h4>
                         <p>Live-Untertitel und Transkriptionen für Videokonferenzen und Treffen</p>
-                        <span class="module-status status-locked">Demnächst</span>
                     </div>
                 </div>
 
@@ -2283,6 +2279,714 @@
           </div>
       </div>
     </div>
+
+    <div id="learning-module-modal" style="position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 10000; display: none; align-items: center; justify-content: center; pointer-events: auto;">
+      <div class="pwa-glass-box" style="width: 900px; max-width: 95vw; height: 85vh; max-height: 800px; display: flex; flex-direction: column; background: #18181b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);">
+          <div class="pwa-header" style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border-radius: 16px 16px 0 0;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); display: flex; align-items: center; justify-content: center; color: #10b981;">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                  </div>
+                  <h2 id="learning-module-title" style="margin: 0; font-size: 18px; font-weight: 600; color: #f3f4f6; letter-spacing: 0.5px;">Lernmodul</h2>
+              </div>
+              <button onclick="document.getElementById('learning-module-modal').style.display = 'none'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #9ca3af; width: 36px; height: 36px; border-radius: 8px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.color='#9ca3af'">X</button>
+          </div>
+          
+          <div class="pwa-content" style="flex-grow: 1; overflow-y: auto; padding: 30px; color: #d1d5db; line-height: 1.6; font-size: 14px; background: #111113;">
+              
+              <div id="module-content-hoeren" class="learning-module-content" style="display:none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Hörschädigung</h3>
+                      <p>In den folgenden Lerninhalten geht es darum, das Thema Hörschädigung zu erkunden. Sie werden relevante Begriffe kennenlernen sowie sich mit dem Konzept des Audiogramms vertraut machen. Dabei erfahren Sie, wie Hörgeschädigte ihre Umwelt anders wahrnehmen als Hörende und welche technischen Hilfsmittel es für die einzelnen Fälle der Hörschädigung gibt.</p>
+                      <p>In Deutschland leben schätzungsweise 80.000 Kinder mit stark eingeschränktem Gehör. Man unterscheidet dabei zwischen peripherer und zentraler Hörschädigung. Je nach spezifischer Ursache für die Hörschädigung gibt es verschiedene Möglichkeiten dem Hörverlust entgegenzuwirken bzw. das Hören zu ermöglichen. Die Ursachen werden deshalb in Schalleitungsschwerhörigkeit, Schallempfindungsschwerhörigkeit und der Auditiven Verarbeitungs- und Wahrnehmungsstörung (AVWS) unterschieden.</p>
+                      <p>Leider lässt sich selbst durch Hörhilfen der Hörverlust nicht komplett beheben.</p>
+                  </div>
+
+                  <div class="module-page" data-page="2" style="display:none; box-sizing: border-box;">
+                      <h3 style="color: white; margin-top: 0; letter-spacing: 0.5px;">Interaktive Aufgabe 1: Akustik-Mischer</h3>
+                      <p style="color: #9ca3af; line-height: 1.6;">Ziehe die Faktoren, die für eine gute Raumakustik und Inklusion förderlich sind, in die untere Box. (Tipp: Klicke auf dem Smartphone einfach auf die Boxen, anstatt zu ziehen).</p>
+                      
+                      <div style="background: rgba(0,0,0,0.5); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); box-sizing: border-box; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);">
+                          <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
+                              <span style="font-weight: 600; color: #d1d5db; letter-spacing: 0.5px; font-size: 13px; text-transform: uppercase;">Qualität der Lernumgebung</span>
+                              <span id="acoustic-score-text" style="font-weight: 700; color: #ef4444; font-size: 14px; background: rgba(239, 68, 68, 0.1); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.2); transition: all 0.3s ease;">0%</span>
+                          </div>
+                          <div style="width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
+                              <div id="acoustic-score-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #ef4444, #f87171); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px;"></div>
+                          </div>
+                      </div>
+
+                      <div id="drag-source" ondrop="dropAcoustic(event)" ondragover="allowDropAcoustic(event)" style="display: flex; flex-wrap: wrap; gap: 10px; min-height: 80px; padding: 20px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; margin-bottom: 25px; box-sizing: border-box;">
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-teppich" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Teppiche verlegen</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-uform" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Sitzordnung U-Form</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-tafel" data-val="-25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Zur Tafel sprechen</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-fm" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">FM-Anlage / Mikrofon</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-akustik" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Akustikdecke einbauen</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-licht" data-val="-25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Frontales Gegenlicht</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-hall" data-val="-25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Kahle Betonwände</div>
+                      </div>
+
+                      <strong style="color: #9ca3af; display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Ideales Klassenzimmer (Elemente hierher ziehen)</strong>
+                      <div id="drop-target" ondrop="dropAcoustic(event)" ondragover="allowDropAcoustic(event)" style="display: flex; flex-wrap: wrap; align-content: flex-start; gap: 10px; min-height: 140px; padding: 20px; background: linear-gradient(145deg, rgba(0,0,0,0.6), rgba(0,0,0,0.2)); border: 2px dashed rgba(156, 163, 175, 0.3); border-radius: 12px; box-sizing: border-box; box-shadow: inset 0 4px 15px rgba(0,0,0,0.5);">
+                      </div>
+
+                      <div id="acoustic-feedback" style="margin-top: 20px; font-weight: 500; font-size: 15px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; padding: 15px; border-radius: 8px; display: none; box-sizing: border-box; letter-spacing: 0.3px;">
+                          Perfekt! 100% erreicht. Diese Faktoren schaffen eine ideale und barrierefreie Lernumgebung.
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="3" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 2: Einordnung der Ursachen</h3>
+                      <p>Ordnen Sie die richtige medizinische Ursache/Bezeichnung zu.</p>
+                      <div style="margin-bottom: 15px;">
+                          <label style="display:block; font-size:13px; color:#9ca3af; margin-bottom:5px;">Störung liegt im Außen- oder Mittelohr (Trommelfell, Gehörknöchelchen).</label>
+                          <select class="hoeren-select" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor: pointer;">
+                              <option value="" disabled selected>Bitte wählen...</option>
+                              <option value="leitung">Schallleitungsschwerhörigkeit</option>
+                              <option value="empfindung">Schallempfindungsschwerhörigkeit</option>
+                              <option value="avws">AVWS</option>
+                          </select>
+                      </div>
+                      <div style="margin-bottom: 15px;">
+                          <label style="display:block; font-size:13px; color:#9ca3af; margin-bottom:5px;">Das Gehörte kann vom Gehirn nicht richtig verarbeitet werden, obwohl das Ohr intakt ist.</label>
+                          <select class="hoeren-select" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor: pointer;">
+                              <option value="" disabled selected>Bitte wählen...</option>
+                              <option value="leitung">Schallleitungsschwerhörigkeit</option>
+                              <option value="empfindung">Schallempfindungsschwerhörigkeit</option>
+                              <option value="avws">AVWS</option>
+                          </select>
+                      </div>
+                      <button onclick="checkHoerenSelect()" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Überprüfen</button>
+                      <div id="hoeren-select-feedback" style="margin-top: 15px; font-weight: bold; display: none;"></div>
+                  </div>
+
+                  <div class="module-page" data-page="4" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Wissensabfrage</h3>
+                      <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px;">
+                          <p style="font-weight: bold; color: white;">Welche Aussage über Hörschädigungen bei Kindern in Deutschland ist laut Text korrekt?</p>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="hq1" value="wrong"> Hörgeräte können den Hörverlust in der Regel vollständig beheben.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="hq1" value="correct"> Es gibt schätzungsweise 80.000 Kinder mit stark eingeschränktem Gehör.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="hq1" value="wrong"> AVWS ist eine periphere Störung des Außenohrs.</label>
+                          <button onclick="checkHoerenMC()" style="margin-top:10px; background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">Antworten</button>
+                          <div id="hq1-feedback" style="margin-top: 10px; font-weight: bold; display:none;"></div>
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="5" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Weitere Informationen</h3>
+                      <p>Wunderbar! Sie haben nun einen ausführlichen Einblick in das schulische Leben gehörloser Lernender erhalten. Sie kennen die Probleme, mit denen sie konfrontiert sind sowie ihre Ursachen, sodass sie dem nun mit Verständnis begegnen können und Ihre Schüler:innen dafür sensibilisieren können.</p>
+                      <p>Eine bisher wenig eingesetzte Methode zur Begegnung des Problems der Hörschädigung wurde in diesem Teilmodul noch nicht genannt: die Verwendung von Untertiteln im Unterricht. Wir empfehlen Ihnen, sich mit diesem Ansatz ausführlich in der Lerneinheit zur Echtzeit-Transkription (AVA) zu beschäftigen.</p>
+                      <p>Und vergessen Sie nicht: Inklusion sollte stets ganzheitlich gedacht werden - was einem Schüler mit Hörschädigung zugute kommt, kann auch einer hörenden Schülerin helfen!</p>
+                  </div>
+              </div>
+
+              <div id="module-content-sehen" class="learning-module-content" style="display:none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Sehbeeinträchtigung</h3>
+                      <p>In Deutschland wird nicht erhoben, wie viele blinde und sehbehinderte Menschen hier leben. Schätzungen zufolge gibt es ca. 1,2 Millionen betroffene Menschen (REHADAT). Lediglich 1% aller Schüler:innen zählen zu dieser Gruppe.</p>
+                      <p>Eine Unterscheidung der Begriffe Sehschädigung, Sehbehinderung und Blindheit ist wichtig. Eine Sehbehinderung bedeutet nicht immer eine komplette Einschränkung: Menschen mit vorangeschrittenen Krankheiten und Gesichtsfeld- oder Visuseinschränkungen können in bestimmten Bereichen sehen. So ist es möglich, dass ein sehbehinderter Mensch Zeitung lesen kann und dennoch den weißen Langstock benötigt (Haasteren & Tomaszewski 2019).</p>
+                      <p>Ursachen können vielfältig sein, z. B. Retinitis Pigmentosa (Verlust des peripheren Sehens), Katarakt / Grauer Star (Trübung der Augenlinse, Kontrastverlust) oder CVI (Zerebrale Verarbeitungsstörung).</p>
+                  </div>
+
+                  <div class="module-page" data-page="2" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 1: Die "Ich-Perspektive"</h3>
+                      <p>Wähle einen Filter. Je nach Filter ändert sich der Text und das Passwort. Bewege deine Maus über die weiße Fläche (beim Tunnelblick musst du aktiv absuchen), finde das neue versteckte Passwort im Text und klicke es an!</p>
+                      
+                      <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                          <button onclick="applyVisionInteractive('none')" style="background: #374151; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight:bold;">Normal</button>
+                          <button onclick="applyVisionInteractive('katarakt')" style="background: #374151; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight:bold;">Grauer Star</button>
+                          <button onclick="applyVisionInteractive('rp')" style="background: #374151; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight:bold;">Tunnelblick (RP)</button>
+                      </div>
+
+                      <div id="vision-reading-container" onmousemove="handleVisionReadingMove(event)" style="box-sizing: border-box; position: relative; width: 100%; height: 250px; background: #fff; color: #000; padding: 20px; border-radius: 8px; font-size: 16px; line-height: 1.6; overflow: hidden; cursor: crosshair;">
+                          </div>
+                      
+                      <div id="vision-reading-feedback" style="margin-top: 15px; font-weight: bold; color: #10b981; display: none;">Passwort gefunden! Super.</div>
+                  </div>
+
+                  <div class="module-page" data-page="3" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 2: Symptome zuordnen</h3>
+                      <p>Ordne die beschriebenen Symptome der richtigen Ursache zu.</p>
+                      <div style="margin-bottom: 15px;">
+                          <label style="display:block; font-size:13px; color:#9ca3af; margin-bottom:5px;">Trübung der Augenlinse, führt zu starkem Kontrastverlust und Unschärfe.</label>
+                          <select class="sehen-select" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor:pointer;">
+                              <option value="" disabled selected>Bitte wählen...</option>
+                              <option value="katarakt">Katarakt (Grauer Star)</option>
+                              <option value="rp">Retinitis Pigmentosa</option>
+                              <option value="cvi">CVI</option>
+                          </select>
+                      </div>
+                      <div style="margin-bottom: 15px;">
+                          <label style="display:block; font-size:13px; color:#9ca3af; margin-bottom:5px;">Verlust des peripheren Sehens (Tunnelblick).</label>
+                          <select class="sehen-select" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor:pointer;">
+                              <option value="" disabled selected>Bitte wählen...</option>
+                              <option value="katarakt">Katarakt (Grauer Star)</option>
+                              <option value="rp">Retinitis Pigmentosa</option>
+                              <option value="cvi">CVI</option>
+                          </select>
+                      </div>
+                      <button onclick="checkSehenSelect()" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Überprüfen</button>
+                      <div id="sehen-select-feedback" style="margin-top: 15px; font-weight: bold; display: none;"></div>
+                  </div>
+
+                  <div class="module-page" data-page="4" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Wissensabfrage</h3>
+                      <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px;">
+                          <p style="font-weight: bold; color: white;">Was ist bezüglich Sehbehinderung und dem Bedarf an Hilfsmitteln wie dem weißen Langstock laut Text korrekt?</p>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="sq1" value="wrong"> Jeder, der den weißen Langstock benötigt, ist zu 100% vollblind.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="sq1" value="correct"> Es ist möglich, dass eine Person Zeitung lesen kann und für die Fortbewegung dennoch den Langstock benötigt.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="sq1" value="wrong"> Nur 20% aller Schüler weisen eine Sehbeeinträchtigung auf.</label>
+                          <button onclick="checkSehenMC()" style="margin-top:10px; background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">Antworten</button>
+                          <div id="sq1-feedback" style="margin-top: 10px; font-weight: bold; display:none;"></div>
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="5" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Weitere Informationen</h3>
+                      <p>Die simulierte Darstellung bestimmter Sehbeeinträchtigungen hat Ihnen hoffentlich einen Einblick in die unterschiedlichen Ausprägungen von Sehverlust gegeben und Sie auf die unterschiedlichen Bedürfnisse – je nach Krankheit – aufmerksam gemacht.</p>
+                      <p>WICHTIG: Die spezifische, medizinische Diagnostik ist selbstverständlich nicht Aufgabe der Lehrkraft. Dennoch sollten Sie sich der Ausprägungen bewusst sein, um besser auf die individuellen Bedarfe eingehen zu können.</p>
+                      <p>Gehen Sie individuell ins Gespräch mit den Lernenden und erarbeiten Sie gemeinsam Strategien zur Raumgestaltung (Kontraste, Blendfreiheit) und zur Informationsaufbereitung.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-tactonom" class="learning-module-content" style="display:none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Tactonom</h3>
+                      <p>Die folgende Lerneinheit stellt eine mögliche digitale Technologie vor, die Sie für Ihren inklusiven Unterricht einsetzen könnten – den Tactonom Reader. Auch wenn er als assistive Technologie für sehbeeinträchtigte Lernende konzipiert ist, werden Sie feststellen, dass sein Einsatz nicht darauf beschränkt sein muss.</p>
+                      <p>Der Tactonom verknüpft haptisch erfassbare Folien (taktile Grafiken) mit digitalen Audio-Informationen. Durch eine integrierte Kamera erkennt das Gerät die aufgelegte Grafik. Tippt der Lernende auf einen Bereich, wird die dazugehörige Audio-Spur abgespielt.</p>
+                      <p>Er bietet auch für sehende Lernende eine völlig neue Erfahrungsebene und bedient den im Schulunterricht oft verkannten Tastsinn.</p>
+                  </div>
+
+                  <div class="module-page" data-page="2" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 1: Taktiles Raster</h3>
+                      <p>Erlebe das Prinzip des Audio-Feedbacks. Bewege deine Maus über die schwarze Fläche. Das System gibt dir Feedback ("kalt", "wärmer"), bis du das versteckte Ziel blind gefunden hast und anklickst.</p>
+                      
+                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                          <span style="font-weight: bold; color: #9ca3af;">Audio-Feedback:</span>
+                          <span id="tactonom-audio-out" style="font-weight: bold; color: #3b82f6; font-size: 18px;">Bewege die Maus...</span>
+                      </div>
+
+                      <div id="tactile-grid" onmousemove="handleTactileMove(event)" onclick="handleTactileClick(event)" style="width: 100%; height: 250px; background: #000; border: 2px solid #374151; border-radius: 8px; cursor: crosshair; position: relative;">
+                      </div>
+                      <div id="tactonom-feedback" style="margin-top: 15px; font-weight: bold; color: #10b981; display: none;">Ziel erfasst! So hilft das Audio-Feedback bei der räumlichen Orientierung.</div>
+                  </div>
+
+                  <div class="module-page" data-page="3" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 2: Sinnesverknüpfung</h3>
+                      <p>Klicke genau die zwei Sinne an, die vom Tactonom Reader primär miteinander verknüpft werden.</p>
+                      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+                          <button class="sense-btn neutral-btn" data-correct="true" onclick="toggleNeutralBtn(this)" style="background: #27272a; color: #fff; border: 1px solid #374151; padding: 15px; border-radius: 6px; cursor: pointer;">Tastsinn (Haptik)</button>
+                          <button class="sense-btn neutral-btn" data-correct="false" onclick="toggleNeutralBtn(this)" style="background: #27272a; color: #fff; border: 1px solid #374151; padding: 15px; border-radius: 6px; cursor: pointer;">Geruchssinn</button>
+                          <button class="sense-btn neutral-btn" data-correct="true" onclick="toggleNeutralBtn(this)" style="background: #27272a; color: #fff; border: 1px solid #374151; padding: 15px; border-radius: 6px; cursor: pointer;">Gehör (Audio)</button>
+                          <button class="sense-btn neutral-btn" data-correct="false" onclick="toggleNeutralBtn(this)" style="background: #27272a; color: #fff; border: 1px solid #374151; padding: 15px; border-radius: 6px; cursor: pointer;">Geschmackssinn</button>
+                      </div>
+                      <div style="margin-top: 20px; text-align: right;">
+                          <button onclick="checkSenseTask()" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Prüfen</button>
+                      </div>
+                      <div id="sense-feedback" style="margin-top: 15px; font-weight: bold; display: none;"></div>
+                  </div>
+
+                  <div class="module-page" data-page="4" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Wissensabfrage</h3>
+                      <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px;">
+                          <p style="font-weight: bold; color: white;">Für wen ist der Tactonom Reader nützlich?</p>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="tq1" value="wrong"> Ausschließlich für völlig blinde Menschen, die Braille beherrschen.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="tq1" value="wrong"> Nur für sehende Kinder im Kindergartenalter.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="tq1" value="correct"> Für blinde und stark sehbeeinträchtigte Menschen, bietet aber durch Multimodalität auch für sehende Lernende Vorteile.</label>
+                          <button onclick="checkTactonomMC()" style="margin-top:10px; background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">Antworten</button>
+                          <div id="tq1-feedback" style="margin-top: 10px; font-weight: bold; display:none;"></div>
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="5" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Weitere Informationen</h3>
+                      <p>Glückwunsch! Sie sind am Ende der Einheit angekommen. Der Tactonom Reader ist nur ein Beispiel für ein Gerät, welches als assistive Technologie konzipiert wurde, aber für ein breiteres Spektrum an Lernenden eingesetzt werden kann.</p>
+                      <p>Er bedient den im Schulunterricht oft verkannten Tastsinn, womit sich für Lernende eine weitere Erfahrungsebene eröffnet, was wiederum nach dem Prinzip der Multimodalität das Lernen begünstigt.</p>
+                      <p>Mit vermehrtem Einsatz solcher Technologien im Alltag sinken langfristig auch Preise und Stigmata werden abgebaut.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-ava" class="learning-module-content" style="display:none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: AVA (Untertitelung)</h3>
+                      <p>Neben didaktischen Ansätzen gibt es eine weitere Möglichkeit, Ungleichheiten großflächig zu bekämpfen: Durch das Zuschalten von Untertiteln, die in Echtzeit das Gesprochene der Lehrkraft transkribieren.</p>
+                      <p>AVA ist eine Software-Lösung zur Echtzeit-Transkription. Sie wird insbesondere eingesetzt, um hörgeschädigten Menschen die uneingeschränkte Teilhabe an Gesprächen und Unterricht zu ermöglichen.</p>
+                      <p>Die Lehrkraft trägt ein Mikrofon, die Sprache wird über KI sofort in Text umgewandelt. Lernende können den Text live auf ihrem eigenen Smartphone, Tablet oder Laptop mitlesen.</p>
+                  </div>
+
+                  <div class="module-page" data-page="2" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 1: KI-Fehlerkorrektur</h3>
+                      <p>Live-Transkriptionen sind fehleranfällig. Im folgenden Transkript hat die KI drei Wörter falsch verstanden. Lies genau mit und klicke exakt auf die drei falschen Wörter, um sie zu korrigieren. (Es gibt keine visuellen Hilfen!)</p>
+                      
+                      <div style="background: #18181b; border: 1px solid #374151; padding: 15px; border-radius: 8px; font-size: 16px; line-height: 1.8; user-select: none;">
+                          <span style="color: #9ca3af;">[Lehrkraft]:</span> 
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">Heute</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">schreiben</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">wir</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">den</span>
+                          <span class="ava-word" data-correct="Test" onclick="checkAvaWord(this, true)" style="cursor: pointer;">Pest</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">in</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">Biologie.</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">Bitte</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">achtet</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">darauf,</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">dass</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">die</span>
+                          <span class="ava-word" data-correct="Zellteilung" onclick="checkAvaWord(this, true)" style="cursor: pointer;">Zelt-Heilung</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">korrekt</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">beschrieben</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">wird.</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">Nutzt</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">dafür</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">die</span>
+                          <span class="ava-word" data-correct="Definition" onclick="checkAvaWord(this, true)" style="cursor: pointer;">Deflation</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">aus</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">dem</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">Buch.</span>
+                      </div>
+                      
+                      <div id="ava-feedback" style="margin-top: 15px; font-weight: bold; color: #10b981; display: none;">Alle 3 Fehler korrigiert! Dies zeigt, dass beim Mitlesen kognitive Kapazität für die Kontextprüfung erforderlich bleibt.</div>
+                  </div>
+
+                  <div class="module-page" data-page="3" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 2: Nachteile ergänzen</h3>
+                      <p>Untertitel sind kein Allheilmittel. Ergänzen Sie die Lücken sinnvoll.</p>
+                      <p style="font-size: 15px; line-height: 1.8; background: #27272a; padding: 15px; border-radius: 8px;">
+                          Die automatische Spracherkennung ist besonders fehleranfällig bei 
+                          <select class="ava-select" style="background:#111113; color:#fff; border:1px solid #374151; padding:4px; border-radius:4px; cursor:pointer;">
+                              <option value="" disabled selected>...</option>
+                              <option value="laut">lauter Aussprache</option>
+                              <option value="fach">Fachbegriffen</option>
+                          </select>. 
+                          Zudem erfordert das gleichzeitige Lesen des Textes und das Verfolgen des Geschehens eine hohe 
+                          <select class="ava-select" style="background:#111113; color:#fff; border:1px solid #374151; padding:4px; border-radius:4px; cursor:pointer;">
+                              <option value="" disabled selected>...</option>
+                              <option value="kog">kognitive Belastung</option>
+                              <option value="mot">motorische Fähigkeit</option>
+                          </select>.
+                      </p>
+                      <button onclick="checkAvaSelects()" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Überprüfen</button>
+                      <div id="ava-select-feedback" style="margin-top: 15px; font-weight: bold; display: none;"></div>
+                  </div>
+
+                  <div class="module-page" data-page="4" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Wissensabfrage</h3>
+                      <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px;">
+                          <p style="font-weight: bold; color: white;">Was ist ein großer Vorteil bei der Live-Untertitelung mit gekoppelten Geräten (z.B. AVA in Gruppenarbeit)?</p>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="aq1" value="wrong"> Sie übersetzt automatisch in Gebärdensprache.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="aq1" value="wrong"> Sie eliminiert jeglichen Raumhall.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="aq1" value="correct"> Durch Speaker-Identification (Sprecher-Erkennung) wird sichtbar, wer gerade in der Gruppe spricht.</label>
+                          <button onclick="checkAvaMC()" style="margin-top:10px; background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">Antworten</button>
+                          <div id="aq1-feedback" style="margin-top: 10px; font-weight: bold; display:none;"></div>
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="5" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Alternativen</h3>
+                      <p>In diesem Lernmodul haben Sie AVA als Beispiel für eine Software zur Erstellung automatischer Untertitel kennengelernt. Der Nutzen sollte ersichtlich sein, wenngleich nicht alle Einsatzszenarien abgedeckt werden konnten. Es erfordert Kreativität und Kenntnis der Lernenden, um das Tool bestmöglich einzusetzen.</p>
+                      
+                      <div style="margin-top: 20px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                          <strong style="color: #10b981; font-size: 14px; display: block; margin-bottom: 10px;">Gängige Alternativen zu AVA</strong>
+                          <ul style="padding-left: 20px; font-size: 13px; color: #d1d5db; margin: 0; line-height: 1.6;">
+                              <li><strong>Web Captioner:</strong> Kostenlose Web-App, Live Transkript im Browser</li>
+                              <li><strong>Microsoft Live Captions:</strong> Systemweite Integration (Kostenlos)</li>
+                              <li><strong>Speechmatics:</strong> KI-basiert, sehr hohe Genauigkeit (Kostenpflichtig)</li>
+                              <li><strong>Whisper (OpenAI):</strong> Sehr genau, kostenlos offline nutzbar, Fokus eher auf asynchrone Transkripte</li>
+                              <li><strong>Braina Pro:</strong> Live Transkript & Sprecher-Erkennung integriert</li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+
+          </div>
+
+          <div class="pwa-footer" style="padding: 15px 24px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border-radius: 0 0 16px 16px;">
+              <button id="btn-prev-page" onclick="changePage(-1)" style="background: rgba(255,255,255,0.1); border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Zurück</button>
+              <span id="page-indicator" style="color: #9ca3af; font-size: 14px;">Seite 1 von 5</span>
+              <button id="btn-next-page" onclick="changePage(1)" style="background: #10b981; border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Weiter</button>
+          </div>
+      </div>
+    </div>
+
+    <script>
+      let currentModuleId = '';
+      let currentPage = 1;
+      const totalPages = 5;
+
+      function openLearningModule(id) {
+          currentModuleId = id;
+          currentPage = 1;
+          
+          const titles = {
+              'hoeren': 'Hörschädigung',
+              'sehen': 'Sehbeeinträchtigung',
+              'tactonom': 'Tactonom',
+              'ava': 'AVA'
+          };
+          document.getElementById('learning-module-title').innerText = titles[id] || 'Lernmodul';
+          document.getElementById('learning-module-modal').style.display = 'flex';
+          
+          if (id === 'sehen') {
+              applyVisionInteractive('none'); // Reset Vision Simulator
+          }
+          if (id === 'hoeren') {
+              resetRoomTask(); // Reset Raumplaner
+          }
+
+          updatePaginationUI();
+      }
+
+      function changePage(delta) {
+          currentPage += delta;
+          if (currentPage < 1) currentPage = 1;
+          if (currentPage > totalPages) currentPage = totalPages;
+          updatePaginationUI();
+      }
+
+      function updatePaginationUI() {
+          document.querySelectorAll('.learning-module-content').forEach(el => el.style.display = 'none');
+          document.querySelectorAll('.module-page').forEach(el => el.style.display = 'none');
+
+          const targetMod = document.getElementById('module-content-' + currentModuleId);
+          if (targetMod) {
+              targetMod.style.display = 'block';
+              const targetPage = targetMod.querySelector('.module-page[data-page="' + currentPage + '"]');
+              if (targetPage) targetPage.style.display = 'block';
+          }
+
+          document.getElementById('btn-prev-page').style.visibility = (currentPage === 1) ? 'hidden' : 'visible';
+          document.getElementById('btn-next-page').style.visibility = (currentPage === totalPages) ? 'hidden' : 'visible';
+          document.getElementById('page-indicator').innerText = 'Seite ' + currentPage + ' von ' + totalPages;
+      }
+
+      function toggleNeutralBtn(btn) {
+          if (btn.classList.contains('active')) {
+              btn.classList.remove('active');
+              btn.style.background = '#27272a';
+          } else {
+              btn.classList.add('active');
+              btn.style.background = '#4b5563';
+          }
+      }
+
+      // --- LOGIK: MODUL HÖREN ---
+      function resetRoomTask() {
+          const source = document.getElementById('drag-source');
+          const target = document.getElementById('drop-target');
+          if(source && target) {
+              const items = target.querySelectorAll('.drag-item');
+              items.forEach(item => source.appendChild(item));
+              updateAcousticScore();
+          }
+      }
+
+      function allowDropAcoustic(ev) {
+          ev.preventDefault();
+      }
+
+      function dragAcoustic(ev) {
+          ev.dataTransfer.setData("text", ev.target.id);
+      }
+
+      function dropAcoustic(ev) {
+          ev.preventDefault();
+          const data = ev.dataTransfer.getData("text");
+          let target = ev.target;
+          
+          while (target && target.id !== 'drag-source' && target.id !== 'drop-target') {
+              target = target.parentNode;
+          }
+
+          if (target && data) {
+              const el = document.getElementById(data);
+              if(el) target.appendChild(el);
+              updateAcousticScore();
+          }
+      }
+
+      function toggleAcousticMove(el) {
+          const source = document.getElementById('drag-source');
+          const target = document.getElementById('drop-target');
+          if (el.parentNode === source) {
+              target.appendChild(el);
+          } else {
+              source.appendChild(el);
+          }
+          updateAcousticScore();
+      }
+
+      function updateAcousticScore() {
+          let score = 0;
+          const target = document.getElementById('drop-target');
+          if(!target) return;
+          
+          const items = target.querySelectorAll('.drag-item');
+          items.forEach(item => {
+              score += parseInt(item.getAttribute('data-val'));
+          });
+          
+          score = Math.max(0, Math.min(100, score));
+          
+          const bar = document.getElementById('acoustic-score-bar');
+          const text = document.getElementById('acoustic-score-text');
+          const feedback = document.getElementById('acoustic-feedback');
+          
+          if(bar && text) {
+              bar.style.width = score + '%';
+              text.innerText = score + '%';
+              
+              if(score < 50) {
+                  bar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
+                  text.style.color = '#ef4444';
+                  text.style.background = 'rgba(239, 68, 68, 0.1)';
+                  text.style.borderColor = 'rgba(239, 68, 68, 0.2)';
+              } else if (score < 100) {
+                  bar.style.background = 'linear-gradient(90deg, #f59e0b, #fbbf24)';
+                  text.style.color = '#f59e0b';
+                  text.style.background = 'rgba(245, 158, 11, 0.1)';
+                  text.style.borderColor = 'rgba(245, 158, 11, 0.2)';
+              } else {
+                  bar.style.background = 'linear-gradient(90deg, #10b981, #34d399)';
+                  text.style.color = '#10b981';
+                  text.style.background = 'rgba(16, 185, 129, 0.1)';
+                  text.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+              }
+          }
+          
+          if(feedback) {
+              feedback.style.display = (score === 100) ? 'block' : 'none';
+          }
+      }
+
+      function checkHoerenSelect() {
+          const selects = document.querySelectorAll('.hoeren-select');
+          const fb = document.getElementById('hoeren-select-feedback');
+          fb.style.display = 'block';
+          if (selects[0].value === 'leitung' && selects[1].value === 'avws') {
+              fb.style.color = '#10b981';
+              fb.innerText = 'Perfekt zugeordnet!';
+          } else {
+              fb.style.color = '#ef4444';
+              fb.innerText = 'Das stimmt noch nicht bei beiden. Versuch es nochmal!';
+          }
+      }
+
+      function checkHoerenMC() {
+          const selected = document.querySelector('input[name="hq1"]:checked');
+          const fb = document.getElementById('hq1-feedback');
+          if(!selected) return;
+          fb.style.display = 'block';
+          if (selected.value === 'correct') {
+              fb.style.color = '#10b981';
+              fb.innerText = 'Korrekt!';
+          } else {
+              fb.style.color = '#ef4444';
+              fb.innerText = 'Falsch. Lies noch einmal in der Informationsgrundlage nach.';
+          }
+      }
+
+      // --- LOGIK: MODUL SEHEN ---
+      let currentVisionInteractive = 'none';
+
+      const visionTexts = {
+          'none': `Der Schulalltag ist voller visueller Reize. An der Tafel stehen wichtige Formeln, im Buch gibt es kleine Diagramme und auf dem Boden liegen oft Schulranzen im Weg. Für Menschen mit einer Sehbehinderung kann das ständige Fokussieren extrem anstrengend sein. Die Inklusion erfordert daher eine aufmerksame Raumgestaltung. Das erste versteckte Lösungswort lautet <span onclick="checkVisionPw('none')" style="cursor:pointer; color:inherit; font-weight:inherit;">Barrierefreiheit</span>. Wer das findet, hat das Prinzip verstanden. Achten Sie auf gute Ausleuchtung.`,
+          
+          'katarakt': `Eine Trübung der Linse führt dazu, dass alles wie durch einen dichten Nebel erscheint. Farben verblassen und grelles Licht blendet stark. Schwarze Schrift auf weißem Grund kann extrem unangenehm sein. Oft helfen nur invertierte Farben oder eine starke <span onclick="checkVisionPw('katarakt')" style="cursor:pointer; color:inherit; font-weight:inherit;">Kontrastverstärkung</span> an Tafeln und Arbeitsblättern. Selbst große Objekte im Raum verschmelzen mit dem Hintergrund, wenn sie sich farblich nicht abheben.`,
+          
+          'rp': `Bei dieser Erkrankung stirbt die Netzhaut von außen nach innen ab. Das zentrale Sehen bleibt oft lange erhalten, aber man verliert den Überblick über den Raum. Man sieht die Welt buchstäblich wie durch ein Rohr. Unerwartete Hindernisse auf dem Boden werden zur enormen Stolperfalle. Ein festes <span onclick="checkVisionPw('rp')" style="cursor:pointer; color:inherit; font-weight:inherit;">Ordnungssystem</span> im Klassenzimmer ist absolut essenziell, damit Taschen und Stühle nicht zu ständigen Gefahrenquellen werden.`
+      };
+
+      function applyVisionInteractive(type) {
+          currentVisionInteractive = type;
+          const box = document.getElementById('vision-reading-container');
+          const fb = document.getElementById('vision-reading-feedback');
+          
+          fb.style.display = 'none'; // Feedback zurücksetzen
+          box.innerHTML = visionTexts[type]; // Text je nach Filter komplett austauschen
+
+          if (type === 'none') {
+              box.style.filter = 'none';
+              box.style.clipPath = 'none';
+          } else if (type === 'katarakt') {
+              box.style.clipPath = 'none';
+              box.style.filter = 'blur(4px) contrast(0.6)';
+          } else if (type === 'rp') {
+              box.style.filter = 'none';
+              box.style.clipPath = 'circle(50px at 50% 50%)'; 
+          }
+      }
+
+      function handleVisionReadingMove(e) {
+          if (currentVisionInteractive === 'rp') {
+              // currentTarget löst das Bug-Problem (Springen), wenn man über Child-Elemente (<p>, <span>) fährt!
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const y = e.clientY - rect.top;
+              document.getElementById('vision-reading-container').style.clipPath = `circle(50px at ${x}px ${y}px)`;
+          }
+      }
+
+      function checkVisionPw(expectedType) {
+          if(expectedType === currentVisionInteractive) {
+              const fb = document.getElementById('vision-reading-feedback');
+              fb.style.display = 'block';
+              fb.innerText = `Lösungswort gefunden!`;
+              event.target.style.color = '#10b981';
+              event.target.style.fontWeight = 'bold';
+          }
+      }
+
+      function checkSehenSelect() {
+          const selects = document.querySelectorAll('.sehen-select');
+          const fb = document.getElementById('sehen-select-feedback');
+          fb.style.display = 'block';
+          if (selects[0].value === 'katarakt' && selects[1].value === 'rp') {
+              fb.style.color = '#10b981';
+              fb.innerText = 'Korrekt zugeordnet!';
+          } else {
+              fb.style.color = '#ef4444';
+              fb.innerText = 'Das stimmt noch nicht. Versuch es nochmal.';
+          }
+      }
+
+      function checkSehenMC() {
+          const selected = document.querySelector('input[name="sq1"]:checked');
+          const fb = document.getElementById('sq1-feedback');
+          if(!selected) return;
+          fb.style.display = 'block';
+          if (selected.value === 'correct') {
+              fb.style.color = '#10b981';
+              fb.innerText = 'Korrekt! Eine Einschränkung bedeutet nicht immer völlige Blindheit.';
+          } else {
+              fb.style.color = '#ef4444';
+              fb.innerText = 'Leider falsch.';
+          }
+      }
+
+      // --- LOGIK: MODUL TACTONOM ---
+      const targetX = 0.7; 
+      const targetY = 0.3; 
+      function handleTactileMove(e) {
+          const rect = e.target.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          
+          const dist = Math.sqrt(Math.pow(x - targetX, 2) + Math.pow(y - targetY, 2));
+          const audioOut = document.getElementById('tactonom-audio-out');
+          
+          if (dist < 0.05) {
+              audioOut.innerText = "HEISS! Hier klicken!";
+              audioOut.style.color = '#ef4444';
+          } else if (dist < 0.2) {
+              audioOut.innerText = "Sehr warm...";
+              audioOut.style.color = '#f59e0b';
+          } else if (dist < 0.4) {
+              audioOut.innerText = "Wärmer...";
+              audioOut.style.color = '#fcd34d';
+          } else {
+              audioOut.innerText = "Kalt.";
+              audioOut.style.color = '#3b82f6';
+          }
+      }
+
+      function handleTactileClick(e) {
+          const rect = e.target.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          const dist = Math.sqrt(Math.pow(x - targetX, 2) + Math.pow(y - targetY, 2));
+          
+          if (dist < 0.05) {
+              document.getElementById('tactonom-feedback').style.display = 'block';
+              document.getElementById('tactonom-audio-out').innerText = "Ziel erfasst.";
+              document.getElementById('tactonom-audio-out').style.color = '#10b981';
+          }
+      }
+
+      function checkSenseTask() {
+          let correctSelected = 0;
+          let wrongSelected = 0;
+          document.querySelectorAll('.sense-btn').forEach(btn => {
+              const isCorrect = btn.getAttribute('data-correct') === 'true';
+              const isActive = btn.classList.contains('active');
+              if (isActive && isCorrect) correctSelected++;
+              if (isActive && !isCorrect) wrongSelected++;
+          });
+
+          const fb = document.getElementById('sense-feedback');
+          fb.style.display = 'block';
+          if (correctSelected === 2 && wrongSelected === 0) {
+              fb.style.color = '#10b981';
+              fb.innerText = 'Richtig! Tastsinn (taktile Grafiken) und Gehör (Audio) werden verknüpft.';
+          } else {
+              fb.style.color = '#ef4444';
+              fb.innerText = 'Noch nicht richtig. Wähle exakt die zwei zutreffenden Sinne aus.';
+          }
+      }
+
+      function checkTactonomMC() {
+          const selected = document.querySelector('input[name="tq1"]:checked');
+          const fb = document.getElementById('tq1-feedback');
+          if(!selected) return;
+          fb.style.display = 'block';
+          if (selected.value === 'correct') {
+              fb.style.color = '#10b981';
+              fb.innerText = 'Völlig richtig! Der Multimodalitäts-Ansatz hilft vielen.';
+          } else {
+              fb.style.color = '#ef4444';
+              fb.innerText = 'Falsch. Der Ansatz ist breiter gefasst.';
+          }
+      }
+
+      // --- LOGIK: MODUL AVA ---
+      let avaFixedCount = 0;
+      function checkAvaWord(el, isError) {
+          if (el.getAttribute('data-fixed') === 'true') return;
+          
+          if (isError) {
+              const correctWord = el.getAttribute('data-correct');
+              el.innerText = correctWord;
+              el.style.color = '#10b981';
+              el.setAttribute('data-fixed', 'true');
+              el.style.cursor = 'default';
+              
+              avaFixedCount++;
+              if(avaFixedCount >= 3) {
+                  document.getElementById('ava-feedback').style.display = 'block';
+              }
+          } else {
+              const origColor = el.style.color;
+              el.style.color = '#ef4444';
+              setTimeout(() => el.style.color = origColor, 300);
+          }
+      }
+
+      function checkAvaSelects() {
+          const selects = document.querySelectorAll('.ava-select');
+          const fb = document.getElementById('ava-select-feedback');
+          fb.style.display = 'block';
+          if (selects[0].value === 'fach' && selects[1].value === 'kog') {
+              fb.style.color = '#10b981';
+              fb.innerText = 'Richtig ergänzt!';
+          } else {
+              fb.style.color = '#ef4444';
+              fb.innerText = 'Das stimmt noch nicht bei beiden Lücken.';
+          }
+      }
+
+      function checkAvaMC() {
+          const selected = document.querySelector('input[name="aq1"]:checked');
+          const fb = document.getElementById('aq1-feedback');
+          if(!selected) return;
+          fb.style.display = 'block';
+          if (selected.value === 'correct') {
+              fb.style.color = '#10b981';
+              fb.innerText = 'Korrekt! Speaker-Identification ist ein starkes Tool für Gruppenarbeiten.';
+          } else {
+              fb.style.color = '#ef4444';
+              fb.innerText = 'Leider falsch.';
+          }
+      }
+    </script>
 
     <script type="module" src="script.js"></script>
 

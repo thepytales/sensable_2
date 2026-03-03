@@ -650,24 +650,43 @@ function init() {
       camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
       camera.position.set(0, 16, 0.1); 
 
+      // PERFORMANCE 1: Intelligentes Anti-Aliasing (Nur an, wenn es kein Retina-Display ist)
+      const pixelRatio = window.devicePixelRatio || 1;
+      const useAntialias = pixelRatio === 1;
+
       renderer = new THREE.WebGLRenderer({ 
-          antialias: true, 
+          antialias: useAntialias, 
           preserveDrawingBuffer: true, 
           powerPreference: "high-performance"
       });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      
+      // PERFORMANCE 2: Auflösung deckeln (Verhindert extremes 4K-Rendering auf Laptops)
+      renderer.setPixelRatio(Math.min(pixelRatio, 1.5));
       renderer.setSize(window.innerWidth, window.innerHeight);
       
+      // PERFORMANCE 3: Schatten drosseln (Hard-Shadows statt teuren Soft-Shadows)
       renderer.shadowMap.enabled = true; 
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
+      renderer.shadowMap.type = THREE.PCFShadowMap; 
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       document.body.appendChild(renderer.domElement);
 
       const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.9);
       scene.add(hemiLight);
+      
       const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
       dirLight.position.set(5, 15, 5);
       dirLight.castShadow = true;
+      
+      // PERFORMANCE 4: Schattenbereich strikt auf den Raum begrenzen und Map-Größe festlegen
+      dirLight.shadow.mapSize.width = 1024;
+      dirLight.shadow.mapSize.height = 1024;
+      dirLight.shadow.camera.near = 0.5;
+      dirLight.shadow.camera.far = 40;
+      dirLight.shadow.camera.left = -15;
+      dirLight.shadow.camera.right = 15;
+      dirLight.shadow.camera.top = 15;
+      dirLight.shadow.camera.bottom = -15;
+      
       scene.add(dirLight);
       
       const gridHelper = new THREE.GridHelper(30, 30, 0x444444, 0x333333);
@@ -690,15 +709,14 @@ function init() {
       window.addEventListener("keydown", onKeyDown);
       window.addEventListener("keyup", onKeyUp);
       
-      selectionBox = new THREE.BoxHelper(new THREE.Mesh(), 0x007acc); 
-      selectionBox.visible = false;
-      scene.add(selectionBox);
+      // BoxHelper entfernt, Dummy einsetzen, damit Alt-Funktionen nicht abstürzen
+      selectionBox = { visible: false, update: function(){}, setFromObject: function(){} };
 
       // UI Init
       const sel = document.getElementById('room-select');
       if(sel) sel.addEventListener('change', (e) => app.switchRoom(e.target.value));
       
-      initRightSidebar(); 
+      initRightSidebar();  
       setupAvatarButtons();
       setupOnScreenControls();
 
@@ -2176,10 +2194,23 @@ function getAccessibilityStats() {
             // NEU: Personas kollidieren in der Prüfung nicht mit Möbeln oder anderen Personas
             if (infoA.type === 'persona' || infoB.type === 'persona') continue;
 
-            const dist = objA.position.distanceTo(objB.position);
-            const r1 = infoA.radius || 0.5;
-            const r2 = infoB.radius || 0.5;
-            const gap = Math.max(0, dist - (r1 + r2));
+            // EXAKTE ABSTANDSBERECHNUNG: Oriented Bounding Box (OBB)
+            const dimsA = infoA.dims || { x: (infoA.radius||0.5)*2, z: (infoA.radius||0.5)*2 };
+            const dimsB = infoB.dims || { x: (infoB.radius||0.5)*2, z: (infoB.radius||0.5)*2 };
+
+            // Punkt von B in das Koordinatensystem von A setzen und an Möbelkanten klammern
+            const localB = objA.worldToLocal(objB.position.clone());
+            localB.x = Math.max(-dimsA.x/2, Math.min(dimsA.x/2, localB.x));
+            localB.z = Math.max(-dimsA.z/2, Math.min(dimsA.z/2, localB.z));
+            const closestPointOnA = objA.localToWorld(localB);
+
+            // Punkt von A in das Koordinatensystem von B setzen und an Möbelkanten klammern
+            const localA = objB.worldToLocal(objA.position.clone());
+            localA.x = Math.max(-dimsB.x/2, Math.min(dimsB.x/2, localA.x));
+            localA.z = Math.max(-dimsB.z/2, Math.min(dimsB.z/2, localA.z));
+            const closestPointOnB = objB.localToWorld(localA);
+
+            const gap = closestPointOnA.distanceTo(closestPointOnB);
 
             if (gap > 0.05) { 
                 if (gap < minFound) minFound = gap;
@@ -2190,11 +2221,19 @@ function getAccessibilityStats() {
     if (minFound === Infinity) minFound = 2.0; 
     
     for(let obj of movableObjects) {
-        if(obj.userData.isWallItem) continue;
+        if(obj.userData.isWallItem || !obj.userData.typeId) continue;
         const info = ASSETS.furniture[obj.userData.typeId];
-        const r = info.radius || 0.5;
-        const distX = currentRoomLimits.x - Math.abs(obj.position.x) - r;
-        const distZ = currentRoomLimits.z - Math.abs(obj.position.z) - r;
+        
+        // EXAKTER WANDABSTAND: Rotiertes Profil berechnen
+        const dims = info.dims || { x: (info.radius||0.5)*2, z: (info.radius||0.5)*2 };
+        const cos = Math.abs(Math.cos(obj.rotation.y));
+        const sin = Math.abs(Math.sin(obj.rotation.y));
+        const extX = (dims.x / 2) * cos + (dims.z / 2) * sin;
+        const extZ = (dims.x / 2) * sin + (dims.z / 2) * cos;
+        
+        const distX = currentRoomLimits.x - Math.abs(obj.position.x) - extX;
+        const distZ = currentRoomLimits.z - Math.abs(obj.position.z) - extZ;
+        
         const issueX = (distX > 0.05 && distX < 0.7);
         const issueZ = (distZ > 0.05 && distZ < 0.7);
         if(issueX || issueZ) wallIssues++; 
@@ -2817,15 +2856,19 @@ function getOrLoadFurniture(key) {
     });
 }
 
+// PERFORMANCE 5: Frustum Culling reparieren (GPU entlasten, nur Sichtbares rendern!)
 function disableCullingRecursively(obj) {
     if (!obj) return;
-    obj.frustumCulled = false; 
+    
+    // Culling AKTIVIEREN, damit Dinge hinter der Kamera ignoriert werden
+    obj.frustumCulled = true; 
+    
     if (obj.isMesh) {
         if(obj.material) obj.material.side = THREE.DoubleSide;
         if(obj.geometry) {
+            // Exakte Boxen berechnen, statt Radius auf Unendlich zu setzen
+            obj.geometry.computeBoundingBox();
             obj.geometry.computeBoundingSphere();
-            if(!obj.geometry.boundingSphere) obj.geometry.boundingSphere = new THREE.Sphere();
-            obj.geometry.boundingSphere.radius = Infinity;
         }
     }
     if(obj.children && obj.children.length > 0) {
@@ -2895,6 +2938,15 @@ function setupRoom(model, filename) {
   const roomInfo = ASSETS.rooms[filename];
   currentRoomMesh = model.clone();
   disableCullingRecursively(currentRoomMesh);
+  
+  // PERFORMANCE 7: Raum wirft keine Schatten auf sich selbst, er empfängt sie nur!
+  currentRoomMesh.traverse(child => {
+      if (child.isMesh) {
+          child.castShadow = false;
+          child.receiveShadow = true;
+      }
+  });
+
   const box = new THREE.Box3().setFromObject(currentRoomMesh);
   const center = box.getCenter(new THREE.Vector3());
   currentRoomMesh.position.set(-center.x, 0, -center.z);
@@ -3063,7 +3115,14 @@ function createFurnitureInstance(typeId, x, z, rotY) {
         const colorlessFurniture = ['table_square', 'table_double', 'sofa', 'board', 'teacher', 'cupboard', 'cabinet_short', 'cabinet_long'];
         if (colorlessFurniture.includes(typeId)) {
             visual.traverse(child => {
-                if (child.isMesh && child.material) { child.material = child.material.clone(); child.material.color.setHex(0x2c3e50); }
+                if (child.isMesh && child.material) { 
+                    // PERFORMANCE 6: Material Caching! Verhindert vollen Grafikspeicher bei vielen Tischen
+                    if (!info.cachedDarkMaterial) {
+                        info.cachedDarkMaterial = child.material.clone();
+                        info.cachedDarkMaterial.color.setHex(0x2c3e50);
+                    }
+                    child.material = info.cachedDarkMaterial; 
+                }
             });
         }
         const box = new THREE.Box3().setFromObject(visual);
@@ -3084,6 +3143,13 @@ function createFurnitureInstance(typeId, x, z, rotY) {
         wrapper.add(hitbox);
         wrapper.userData.hitbox = hitbox;
         interactionMeshes.push(hitbox);
+
+        // EXAKTE SELEKTION: Passgenauer, mitrotierender blauer Rahmen
+        const edges = new THREE.EdgesGeometry(hitbox.geometry);
+        const selLines = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x3b82f6, linewidth: 2, depthTest: false }));
+        selLines.visible = false;
+        hitbox.add(selLines);
+        wrapper.userData.selectionLines = selLines;
     }
 
     const yPos = info.yOffset !== undefined ? info.yOffset : FURNITURE_Y_OFFSET;
@@ -3314,8 +3380,9 @@ document.addEventListener('mousedown', (e) => {
 
 function selectObject(obj) { 
     selectedRoot = obj; 
-    selectionBox.setFromObject(obj); 
-    selectionBox.visible = true; 
+    
+    if (obj.userData.selectionLines) obj.userData.selectionLines.visible = true;
+    
     document.getElementById('selection-details').style.display = 'block'; 
     document.getElementById('obj-annotation').value = obj.userData.annotation || "";
     
@@ -3328,14 +3395,14 @@ function selectObject(obj) {
     if(lockBtn) {
         lockBtn.style.display = window.app.currentMode === 'editor' ? 'block' : 'none';
         lockBtn.innerText = obj.userData.isLocked ? "Entsperren" : "Sperren";
-        lockBtn.style.color = obj.userData.isLocked ? "#f59e0b" : ""; // Orange wenn gesperrt
+        lockBtn.style.color = obj.userData.isLocked ? "#f59e0b" : ""; 
     }
 
     if(delBtn) {
         if(obj.userData.isAvatar) {
             delBtn.style.display = 'none';
         } else if (window.app.currentMode === 'play' && obj.userData.isPreplaced) {
-            delBtn.style.display = 'none'; // Ersteller-Objekte im Play-Modus nicht löschbar!
+            delBtn.style.display = 'none'; 
         } else {
             delBtn.style.display = 'block';
         }
@@ -3358,7 +3425,10 @@ function deselectObject() {
     if (selectedRoot && selectedRoot.userData.isZone) {
         if (selectedRoot.userData.handles) selectedRoot.userData.handles.forEach(h => h.material.color.setHex(0xffffff));
     }
-    selectedRoot = null; selectedObjects = []; selectionBox.visible = false; 
+    
+    if (selectedRoot && selectedRoot.userData.selectionLines) selectedRoot.userData.selectionLines.visible = false;
+    
+    selectedRoot = null; selectedObjects = [];  
     document.getElementById("context-menu").classList.remove("visible"); 
     document.getElementById('selection-details').style.display = 'none'; 
     document.querySelectorAll('.object-list-item').forEach(el => el.classList.remove('selected')); 
