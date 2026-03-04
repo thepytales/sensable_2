@@ -637,7 +637,9 @@ window.app.removeZonePoint = function() {
 const gltfLoader = new GLTFLoader();
 const objLoader = new OBJLoader();
 const draco = new DRACOLoader();
-draco.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+
+// Lokaler Pfad statt gstatic!
+draco.setDecoderPath('./lib/draco/'); 
 gltfLoader.setDRACOLoader(draco);
 
 // === INIT ===

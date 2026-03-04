@@ -1,4 +1,4 @@
-const CACHE_NAME = 'elmeks-cache-v14'; 
+const CACHE_NAME = 'elmeks-cache-v15'; 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -14,8 +14,13 @@ const ASSETS_TO_CACHE = [
   './lib/three/OBJLoader.js',
   './lib/three/DRACOLoader.js',
   './lib/utils/BufferGeometryUtils.js',
-  './fonts/Inter-Regular.woff2'
-  './fonts/Inter-Bold.woff2'
+  './fonts/Inter-Regular.woff2', 
+  './fonts/Inter-Bold.woff2',    
+  
+  // Die lokalen Draco-Dateien für den Offline-Modus
+  './lib/draco/draco_decoder.js',
+  './lib/draco/draco_decoder.wasm',
+  './lib/draco/draco_wasm_wrapper.js'
 ];
 
 // 1. Installieren: Sofort Cache füllen & Aktivierung erzwingen
