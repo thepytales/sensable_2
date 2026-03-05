@@ -3,6 +3,7 @@ import { OrbitControls } from "OrbitControls";
 import { GLTFLoader } from "GLTFLoader";
 import { OBJLoader } from "OBJLoader";
 import { DRACOLoader } from "DRACOLoader";
+import Stats from "stats"; // <-- NEU HINZUGEFÜGT
 
 // Eigene Module
 import { initRightSidebar } from "./js/modules/ui.js"; 
@@ -381,6 +382,7 @@ const ASSETS = {
 
 // THREE.js Variablen
 let scene, camera, renderer, controls;
+let stats; // <-- NEU
 let currentRoomMesh = null;
 let currentRoomFile = ""; 
 let currentRoomLimits = { x: 5, z: 5 }; 
@@ -661,6 +663,8 @@ function init() {
           preserveDrawingBuffer: true, 
           powerPreference: "high-performance"
       });
+
+      window.app.renderer = renderer;
       
       // PERFORMANCE 2: Auflösung deckeln (Verhindert extremes 4K-Rendering auf Laptops)
       renderer.setPixelRatio(Math.min(pixelRatio, 1.5));
@@ -721,6 +725,16 @@ function init() {
       initRightSidebar();  
       setupAvatarButtons();
       setupOnScreenControls();
+
+      // --- NEU: Stats Diagnose-Tool einrichten ---
+      stats = new Stats();
+      stats.showPanel(0); // 0 = FPS, 1 = MS (Rechenzeit), 2 = MB (RAM)
+      stats.dom.style.position = 'absolute';
+      stats.dom.style.top = '60px'; // Schiebt es unter deine ELMeKS Top-Bar
+      stats.dom.style.left = '20px';
+      stats.dom.style.zIndex = '9999';
+      document.body.appendChild(stats.dom);
+      // ------------------------------------------
 
       // Start App
       startApp();
@@ -1500,6 +1514,8 @@ function animate() {
     controls.update(); 
     
     renderer.render(scene, camera); 
+    
+    stats.update(); // <-- NEU: Hier updatet sich das Diagnose-Tool
 }
 
 // Dummy Functions für Kompatibilität mit HTML Aufrufen

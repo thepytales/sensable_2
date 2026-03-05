@@ -19,12 +19,69 @@
       @font-face {
         font-family: 'Inter';
         src: url('./fonts/Inter-Bold.woff2') format('woff2');
-        font-weight: 700; /* 700 steht in CSS für Bold */
+        font-weight: 700;
         font-style: normal;
         font-display: swap;
       }
       body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        transition: background-color 0.5s ease;
+      }
+      
+      .tab-system {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+      .tab-header {
+        display: flex;
+        gap: 4px;
+        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 20px;
+        overflow-x: auto;
+      }
+      .tab-btn {
+        padding: 12px 24px;
+        cursor: pointer;
+        background-color: #f3f4f6;
+        border: 1px solid #e5e7eb;
+        border-bottom: none;
+        border-radius: 8px 8px 0 0;
+        font-family: 'Inter', sans-serif;
+        font-weight: bold;
+        color: #4b5563;
+        transition: all 0.3s ease;
+        opacity: 0.7;
+        white-space: nowrap;
+      }
+      .tab-btn:hover {
+        opacity: 0.9;
+        background-color: #e5e7eb;
+      }
+      .tab-btn.active {
+        background-color: #ffffff;
+        color: #111827;
+        opacity: 1;
+        position: relative;
+        bottom: -2px;
+        border-bottom: 2px solid #ffffff;
+      }
+      
+      .tab-btn[data-theme="blue"].active { border-top: 4px solid #3b82f6; }
+      .tab-btn[data-theme="green"].active { border-top: 4px solid #10b981; }
+      .tab-btn[data-theme="yellow"].active { border-top: 4px solid #eab308; }
+      .tab-btn[data-theme="white"].active { border-top: 4px solid #d1d5db; }
+      
+      .tab-content {
+        display: none;
+        animation: tabFadeIn 0.4s ease forwards;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      
+      @keyframes tabFadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
       }
     </style>
     <script src="lib/jspdf.umd.min.js"></script>
@@ -37,7 +94,8 @@
           "OrbitControls": "./lib/three/OrbitControls.js",
           "GLTFLoader": "./lib/three/GLTFLoader.js",
           "OBJLoader": "./lib/three/OBJLoader.js",
-          "DRACOLoader": "./lib/three/DRACOLoader.js"
+          "DRACOLoader": "./lib/three/DRACOLoader.js",
+          "stats": "https://unpkg.com/three/examples/jsm/libs/stats.module.js"
         }
       }
     </script>
@@ -1364,391 +1422,494 @@
       <canvas id="bg-canvas"></canvas>
       <div class="tech-grid-overlay"></div>
 
+      <style>
+        .home-container { display: block !important; width: 1100px !important; max-width: 95vw; grid-template-columns: none !important; padding: 0 !important; }
+        .home-tab-header {
+            display: flex; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 0 20px;
+            background: rgba(255,255,255,0.02); overflow-x: visible; position: relative;
+        }
+        .home-tab-btn {
+            padding: 18px 24px; cursor: pointer; background: transparent; border: none;
+            color: #9ca3af; font-weight: 600; font-size: 14px; transition: 0.3s;
+            border-bottom: 2px solid transparent; opacity: 0.7; white-space: nowrap; font-family: 'Inter', sans-serif;
+        }
+        .home-tab-btn:hover { opacity: 1; color: white; background: rgba(255,255,255,0.03); }
+        .home-tab-btn.active { opacity: 1; color: white; background: rgba(255,255,255,0.05); }
+        .home-tab-btn.active[data-theme="blue"] { border-bottom-color: #3b82f6; color: white; }
+        .home-tab-btn.active[data-theme="green"] { border-bottom-color: #10b981; color: white; }
+        .home-tab-btn.active[data-theme="yellow"] { border-bottom-color: #eab308; color: white; }
+        .home-tab-btn.active[data-theme="white"] { border-bottom-color: #ffffff; color: white; }
+        
+        /* Neues Settings Dropdown */
+        .home-settings-btn {
+            margin-left: auto; padding: 18px 20px; cursor: pointer; background: transparent; border: none;
+            color: #9ca3af; font-weight: 600; font-size: 13px; transition: 0.3s; display: flex; align-items: center; gap: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+        .home-settings-btn:hover { color: white; background: rgba(255,255,255,0.05); }
+        .home-settings-dropdown {
+            position: absolute; top: 60px; right: 20px; width: 280px;
+            background: rgba(26, 27, 30, 0.98); backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 20px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6); display: none; z-index: 200;
+            animation: fadeDown 0.2s ease forwards;
+        }
+        .home-settings-dropdown.active { display: block; }
+        
+        .home-tab-content { display: none; animation: tabFadeIn 0.4s ease forwards; padding: 40px; }
+        .home-tab-content.active { display: grid; grid-template-columns: 1.2fr 1fr; gap: 50px; }
+        
+        /* Kompaktere Module für Tab 3 */
+        .compact-module .module-card { padding: 10px 12px; gap: 12px; min-height: 64px; }
+        .compact-module .module-icon { width: 34px; height: 34px; }
+        .compact-module .module-icon svg { width: 16px; height: 16px; }
+        .compact-module .module-content h4 { font-size: 12px; margin-bottom: 2px; }
+        .compact-module .module-content p { font-size: 10px; line-height: 1.3; }
+        
+        @keyframes tabFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 900px) {
+            .home-tab-content.active { grid-template-columns: 1fr; }
+        }
+      </style>
+
       <div class="home-container">
-        <!-- Linke Seite: Branding & Aktionen -->
-        <div class="home-left stagger-1">
-            <div style="margin-bottom: 40px;">
-                <div class="home-title-large">SensAble</div>
-                <div class="home-subtitle" style="font-size: 14px; margin-bottom: 0;">Interaktive Lösung für inklusive Raumplanung<br><br>Diese Webanwendung ist Teil des Projekts ELMeKS.digital.</div>
-                
-                <div class="mobile-warning">
-                    <strong style="color: #f59e0b; display: block; margin-bottom: 4px;">Hinweis zur mobilen Nutzung</strong>
-                    Diese Anwendung ist für Desktop-PCs und die Bedienung mit Maus sowie Tastatur optimiert. Auf mobilen Geräten kann es zu starken Einschränkungen bei der 3D-Steuerung und Übersicht kommen.
-                </div>
-            </div>
-            
-            <div class="section-label" style="margin-bottom: 15px;">PLANUNGSMODUS</div>
-            <div class="action-buttons stagger-2" style="margin-bottom: 35px; display: flex; flex-direction: column; gap: 12px;">
-                
-                <button onclick="app.startStandardPlanner()" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; color: #fff; transition: all 0.2s; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" onmouseover="this.style.background='rgba(59, 130, 246, 0.2)'; this.style.borderColor='rgba(59, 130, 246, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(59, 130, 246, 0.1)'; this.style.borderColor='rgba(59, 130, 246, 0.3)'; this.style.transform='translateY(0)';">
-                    <span style="display: flex; align-items: center; gap: 10px;">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        Neuen Raum planen
-                    </span>
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
-                </button>
-                
-                <div class="split-load-wrapper" id="planner-split-wrapper" style="display: flex; gap: 8px;">
-                    <button id="btn-planner-load" class="load-filename-btn" onclick="document.getElementById('file-input').click()" style="flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255, 255, 255, 0.2)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255, 255, 255, 0.08)';">
-                        <span style="display: flex; align-items: center; gap: 10px;">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" id="planner-load-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-                            <span id="planner-load-text" style="display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;">Plan laden</span>
-                        </span>
-                    </button>
-                    <button id="btn-planner-confirm" class="load-confirm-btn planner" style="background: rgba(59, 130, 246, 0.9); border: 1px solid #3b82f6; border-radius: 12px; padding: 0 20px; color: white; font-weight: bold; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);" onclick="app.confirmLoad('planner')">Laden</button>
-                </div>
+          <div class="home-tab-header">
+              <button class="home-tab-btn active" data-theme="blue" onclick="switchHomeTab('tab-sensable', this, '#1a1b1e')">SensAble</button>
+              <button class="home-tab-btn" data-theme="green" onclick="switchHomeTab('tab-editor', this, '#0d2217')">SensAble Editor</button>
+              <button class="home-tab-btn" data-theme="yellow" onclick="switchHomeTab('tab-practice', this, '#221e0d')">SensAble Practice</button>
+              <button class="home-tab-btn" data-theme="white" onclick="switchHomeTab('tab-support', this, '#262626')">Support und Kontakt</button>
+              
+              <button class="home-settings-btn" onclick="document.getElementById('home-settings-menu').classList.toggle('active')">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                  Anzeige
+              </button>
 
-                <button onclick="app.startTutorial('planner')" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: #9ca3af; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255, 255, 255, 0.2)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'; this.style.color='#9ca3af'; this.style.borderColor='rgba(255, 255, 255, 0.08)';">
-                    <span style="display: flex; align-items: center; gap: 10px;">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                        Tutorial: Planer
-                    </span>
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
-                </button>
-            </div>
+              <div id="home-settings-menu" class="home-settings-dropdown">
+                  <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                      <button onclick="document.getElementById('home-settings-menu').classList.remove('active')" style="background: transparent; border: none; color: #9ca3af; cursor: pointer; font-size: 16px; padding: 0;">✕</button>
+                  </div>
+                  <div class="settings-mini" style="background: transparent; padding: 0; border: none;">
+                      <div class="mini-row" style="margin-bottom: 15px;">
+                          <span style="color:#d1d5db; font-size: 13px;">Hochkontrast-Modus</span>
+                          <label class="switch"><input type="checkbox" id="start-high-contrast" onchange="app.updateSettings()"><span class="slider"></span></label>
+                      </div>
+                      <div class="mini-row" style="margin-bottom: 15px;">
+                          <span style="color:#d1d5db; font-size: 13px;">Vorlesemodus (Hover)</span>
+                          <label class="switch"><input type="checkbox" id="start-read-aloud" onchange="app.updateSettings()"><span class="slider"></span></label>
+                      </div>
+                      <div class="mini-row" style="margin: 0;">
+                          <span style="color:#d1d5db; font-size: 13px;">Vollbildmodus</span>
+                          <label class="switch"><input type="checkbox" id="start-fullscreen" onchange="app.toggleFullscreen()"><span class="slider"></span></label>
+                      </div>
+                  </div>
+              </div>
+          </div>
 
-            <div class="section-label" style="margin-bottom: 15px;">SZENARIOMODUS</div>
-            <div class="action-buttons stagger-3" style="display: flex; flex-direction: column; gap: 12px;">
-                
-                <button onclick="app.startScenarioEditor()" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; color: #fff; transition: all 0.2s; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" onmouseover="this.style.background='rgba(16, 185, 129, 0.2)'; this.style.borderColor='rgba(16, 185, 129, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'; this.style.borderColor='rgba(16, 185, 129, 0.3)'; this.style.transform='translateY(0)';">
-                    <span style="display: flex; align-items: center; gap: 10px;">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#34d399" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                        Neues Szenario erstellen
-                    </span>
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
-                </button>
-                
-                <div class="split-load-wrapper" id="scenario-split-wrapper" style="display: flex; gap: 8px;">
-                    <button id="btn-scenario-load" class="load-filename-btn" onclick="document.getElementById('scenario-file-input').click()" style="flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255, 255, 255, 0.2)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255, 255, 255, 0.08)';">
-                        <span style="display: flex; align-items: center; gap: 10px;">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" id="scenario-load-icon"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-                            <span id="scenario-load-text" style="display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;">Szenario laden</span>
-                        </span>
-                    </button>
-                    <button id="btn-scenario-confirm" class="load-confirm-btn scenario" style="background: rgba(16, 185, 129, 0.9); border: 1px solid #10b981; border-radius: 12px; padding: 0 20px; color: white; font-weight: bold; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);" onclick="app.confirmLoad('scenario')">Laden</button>
-                </div>
+          <div id="tab-sensable" class="home-tab-content active">
+              <div style="display: flex; flex-direction: column;">
+                  <div style="margin-bottom: 40px;">
+                      <div class="home-title-large" style="background: linear-gradient(90deg, #ffffff 0%, #60a5fa 50%, #ffffff 100%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">SensAble</div>
+                      <div class="home-subtitle" style="font-size: 14px; margin-bottom: 0;">Interaktive Lösung für inklusive Raumplanung<br><br>Diese Webanwendung ist Teil des Projekts ELMeKS.digital.</div>
+                      <div class="mobile-warning">
+                          <strong style="color: #f59e0b; display: block; margin-bottom: 4px;">Hinweis zur mobilen Nutzung</strong>
+                          Diese Anwendung ist für Desktop-PCs und die Bedienung mit Maus sowie Tastatur optimiert. Auf mobilen Geräten kann es zu starken Einschränkungen kommen.
+                      </div>
+                  </div>
+                  
+                  <div class="section-label" style="margin-bottom: 15px;">PLANUNGSMODUS</div>
+                  <div class="action-buttons" style="margin-bottom: 35px; display: flex; flex-direction: column; gap: 12px;">
+                      <button onclick="app.startStandardPlanner()" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; color: #fff; transition: all 0.2s; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" onmouseover="this.style.background='rgba(59, 130, 246, 0.2)'; this.style.borderColor='rgba(59, 130, 246, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(59, 130, 246, 0.1)'; this.style.borderColor='rgba(59, 130, 246, 0.3)'; this.style.transform='translateY(0)';">
+                          <span style="display: flex; align-items: center; gap: 10px;">
+                              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                              Neuen Raum planen
+                          </span>
+                          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
+                      </button>
+                      
+                      <div class="split-load-wrapper" id="planner-split-wrapper" style="display: flex; gap: 8px;">
+                          <button id="btn-planner-load" class="load-filename-btn" onclick="document.getElementById('file-input').click()" style="flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255, 255, 255, 0.2)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255, 255, 255, 0.08)';">
+                              <span style="display: flex; align-items: center; gap: 10px;">
+                                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" id="planner-load-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                                  <span id="planner-load-text" style="display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;">Plan laden</span>
+                              </span>
+                          </button>
+                          <button id="btn-planner-confirm" class="load-confirm-btn planner" style="background: rgba(59, 130, 246, 0.9); border: 1px solid #3b82f6; border-radius: 12px; padding: 0 20px; color: white; font-weight: bold; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);" onclick="app.confirmLoad('planner')">Laden</button>
+                      </div>
 
-                <button onclick="app.startTutorial('editor')" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: #9ca3af; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255, 255, 255, 0.2)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'; this.style.color='#9ca3af'; this.style.borderColor='rgba(255, 255, 255, 0.08)';">
-                    <span style="display: flex; align-items: center; gap: 10px;">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                        Tutorial: Szenariomodus
-                    </span>
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
-                </button>
-            </div>
-        </div>
+                      <button onclick="app.startTutorial('planner')" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: #9ca3af; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255, 255, 255, 0.2)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'; this.style.color='#9ca3af'; this.style.borderColor='rgba(255, 255, 255, 0.08)';">
+                          <span style="display: flex; align-items: center; gap: 10px;">
+                              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                              Tutorial: Planer
+                          </span>
+                          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
+                      </button>
+                  </div>
+              </div>
+              
+              <div style="display: flex; flex-direction: column; gap: 30px;">
+                  <div class="feature-box" style="margin: 0;">
+                      <div class="section-label">Steuerung & Shortcuts</div>
+                      <ul class="feature-list">
+                          <li class="feature-item">
+                              <div class="icon-box" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg></div>
+                              <div>
+                                  <strong>Objekt bewegen</strong>
+                                  <span style="color:#9ca3af;">Linke Maustaste gedrückt halten & ziehen.</span>
+                              </div>
+                          </li>
+                          <li class="feature-item">
+                              <div class="icon-box" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
+                              <div>
+                                  <strong>Ansicht & Rotation</strong>
+                                  <span style="color:#9ca3af;">Rechtsklick für Kamera. Taste <span class="key-badge">R</span> für Objekte.</span>
+                              </div>
+                          </li>
+                          <li class="feature-item">
+                              <div class="icon-box" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+                              <div>
+                                  <strong>Kamera-Zoom</strong>
+                                  <span style="color:#9ca3af;">Mausrad drehen oder Touchpad-Pinch.</span>
+                              </div>
+                          </li>
+                          <li class="feature-item">
+                              <div class="icon-box" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+                              <div>
+                                  <strong>Löschen</strong>
+                                  <span style="color:#9ca3af;">Objekt wählen und <span class="key-badge">Entf</span> drücken.</span>
+                              </div>
+                          </li>
+                          <li class="feature-item">
+                              <div class="icon-box" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 10h10a8 8 0 0 1 8 8v2M3 10l6 6m-6-6l6-6"/></svg></div>
+                              <div>
+                                  <strong>Rückgängig machen</strong>
+                                  <span style="color:#9ca3af;">Letzte Aktion mit <span class="key-badge">Strg</span>+<span class="key-badge">Z</span> widerrufen.</span>
+                              </div>
+                          </li>
+                          <li class="feature-item">
+                              <div class="icon-box" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1); border-color: rgba(96, 165, 250, 0.2);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+                              <div>
+                                  <strong>Objekt-Fokus</strong>
+                                  <span style="color:#9ca3af;">Doppelklick zentriert die Kamera auf ein Objekt.</span>
+                              </div>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
 
-        <div class="home-middle stagger-3" style="display: flex; flex-direction: column; gap: 24px;">
-            
-            <div class="feature-box" style="margin: 0;">
-                <div class="section-label">Allgemein & Support</div>
-                <div style="display: flex; gap: 12px;">
-                    <button onclick="document.getElementById('pwa-modal').classList.add('active')" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 12px; font-weight: 500;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        App installieren
-                    </button>
-                    <button onclick="app.toggleChatbot()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 12px; font-weight: 500;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                        Chat-Support
-                    </button>
-                </div>
-            </div>
+          <div id="tab-editor" class="home-tab-content">
+              <div style="display: flex; flex-direction: column;">
+                  <div style="margin-bottom: 40px;">
+                      <div class="home-title-large" style="background: linear-gradient(90deg, #ffffff 0%, #34d399 50%, #ffffff 100%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">SensAble Editor</div>
+                      <div class="home-subtitle" style="font-size: 14px; margin-bottom: 0;">Erstellen Sie eigene Herausforderungen<br><br>Szenariomodus zur Überprüfung von Barrieren.</div>
+                  </div>
+                  
+                  <div class="section-label" style="margin-bottom: 15px;">SZENARIOMODUS</div>
+                  <div class="action-buttons" style="display: flex; flex-direction: column; gap: 12px;">
+                      <button onclick="app.startScenarioEditor()" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; color: #fff; transition: all 0.2s; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" onmouseover="this.style.background='rgba(16, 185, 129, 0.2)'; this.style.borderColor='rgba(16, 185, 129, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'; this.style.borderColor='rgba(16, 185, 129, 0.3)'; this.style.transform='translateY(0)';">
+                          <span style="display: flex; align-items: center; gap: 10px;">
+                              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#34d399" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                              Neues Szenario erstellen
+                          </span>
+                          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
+                      </button>
+                      
+                      <div class="split-load-wrapper" id="scenario-split-wrapper" style="display: flex; gap: 8px;">
+                          <button id="btn-scenario-load" class="load-filename-btn" onclick="document.getElementById('scenario-file-input').click()" style="flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255, 255, 255, 0.2)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255, 255, 255, 0.08)';">
+                              <span style="display: flex; align-items: center; gap: 10px;">
+                                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" id="scenario-load-icon"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                                  <span id="scenario-load-text" style="display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;">Szenario laden</span>
+                              </span>
+                          </button>
+                          <button id="btn-scenario-confirm" class="load-confirm-btn scenario" style="background: rgba(16, 185, 129, 0.9); border: 1px solid #10b981; border-radius: 12px; padding: 0 20px; color: white; font-weight: bold; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);" onclick="app.confirmLoad('scenario')">Laden</button>
+                      </div>
 
-            <div class="feature-box" style="margin: 0;">
-                <div class="section-label">Barrierefreiheit & Anzeige</div>
-                <div class="settings-mini" style="background: transparent; padding: 0; border: none;">
-                    <div class="mini-row" style="margin-bottom: 12px;">
-                        <span style="color:#d1d5db;">Hochkontrast-Modus</span>
-                        <label class="switch"><input type="checkbox" id="start-high-contrast" onchange="app.updateSettings()"><span class="slider"></span></label>
-                    </div>
-                    <div class="mini-row" style="margin-bottom: 12px;">
-                        <span style="color:#d1d5db;">Vorlesemodus (Hover)</span>
-                        <label class="switch"><input type="checkbox" id="start-read-aloud" onchange="app.updateSettings()"><span class="slider"></span></label>
-                    </div>
-                    <div class="mini-row" style="margin: 0;">
-                        <span style="color:#d1d5db;">Vollbildmodus</span>
-                        <label class="switch"><input type="checkbox" id="start-fullscreen" onchange="app.toggleFullscreen()"><span class="slider"></span></label>
-                    </div>
-                </div>
-            </div>
+                      <button onclick="app.startTutorial('editor')" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; color: #9ca3af; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255, 255, 255, 0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255, 255, 255, 0.2)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'; this.style.color='#9ca3af'; this.style.borderColor='rgba(255, 255, 255, 0.08)';">
+                          <span style="display: flex; align-items: center; gap: 10px;">
+                              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                              Tutorial: Szenariomodus
+                          </span>
+                          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
+                      </button>
+                  </div>
+              </div>
 
-            <div class="feature-box stagger-4" style="margin: 0;">
-                <div class="section-label">Steuerung & Shortcuts</div>
-                <ul class="feature-list">
-                    <li class="feature-item">
-                        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg></div>
-                        <div>
-                            <strong>Objekt bewegen</strong>
-                            <span style="color:#9ca3af;">Linke Maustaste gedrückt halten & ziehen.</span>
-                        </div>
-                    </li>
-                    <li class="feature-item">
-                        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
-                        <div>
-                            <strong>Ansicht & Rotation</strong>
-                            <span style="color:#9ca3af;">Rechtsklick für Kamera. Taste <span class="key-badge">R</span> für Objekte.</span>
-                        </div>
-                    </li>
-                    <li class="feature-item">
-                        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-                        <div>
-                            <strong>Kamera-Zoom</strong>
-                            <span style="color:#9ca3af;">Mausrad drehen oder Touchpad-Pinch.</span>
-                        </div>
-                    </li>
-                    <li class="feature-item">
-                        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
-                        <div>
-                            <strong>Löschen</strong>
-                            <span style="color:#9ca3af;">Objekt wählen und <span class="key-badge">Entf</span> drücken.</span>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+              <div style="display: flex; flex-direction: column; gap: 30px;">
+                  <div class="feature-box" style="margin: 0;">
+                      <div class="section-label">Steuerung & Shortcuts</div>
+                      <ul class="feature-list">
+                          <li class="feature-item">
+                              <div class="icon-box" style="color: #10b981; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg></div>
+                              <div>
+                                  <strong>Objekt bewegen</strong>
+                                  <span style="color:#9ca3af;">Linke Maustaste gedrückt halten & ziehen.</span>
+                              </div>
+                          </li>
+                          <li class="feature-item">
+                              <div class="icon-box" style="color: #10b981; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
+                              <div>
+                                  <strong>Ansicht & Rotation</strong>
+                                  <span style="color:#9ca3af;">Rechtsklick für Kamera. Taste <span class="key-badge">R</span> für Objekte.</span>
+                              </div>
+                          </li>
+                          <li class="feature-item">
+                              <div class="icon-box" style="color: #10b981; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+                              <div>
+                                  <strong>Kamera-Zoom</strong>
+                                  <span style="color:#9ca3af;">Mausrad drehen oder Touchpad-Pinch.</span>
+                              </div>
+                          </li>
+                          <li class="feature-item">
+                              <div class="icon-box" style="color: #10b981; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+                              <div>
+                                  <strong>Löschen</strong>
+                                  <span style="color:#9ca3af;">Objekt wählen und <span class="key-badge">Entf</span> drücken.</span>
+                              </div>
+                          </li>
+                          <li class="feature-item">
+                              <div class="icon-box" style="color: #10b981; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 10h10a8 8 0 0 1 8 8v2M3 10l6 6m-6-6l6-6"/></svg></div>
+                              <div>
+                                  <strong>Rückgängig machen</strong>
+                                  <span style="color:#9ca3af;">Letzte Aktion mit <span class="key-badge">Strg</span>+<span class="key-badge">Z</span> widerrufen.</span>
+                              </div>
+                          </li>
+                          <li class="feature-item">
+                              <div class="icon-box" style="color: #10b981; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+                              <div>
+                                  <strong>Objekt-Fokus</strong>
+                                  <span style="color:#9ca3af;">Doppelklick zentriert die Kamera auf ein Objekt.</span>
+                              </div>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
 
-            <div class="feature-box" style="margin-top: auto; margin-bottom: 0;">
-                <div class="section-label">Kontakt & Rechtliches</div>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <a href="mailto:dominik.toepper@tu-dresden.de" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #d1d5db; text-decoration: none; font-size: 13px; font-weight: 500; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
-                        <span>Kontakt</span>
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    </a>
-                    <div style="display: flex; gap: 10px;">
-                        <button onclick="document.getElementById('project-info-modal').style.display = 'flex'" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 12px; font-weight: 500;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                            ELMeKS.digital
-                        </button>
-                        <button onclick="document.getElementById('privacy-modal').style.display = 'flex'" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 12px; font-weight: 500;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                            Impressum
-                        </button>
-                    </div>
-                </div>
-            </div>
+          <div id="tab-practice" class="home-tab-content">
+              <div style="display: flex; flex-direction: column;">
+                  <div style="margin-bottom: 40px;">
+                      <div class="home-title-large" style="background: linear-gradient(90deg, #ffffff 0%, #facc15 50%, #ffffff 100%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">SensAble Practice</div>
+                      <div class="home-subtitle" style="font-size: 14px; margin-bottom: 0;">Vertiefen Sie Ihr Wissen mit unseren interaktiven Lernmodulen.</div>
+                  </div>
+                  
+                  <div class="section-label" style="margin-bottom: 15px;">WISSEN & TRAINING</div>
+                  <div class="module-list compact-module" id="homescreen-module-list" style="margin-bottom: 15px; min-height: 180px;">
+                      
+                      <div class="module-page-container" data-page="1" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('hoeren')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></div>
+                              <div class="module-content"><h4>Hörschädigung</h4><p>Auswirkungen & inklusive Didaktik</p></div>
+                          </div>
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('sehen')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></div>
+                              <div class="module-content"><h4>Sehbeeinträchtigung</h4><p>Barrierefreie Raumgestaltung</p></div>
+                          </div>
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('tactonom')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></div>
+                              <div class="module-content"><h4>Tactonom</h4><p>Interaktives Lernen (taktil & audio)</p></div>
+                          </div>
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('ava')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="M8 10h.01"></path><path d="M12 10h.01"></path><path d="M16 10h.01"></path></svg></div>
+                              <div class="module-content"><h4>AVA</h4><p>Live-Untertitel für Konferenzen</p></div>
+                          </div>
+                      </div>
 
-        </div>
+                      <div class="module-page-container" data-page="2" style="display: none; grid-template-columns: 1fr 1fr; gap: 12px;">
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('av1')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg></div>
+                              <div class="module-content"><h4>AV1 Roboter</h4><p>Gemeinsames Lernen bei Abwesenheit</p></div>
+                          </div>
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('elevenlabs')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg></div>
+                              <div class="module-content"><h4>ElevenLabs</h4><p>KI-gestützte Stimmgenerierung</p></div>
+                          </div>
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('geogebra')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 22 2 22"></polygon></svg></div>
+                              <div class="module-content"><h4>GeoGebra</h4><p>Dynamische Mathematik visuell veranschaulicht</p></div>
+                          </div>
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('rayban')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="4"></circle><circle cx="18" cy="12" r="4"></circle><line x1="10" y1="12" x2="14" y2="12"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line></svg></div>
+                              <div class="module-content"><h4>Meta Ray Ban</h4><p>Smarte Brillen mit KI-Assistenz</p></div>
+                          </div>
+                      </div>
 
-        <div class="home-right stagger-5">
-            <div class="section-label" style="margin-bottom: 15px;">WISSEN & TRAINING</div>
-            
-            <p style="font-size: 12px; color: #9ca3af; line-height: 1.5; margin-bottom: 20px;">Vertiefen Sie Ihr Wissen mit unseren interaktiven Lernmodulen. Weitere Inhalte folgen in Kürze.</p>
-            
-            <div class="module-list" id="homescreen-module-list" style="margin-bottom: 15px; min-height: 380px;">
-                
-                <div class="module-page-container" data-page="1" style="display: flex; flex-direction: column; gap: 15px;">
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('hoeren')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>Hörschädigung</h4>
-                            <p>Grundlagen, Auswirkungen und inklusive Didaktik im Raum</p>
-                        </div>
-                    </div>
+                      <div class="module-page-container" data-page="3" style="display: none; grid-template-columns: 1fr 1fr; gap: 12px;">
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('levumi')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+                              <div class="module-content"><h4>Levumi</h4><p>Plattform zur Lernverlaufsdiagnostik</p></div>
+                          </div>
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('zebis')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+                              <div class="module-content"><h4>zebis.digital</h4><p>Barrierefreie digitale Arbeitsblätter</p></div>
+                          </div>
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('sozio')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div>
+                              <div class="module-content"><h4>Sozio-emotionale Belastung</h4><p>Schaffung sicherer Räume</p></div>
+                          </div>
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('classroom')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div>
+                              <div class="module-content"><h4>Classroom Management</h4><p>Führung von Lerngruppen</p></div>
+                          </div>
+                      </div>
 
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('sehen')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>Sehbeeinträchtigung</h4>
-                            <p>Medizinische Ursachen und barrierefreie Raumgestaltung</p>
-                        </div>
-                    </div>
+                      <div class="module-page-container" data-page="4" style="display: none; grid-template-columns: 1fr 1fr; gap: 12px;">
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('kommunikation')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+                              <div class="module-content"><h4>Kommunikation & Kooperation</h4><p>Multiprofessionelle Elternarbeit</p></div>
+                          </div>
+                          <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('motorik')">
+                              <div class="module-icon" style="color: #eab308; background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.2);"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></div>
+                              <div class="module-content"><h4>Motorik</h4><p>Alternative Eingabegeräte nutzen</p></div>
+                          </div>
+                          <div class="module-card" style="opacity: 0.6; cursor: default;">
+                              <div class="module-icon" style="color: #6b7280;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
+                              <div class="module-content"><h4>Book Creator</h4><p>Interaktive E-Books gestalten</p><span class="module-status status-locked">Demnächst</span></div>
+                          </div>
+                          <div class="module-card" style="opacity: 0.6; cursor: default;">
+                              <div class="module-icon" style="color: #6b7280;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg></div>
+                              <div class="module-content"><h4>Assistive Technologien</h4><p>Digitale Hilfsmittel einsetzen</p><span class="module-status status-locked">Demnächst</span></div>
+                          </div>
+                      </div>
+                  </div>
 
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('tactonom')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>Tactonom</h4>
-                            <p>Interaktives Lernen mit taktilen Grafiken und Audio-Feedback</p>
-                        </div>
-                    </div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 5px;">
+                      <button onclick="changeHomescreenPage(-1)" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #d1d5db; padding: 6px 16px; border-radius: 6px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='rgba(255,255,255,0.2)';" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.borderColor='rgba(255,255,255,0.1';">
+                          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                      </button>
+                      <span id="homescreen-module-page-indicator" style="font-size: 11px; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Seite 1 von 4</span>
+                      <button onclick="changeHomescreenPage(1)" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #d1d5db; padding: 6px 16px; border-radius: 6px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='rgba(255,255,255,0.2)';" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.borderColor='rgba(255,255,255,0.1)';">
+                          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                      </button>
+                  </div>
 
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('ava')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="M8 10h.01"></path><path d="M12 10h.01"></path><path d="M16 10h.01"></path></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>AVA</h4>
-                            <p>Live-Untertitel und Transkriptionen für Videokonferenzen und Treffen</p>
-                        </div>
-                    </div>
-                </div>
+                  <script>
+                      if (typeof window.currentHomeModulePage === 'undefined') {
+                          window.currentHomeModulePage = 1;
+                          window.totalHomeModulePages = 4;
+                      }
+                      
+                      function changeHomescreenPage(delta) {
+                          window.currentHomeModulePage += delta;
+                          
+                          if (window.currentHomeModulePage < 1) window.currentHomeModulePage = 1;
+                          if (window.currentHomeModulePage > window.totalHomeModulePages) window.currentHomeModulePage = window.totalHomeModulePages;
+                          
+                          const pages = document.querySelectorAll('.module-page-container');
+                          pages.forEach(page => page.style.display = 'none');
+                          
+                          const targetPage = document.querySelector('.module-page-container[data-page="' + window.currentHomeModulePage + '"]');
+                          if (targetPage) targetPage.style.display = 'grid';
+                          
+                          document.getElementById('homescreen-module-page-indicator').innerText = 'Seite ' + window.currentHomeModulePage + ' von ' + window.totalHomeModulePages;
+                      }
+                  </script>
+              </div>
 
-                <div class="module-page-container" data-page="2" style="display: none; flex-direction: column; gap: 15px;">
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('av1')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>AV1 Telepräsenzroboter</h4>
-                            <p>Ermöglicht abwesenden Schulkindern das gemeinsame Lernen und unterstützt die Wiedereingliederung.</p>
-                        </div>
-                    </div>
+              <div style="display: flex; flex-direction: column; gap: 30px;">
+                  <button onclick="document.getElementById('literature-modal').style.display = 'flex'" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 16px 20px; background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: 12px; color: #fff; font-size: 14px; font-weight: 600; transition: all 0.2s; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" onmouseover="this.style.background='rgba(234, 179, 8, 0.2)'; this.style.borderColor='rgba(234, 179, 8, 0.5)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(234, 179, 8, 0.1)'; this.style.borderColor='rgba(234, 179, 8, 0.3)'; this.style.transform='translateY(0)';">
+                      <span style="display: flex; align-items: center; gap: 10px;">
+                          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#facc15" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                          Literaturempfehlungen ansehen
+                      </span>
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
+                  </button>
+              </div>
+          </div>
 
-                    <div class="module-card" style="opacity: 0.6; cursor: default;">
-                        <div class="module-icon" style="color: #6b7280;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>Book Creator</h4>
-                            <p>Interaktive und multimediale E-Books für den inklusiven Unterricht gestalten</p>
-                            <span class="module-status status-locked">Demnächst</span>
-                        </div>
-                    </div>
+          <div id="tab-support" class="home-tab-content">
+              <div style="display: flex; flex-direction: column;">
+                  <div style="margin-bottom: 40px;">
+                      <div class="home-title-large" style="background: linear-gradient(90deg, #ffffff 0%, #9ca3af 50%, #ffffff 100%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Support & Kontakt</div>
+                      <div class="home-subtitle" style="font-size: 14px; margin-bottom: 0;">Allgemeine Hilfe, App-Installation und rechtliche Hinweise.</div>
+                  </div>
+                  
+                  <div class="feature-box" style="margin: 0; margin-bottom: 40px;">
+                      <div class="section-label">Allgemein & Support</div>
+                      <div style="display: flex; gap: 12px;">
+                          <button onclick="document.getElementById('pwa-modal').classList.add('active')" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)';">
+                              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                              App installieren (Offline Modus)
+                          </button>
+                          <button onclick="app.toggleChatbot()" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)';">
+                              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                              KI Chat-Support
+                          </button>
+                      </div>
+                  </div>
 
-                    <div class="module-card" style="opacity: 0.6; cursor: default;">
-                        <div class="module-icon" style="color: #6b7280;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>Assistive Technologien</h4>
-                            <p>Digitale und physische Hilfsmittel richtig im Unterricht einsetzen</p>
-                            <span class="module-status status-locked">Demnächst</span>
-                        </div>
-                    </div>
-                </div>
+                  <div class="feature-box" style="margin: 0;">
+                      <div class="section-label">Kontakt & Rechtliches</div>
+                      <div style="display: flex; flex-direction: column; gap: 12px;">
+                          <a href="mailto:dominik.toepper@tu-dresden.de" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #d1d5db; text-decoration: none; font-size: 13px; font-weight: 500; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
+                              <span style="display: flex; align-items: center; gap: 8px;">
+                                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                  Entwickler-Kontakt (E-Mail)
+                              </span>
+                              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                          </a>
+                          <div style="display: flex; gap: 12px;">
+                              <button onclick="document.getElementById('project-info-modal').style.display = 'flex'" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
+                                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                  Über ELMeKS.digital
+                              </button>
+                              <button onclick="document.getElementById('privacy-modal').style.display = 'flex'" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #d1d5db; transition: all 0.2s; cursor: pointer; font-size: 13px; font-weight: 500;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
+                                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                  Impressum & DSGVO
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
 
-                <div class="module-page-container" data-page="3" style="display: none; flex-direction: column; gap: 15px;">
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('elevenlabs')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>ElevenLabs</h4>
-                            <p>KI-gestützte Stimmgenerierung für barrierefreie Audiomaterialien</p>
-                        </div>
-                    </div>
+              <div style="display: flex; flex-direction: column;">
+                  <div class="feature-box" style="margin: 0; background: rgba(255,255,255,0.02); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                      <div class="section-label">Häufige Fragen (FAQ)</div>
+                      <div style="display: flex; flex-direction: column; gap: 20px;">
+                          <div>
+                              <strong style="color: white; font-size: 13px; display: block; margin-bottom: 4px;">Wo werden meine Raumpläne gespeichert?</strong>
+                              <span style="color: #9ca3af; font-size: 12px; line-height: 1.5;">SensAble speichert aus Datenschutzgründen nichts auf externen Servern. Wenn Sie einen Plan speichern, wird dieser lokal als .json Datei auf Ihr Gerät heruntergeladen.</span>
+                          </div>
+                          <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.05); margin: 0;">
+                          <div>
+                              <strong style="color: white; font-size: 13px; display: block; margin-bottom: 4px;">Kann ich die App ohne Internet nutzen?</strong>
+                              <span style="color: #9ca3af; font-size: 12px; line-height: 1.5;">Ja. Sobald Sie die App über den Button "App installieren" in Ihrem Browser als PWA hinzugefügt haben, können Sie den Planer auch komplett offline aufrufen.</span>
+                          </div>
+                          <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.05); margin: 0;">
+                          <div>
+                              <strong style="color: white; font-size: 13px; display: block; margin-bottom: 4px;">Wie aktiviere ich die Vorlesefunktion?</strong>
+                              <span style="color: #9ca3af; font-size: 12px; line-height: 1.5;">Klicken Sie oben rechts auf das "Anzeige" Zahnrad. Aktivieren Sie den "Vorlesemodus". Sobald Sie nun mit der Maus über Menüs oder Objekte fahren, werden diese vorgelesen.</span>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
 
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('geogebra')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 22 2 22"></polygon></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>GeoGebra</h4>
-                            <p>Dynamische Mathematik zur visuellen Veranschaulichung abstrakter Konzepte</p>
-                        </div>
-                    </div>
-
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('rayban')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="4"></circle><circle cx="18" cy="12" r="4"></circle><line x1="10" y1="12" x2="14" y2="12"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>Meta Ray Ban</h4>
-                            <p>Smarte Brillen mit KI-Assistenz für visuelle Unterstützung im Alltag</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="module-page-container" data-page="4" style="display: none; flex-direction: column; gap: 15px;">
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('levumi')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>Levumi</h4>
-                            <p>Plattform zur formativen Lernverlaufsdiagnostik und Förderung</p>
-                        </div>
-                    </div>
-
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('zebis')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>zebis.digital</h4>
-                            <p>Erstellung und Nutzung barrierefreier digitaler Arbeitsblätter (OER)</p>
-                        </div>
-                    </div>
-
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('sozio')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>Sozio-emotionale Belastung</h4>
-                            <p>Umgang mit Verhaltensauffälligkeiten und Schaffung sicherer Räume</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="module-page-container" data-page="5" style="display: none; flex-direction: column; gap: 15px;">
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('classroom')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>Classroom Management</h4>
-                            <p>Proaktive und inklusive Führung von Lerngruppen durch Struktur</p>
-                        </div>
-                    </div>
-
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('kommunikation')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>Kommunikation & Kooperation</h4>
-                            <p>Multiprofessionelle Teams und ressourcenorientierte Elternarbeit</p>
-                        </div>
-                    </div>
-
-                    <div class="module-card" style="cursor: pointer;" onclick="openLearningModule('motorik')">
-                        <div class="module-icon" style="color: #10b981;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
-                        </div>
-                        <div class="module-content">
-                            <h4>Motorische Beeinträchtigungen</h4>
-                            <p>Physische Barrierefreiheit und alternative digitale Eingabegeräte</p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 5px;">
-                <button onclick="changeHomescreenPage(-1)" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #d1d5db; padding: 6px 16px; border-radius: 6px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='rgba(255,255,255,0.2)';" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.borderColor='rgba(255,255,255,0.1';">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-                <span id="homescreen-module-page-indicator" style="font-size: 11px; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Seite 1 von 5</span>
-                <button onclick="changeHomescreenPage(1)" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #d1d5db; padding: 6px 16px; border-radius: 6px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='rgba(255,255,255,0.2)';" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.borderColor='rgba(255,255,255,0.1)';">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </button>
-            </div>
-
-            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.05); margin: 0 0 15px 0;">
-
-            <button onclick="document.getElementById('literature-modal').style.display = 'flex'" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 12px 16px; margin-bottom: 0; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #d1d5db; font-size: 13px; font-weight: 500; transition: all 0.2s; cursor: pointer; text-align: left;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#fff'; this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.color='#d1d5db'; this.style.borderColor='rgba(255,255,255,0.08)'">
-                <span>Literaturempfehlungen</span>
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-            </button>
-
-            <script>
-                if (typeof window.currentHomeModulePage === 'undefined') {
-                    window.currentHomeModulePage = 1;
-                    window.totalHomeModulePages = 5;
-                }
-                
-                function changeHomescreenPage(delta) {
-                    window.currentHomeModulePage += delta;
-                    
-                    if (window.currentHomeModulePage < 1) window.currentHomeModulePage = 1;
-                    if (window.currentHomeModulePage > window.totalHomeModulePages) window.currentHomeModulePage = window.totalHomeModulePages;
-                    
-                    const pages = document.querySelectorAll('.module-page-container');
-                    pages.forEach(page => page.style.display = 'none');
-                    
-                    const targetPage = document.querySelector('.module-page-container[data-page="' + window.currentHomeModulePage + '"]');
-                    if (targetPage) targetPage.style.display = 'flex';
-                    
-                    document.getElementById('homescreen-module-page-indicator').innerText = 'Seite ' + window.currentHomeModulePage + ' von ' + window.totalHomeModulePages;
-                }
-            </script>
-        </div>
-
+          <script>
+              function switchHomeTab(tabId, btn, bgColor) {
+                  // Schließe das Dropdown Menü beim Tab-Wechsel falls es offen ist
+                  document.getElementById('home-settings-menu').classList.remove('active');
+                  
+                  document.querySelectorAll('.home-tab-content').forEach(el => el.classList.remove('active'));
+                  document.querySelectorAll('.home-tab-btn').forEach(el => el.classList.remove('active'));
+                  document.getElementById(tabId).classList.add('active');
+                  btn.classList.add('active');
+                  
+                  document.getElementById('homescreen').style.background = 'radial-gradient(circle at 50% 50%, ' + bgColor + ' 0%, #000000 100%)';
+              }
+              
+              // Klick außerhalb des Dropdowns schließt es automatisch
+              document.addEventListener('click', function(event) {
+                  const menu = document.getElementById('home-settings-menu');
+                  const btn = document.querySelector('.home-settings-btn');
+                  if (menu && menu.classList.contains('active')) {
+                      if (!menu.contains(event.target) && !btn.contains(event.target)) {
+                          menu.classList.remove('active');
+                      }
+                  }
+              });
+          </script>
       </div>
     </div>
 
