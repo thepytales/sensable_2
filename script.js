@@ -297,7 +297,8 @@ let settings = {
     mouseSensitivity: 1.0,
     reducedMotion: false,
     fontScale: 1.0,
-    readAloud: false
+    readAloud: false,
+    showFPS: false
 };
 
 // Input State
@@ -726,14 +727,129 @@ function init() {
       setupAvatarButtons();
       setupOnScreenControls();
 
-      // --- NEU: Stats Diagnose-Tool einrichten ---
-      stats = new Stats();
-      stats.showPanel(0); // 0 = FPS, 1 = MS (Rechenzeit), 2 = MB (RAM)
-      stats.dom.style.position = 'absolute';
-      stats.dom.style.top = '60px'; // Schiebt es unter deine ELMeKS Top-Bar
-      stats.dom.style.left = '20px';
-      stats.dom.style.zIndex = '9999';
-      document.body.appendChild(stats.dom);
+      // --- NEU: Custom High-Res FPS Diagnose-Tool ---
+      window.app.fpsData = { frames: 0, lastTime: performance.now(), fps: 0, lastFrameTime: performance.now(), currentFrameMs: 0 };
+
+      const fpsContainer = document.createElement('div');
+      fpsContainer.id = 'fps-container';
+      fpsContainer.style.position = 'fixed';
+      fpsContainer.style.top = '80px';
+      fpsContainer.style.left = '24px';
+      fpsContainer.style.zIndex = '2147483647';
+      
+      // Edles Styling: Dunkelgrau, Blur, feiner Rahmen
+      fpsContainer.style.padding = '10px 16px'; 
+      fpsContainer.style.borderRadius = '8px';
+      fpsContainer.style.backgroundColor = 'rgba(30, 30, 30, 0.85)';
+      fpsContainer.style.backdropFilter = 'blur(12px)';
+      fpsContainer.style.webkitBackdropFilter = 'blur(12px)';
+      fpsContainer.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)';
+      fpsContainer.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+      fpsContainer.style.fontFamily = "'Inter', sans-serif";
+      fpsContainer.style.display = 'none'; 
+      fpsContainer.style.minWidth = '140px'; 
+      
+      // DRAG & DROP Styling
+      fpsContainer.style.cursor = 'grab';
+      fpsContainer.style.userSelect = 'none';
+      fpsContainer.style.webkitUserSelect = 'none';
+      
+      // Nativ gestochen scharfes HTML mit Dropdown-Details
+      fpsContainer.innerHTML = `
+          <div id="fps-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+              <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                  <span style="font-size: 11px; color: #a1a1aa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; font-weight: 600;">Performance</span>
+                  <div style="display: flex; align-items: baseline; gap: 4px;">
+                      <span id="fps-value" style="font-size: 28px; color: #fbbf24; font-weight: 700; line-height: 1; text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);">0</span>
+                      <span style="font-size: 14px; color: #e4e4e7; font-weight: 600;">FPS</span>
+                  </div>
+              </div>
+              <div id="fps-toggle-icon" style="color: #a1a1aa; font-size: 10px; margin-left: 15px; transition: transform 0.3s ease;">▼</div>
+          </div>
+          
+          <div id="fps-details" style="display: none; flex-direction: column; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
+              <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                  <span style="color: #a1a1aa;">Frame Zeit</span>
+                  <span id="fps-ms" style="color: #e4e4e7; font-weight: 600;">0 ms</span>
+              </div>
+              <div id="fps-mem-row" style="display: flex; justify-content: space-between; font-size: 12px;">
+                  <span style="color: #a1a1aa;">Speicher (RAM)</span>
+                  <span id="fps-mem" style="color: #e4e4e7; font-weight: 600;">-- MB</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                  <span style="color: #a1a1aa;">Draw Calls</span>
+                  <span id="fps-draws" style="color: #e4e4e7; font-weight: 600;">0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                  <span style="color: #a1a1aa;">Polygone</span>
+                  <span id="fps-tris" style="color: #e4e4e7; font-weight: 600;">0</span>
+              </div>
+          </div>
+      `;
+      
+      document.body.appendChild(fpsContainer);
+
+      // --- TOGGLE LOGIK (Ausklappen) ---
+      let isFpsExpanded = false;
+      const headerEl = document.getElementById('fps-header');
+      const detailsEl = document.getElementById('fps-details');
+      const iconEl = document.getElementById('fps-toggle-icon');
+
+      headerEl.addEventListener('click', function(e) {
+          // Prüfen, ob der Nutzer nur gezogen (Drag) oder wirklich geklickt hat
+          if (dragOffsetHasMoved) return; 
+          
+          isFpsExpanded = !isFpsExpanded;
+          detailsEl.style.display = isFpsExpanded ? 'flex' : 'none';
+          iconEl.style.transform = isFpsExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+      });
+
+      // --- DRAG & DROP LOGIK ---
+      let isDragging = false;
+      let dragOffset = [0, 0];
+      let dragOffsetHasMoved = false; // Unterscheidet zwischen Klick und Drag
+
+      fpsContainer.addEventListener('mousedown', function(e) {
+          isDragging = true;
+          dragOffsetHasMoved = false;
+          fpsContainer.style.cursor = 'grabbing';
+          dragOffset = [fpsContainer.offsetLeft - e.clientX, fpsContainer.offsetTop - e.clientY];
+      });
+
+      document.addEventListener('mouseup', function() {
+          isDragging = false;
+          if (fpsContainer) fpsContainer.style.cursor = 'grab';
+      });
+
+      document.addEventListener('mousemove', function(e) {
+          if (isDragging && fpsContainer.style.display !== 'none') {
+              e.preventDefault();
+              dragOffsetHasMoved = true;
+              fpsContainer.style.left = (e.clientX + dragOffset[0]) + 'px';
+              fpsContainer.style.top  = (e.clientY + dragOffset[1]) + 'px';
+          }
+      });
+
+      fpsContainer.addEventListener('touchstart', function(e) {
+          isDragging = true;
+          dragOffsetHasMoved = false;
+          const touch = e.touches[0];
+          dragOffset = [fpsContainer.offsetLeft - touch.clientX, fpsContainer.offsetTop - touch.clientY];
+      }, { passive: false });
+
+      document.addEventListener('touchend', function() {
+          isDragging = false;
+      });
+
+      document.addEventListener('touchmove', function(e) {
+          if (isDragging && fpsContainer.style.display !== 'none') {
+              e.preventDefault();
+              dragOffsetHasMoved = true;
+              const touch = e.touches[0];
+              fpsContainer.style.left = (touch.clientX + dragOffset[0]) + 'px';
+              fpsContainer.style.top  = (touch.clientY + dragOffset[1]) + 'px';
+          }
+      }, { passive: false });
       // ------------------------------------------
 
       // Start App
@@ -1515,7 +1631,55 @@ function animate() {
     
     renderer.render(scene, camera); 
     
-    stats.update(); // <-- NEU: Hier updatet sich das Diagnose-Tool
+    // --- NEU: Custom High-Res FPS Berechnung mit Detail-Daten ---
+    if (window.app.fpsData) {
+        window.app.fpsData.frames++;
+        const now = performance.now();
+        
+        // Berechne Millisekunden für diesen speziellen Render-Frame
+        window.app.fpsData.currentFrameMs = now - (window.app.fpsData.lastFrameTime || now);
+        window.app.fpsData.lastFrameTime = now;
+
+        // Wir updaten die DOM-Texte absichtlich nur 1x pro Sekunde. 
+        // So flackern die Zahlen nicht unlesbar schnell!
+        if (now >= window.app.fpsData.lastTime + 1000) {
+            window.app.fpsData.fps = Math.round((window.app.fpsData.frames * 1000) / (now - window.app.fpsData.lastTime));
+            window.app.fpsData.frames = 0;
+            window.app.fpsData.lastTime = now;
+            
+            if (settings.showFPS) {
+                // Haupt-FPS
+                const fpsValEl = document.getElementById('fps-value');
+                if (fpsValEl) {
+                    fpsValEl.innerText = window.app.fpsData.fps;
+                    fpsValEl.style.color = window.app.fpsData.fps < 30 ? '#ef4444' : '#fbbf24';
+                    fpsValEl.style.textShadow = window.app.fpsData.fps < 30 ? '0 0 10px rgba(239, 68, 68, 0.3)' : '0 0 10px rgba(251, 191, 36, 0.3)';
+                }
+                
+                // Details aktualisieren
+                const msEl = document.getElementById('fps-ms');
+                if (msEl) {
+                    msEl.innerText = Math.round(window.app.fpsData.currentFrameMs) + ' ms';
+                    
+                    // Renderer Info (Draw Calls & Polygone aus Three.js)
+                    if (renderer && renderer.info) {
+                        document.getElementById('fps-draws').innerText = renderer.info.render.calls;
+                        document.getElementById('fps-tris').innerText = renderer.info.render.triangles.toLocaleString('de-DE');
+                    }
+                    
+                    // Memory Info (RAM-Nutzung, funktioniert nativ in Chromium-Browsern)
+                    if (performance && performance.memory) {
+                        const mb = Math.round(performance.memory.usedJSHeapSize / 1048576);
+                        document.getElementById('fps-mem').innerText = mb + ' MB';
+                    } else {
+                        // Wenn der Browser RAM auslesen blockiert, verstecken wir die ganze Zeile
+                        const memRow = document.getElementById('fps-mem-row');
+                        if (memRow) memRow.style.display = 'none';
+                    }
+                }
+            }
+        }
+    }
 }
 
 // Dummy Functions für Kompatibilität mit HTML Aufrufen
@@ -1762,18 +1926,12 @@ window.app.updateSettings = function() {
     const syncVal = (idApp, idHome, type='check') => {
         const elApp = document.getElementById(idApp);
         const elHome = document.getElementById(idHome);
-        
-        // FIX: Wenn das App-Element fehlt, Abbruch.
         if (!elApp) return false;
-        
-        // FIX: Wenn das Homescreen-Element (z.B. start-controls) im neuen Design nicht existiert,
-        // nehmen wir einfach den Wert direkt aus dem Einstellungs-Menü der App!
         let val;
         if (!elHome) {
             val = type === 'check' ? elApp.checked : elApp.value;
             return val;
         }
-        
         if (isHomeVisible) {
             val = type === 'check' ? elHome.checked : elHome.value;
             if (type === 'check') elApp.checked = val; else elApp.value = val;
@@ -1784,12 +1942,29 @@ window.app.updateSettings = function() {
         return val;
     };
 
-    // Jetzt funktioniert das Einlesen wieder korrekt!
     settings.controlsEnabled = syncVal('set-controls', 'start-controls');
     settings.mouseSensitivity = parseFloat(syncVal('set-rotate-speed', 'start-rotate-speed', 'val')) || 1.0;
     settings.reducedMotion = syncVal('set-reduced-motion', 'start-reduced-motion');
     const highContrast = syncVal('set-high-contrast', 'start-high-contrast');
     settings.readAloud = syncVal('set-read-aloud', 'start-read-aloud');
+    
+    // Checkbox-Werte auslesen (nur wenn sie im HTML existieren)
+    const fpsApp = document.getElementById('set-performance');
+    const fpsHome = document.getElementById('start-performance');
+    
+    if (isHomeVisible && fpsHome) {
+        settings.showFPS = fpsHome.checked;
+        if (fpsApp) fpsApp.checked = settings.showFPS;
+    } else if (!isHomeVisible && fpsApp) {
+        settings.showFPS = fpsApp.checked;
+        if (fpsHome) fpsHome.checked = settings.showFPS;
+    }
+
+    // SICHERER WRAPPER TOGGLE
+    const container = document.getElementById('fps-container');
+    if (container) {
+        container.style.display = settings.showFPS ? 'block' : 'none';
+    }
 
     document.body.className = document.body.className.replace(/filter-\w+/g, ''); 
     document.body.classList.remove('high-contrast');
@@ -1800,7 +1975,6 @@ window.app.updateSettings = function() {
     
     app.updateVisionEffects();
 
-    // Radikale Hochkontrast-Umschaltung für alle 3D Objekte
     if (window.app.applyHighContrast3D) {
         window.app.applyHighContrast3D(highContrast);
     }
@@ -1811,7 +1985,6 @@ window.app.updateSettings = function() {
         controls.enableDamping = !settings.reducedMotion;
     }
     
-    // Hier ist auch die Logik, die die Controls während der Simulation ausblendet
     const osc = document.getElementById('onscreen-controls');
     if(osc) {
         const simActive = isFirstPersonActive() || isVisionAnalysisMode;
@@ -2654,6 +2827,10 @@ window.app.exportPDF = async function() {
 
     // === 3. SCREENSHOT ===
     renderer.render(scene, camera);
+    
+    if (window.app.stats) {
+        window.app.stats.update();
+    }
     const imgData = renderer.domElement.toDataURL("image/jpeg", 0.95);
     const imgProps = doc.getImageProperties(imgData);
     const pdfWidth = 170;
@@ -3487,6 +3664,30 @@ function onWindowResize() { camera.aspect = window.innerWidth / window.innerHeig
 function onKeyDown(event) { 
     if (event.key === "Escape") app.exitSimulationMode(); 
     
+    // --- NEU: FPS Toggle (Shift + F) ---
+    if (event.shiftKey && (event.key === "F" || event.key === "f")) {
+        settings.showFPS = !settings.showFPS;
+        console.log("-> [Shift+F] gedrückt! FPS-Anzeige ist jetzt:", settings.showFPS); 
+        
+        const container = document.getElementById('fps-container');
+        if (container) {
+            container.style.setProperty('display', settings.showFPS ? 'block' : 'none', 'important');
+            
+            // Backup: Falls das interne Element sich weigert
+            if (window.app.stats && window.app.stats.dom) {
+                window.app.stats.dom.style.setProperty('display', 'block', 'important');
+                window.app.stats.dom.style.setProperty('opacity', '1', 'important');
+            }
+        }
+        
+        // UI Checkboxen im Menü synchronisieren
+        const fpsApp = document.getElementById('set-performance');
+        const fpsHome = document.getElementById('start-performance');
+        if (fpsApp) fpsApp.checked = settings.showFPS;
+        if (fpsHome) fpsHome.checked = settings.showFPS;
+    }
+    // -----------------------------------
+
     const canInteract = !isFirstPersonActive(); 
     if (selectedObjects.length > 0 && canInteract) { 
         const key = event.key.toLowerCase(); 
@@ -3502,6 +3703,7 @@ function onKeyDown(event) {
         switch(event.key) { case "ArrowUp": inputState.fwd = true; break; case "ArrowDown": inputState.bwd = true; break; case "ArrowLeft": inputState.left = true; break; case "ArrowRight": inputState.right = true; break; case "+": case "=": inputState.zoomIn = true; break; case "-": inputState.zoomOut = true; break; } 
     } 
 }
+
 function onKeyUp(event) { 
     if(settings.controlsEnabled) { 
         switch(event.key) { case "ArrowUp": inputState.fwd = false; break; case "ArrowDown": inputState.bwd = false; break; case "ArrowLeft": inputState.left = false; break; case "ArrowRight": inputState.right = false; break; case "+": case "=": inputState.zoomIn = false; break; case "-": inputState.zoomOut = false; break; } 

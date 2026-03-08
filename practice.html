@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SensAble Practice</title>
+    <meta name="theme-color" content="#3b82f6">
+    <style>
+      @font-face {
+        font-family: 'Inter';
+        src: url('./fonts/Inter-Regular.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Inter';
+        src: url('./fonts/Inter-Bold.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+      :root { 
+        --primary: #3b82f6; 
+        --text: #9ca3af;
+      }
+      body { 
+        margin: 0; overflow: hidden; 
+        font-family: 'Inter', sans-serif; 
+        color: var(--text); background: #0f1012; 
+        user-select: none; font-size: 14px;
+        -webkit-font-smoothing: antialiased;
+      }
+      
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+      .pwa-glass-box {
+          background: #18181b; 
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 20px;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+          overflow: hidden;
+          display: flex; flex-direction: column;
+      }
+      .pwa-header {
+          padding: 20px 30px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          display: flex; justify-content: space-between; align-items: center;
+          background: rgba(255,255,255,0.02);
+      }
+      .pwa-content { padding: 30px; color: #d1d5db; font-size: 14px; line-height: 1.6; }
+
+      details summary::-webkit-details-marker { display: none; }
+      details summary svg { transition: transform 0.3s ease; }
+      details[open] summary svg { transform: rotate(180deg); }
+    </style>
+  </head>
+  <body>
+
+    <div id="learning-module-modal" style="position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 10000; display: none; align-items: center; justify-content: center; pointer-events: auto;">
+      <div class="pwa-glass-box" style="width: 1100px; max-width: 98vw; height: 90vh; max-height: 900px; display: flex; flex-direction: column; background: #18181b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);">
+          <div class="pwa-header" style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border-radius: 16px 16px 0 0;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(253, 224, 71, 0.1); border: 1px solid rgba(253, 224, 71, 0.3); display: flex; align-items: center; justify-content: center; color: #fde047;">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                  </div>
+                  <h2 id="learning-module-title" style="margin: 0; font-size: 18px; font-weight: 600; color: #f3f4f6; letter-spacing: 0.5px;">Lernmodul</h2>
+              </div>
+              <button onclick="window.location.href='index.html?tab=practice'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #9ca3af; width: 36px; height: 36px; border-radius: 8px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.color='#9ca3af'">✕</button>
+          </div>
+          
+          <div class="pwa-content" style="flex-grow: 1; overflow-y: auto; padding: 40px; color: #d1d5db; line-height: 1.6; font-size: 15px; background: transparent;">
+              
+              <div id="module-content-assistive" class="learning-module-content" style="display:none;">
+                  <style>
+                    .crowding-sim {
+                        letter-spacing: -3px;
+                        line-height: 0.9;
+                    }
+                  </style>
+
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Assistive Technologien</h3>
+                      <p>Assistive Technologien umfassen spezifische Hard- und Softwareapplikationen, die entwickelt wurden, um funktionale Einschränkungen von Menschen mit Behinderungen zu kompensieren. Im bildungswissenschaftlichen Diskurs gelten sie als essenzielle Voraussetzung für die autonome Teilhabe am Unterricht.</p>
+                      <p>Die Implementierung erfordert eine evidenzbasierte Diagnostik. Es gilt das Prinzip des Person-Environment-Task-Matchings: Ein Hilfsmittel ist nur dann effektiv, wenn es präzise auf die motorischen, sensorischen und kognitiven Ressourcen der Lernenden abgestimmt ist.</p>
+                  </div>
+
+                  <div class="module-page" data-page="2" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktion: 1-Taster-Steuerung (Scanning)</h3>
+                      <p>Lernende mit schwersten motorischen Einschränkungen nutzen oft nur einen einzigen Taster (Switch) zur Steuerung des Computers. Das System scannt automatisch durch alle Optionen. Klicken Sie exakt in dem Moment auf "Taster auslösen", wenn das Modul "Pause" markiert ist, um die erforderliche kognitive Leistung und das präzise Timing dieser Technologie nachzuempfinden.</p>
+                      
+                      <div style="background: #111113; padding: 20px; border-radius: 8px; border: 1px solid #374151; margin-bottom: 20px; text-align: center;">
+                          <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 30px;">
+                              <div id="at-scan-1" style="width: 100px; height: 100px; background: #27272a; border: 2px solid #4b5563; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #d1d5db; font-weight: bold; transition: all 0.2s;">Mathematik</div>
+                              <div id="at-scan-2" style="width: 100px; height: 100px; background: #27272a; border: 2px solid #4b5563; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #d1d5db; font-weight: bold; transition: all 0.2s;">Deutsch</div>
+                              <div id="at-scan-3" style="width: 100px; height: 100px; background: #27272a; border: 2px solid #4b5563; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #d1d5db; font-weight: bold; transition: all 0.2s;">Pause</div>
+                              <div id="at-scan-4" style="width: 100px; height: 100px; background: #27272a; border: 2px solid #4b5563; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #d1d5db; font-weight: bold; transition: all 0.2s;">Sachkunde</div>
+                          </div>
+                          
+                          <div style="display: flex; justify-content: center; gap: 15px;">
+                              <button onclick="startSwitchScan()" style="background: #374151; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px;">Scan starten</button>
+                              <button onclick="pressSwitch()" style="background: #ef4444; color: white; border: 4px solid #b91c1c; padding: 15px 40px; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">Taster auslösen</button>
+                          </div>
+                      </div>
+                      
+                      <div id="at-scan-feedback" style="font-weight: bold; display: none; padding: 15px; border-radius: 6px; text-align: center;"></div>
+                  </div>
+
+                  <div class="module-page" data-page="3" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktion: Typografischer Editor (LRS-Assistenz)</h3>
+                      <p>Leseassistenzen (wie der Immersive Reader) gehören zu den wichtigsten integrativen Technologien. Der nachfolgende Textblock simuliert visuelles Crowding (starke Überlagerung von Buchstaben), wie es bei einer Lese-Rechtschreib-Störung die Decodierung massiv erschwert. Konfigurieren Sie die Typografie so, dass die Barrierefreiheit hergestellt wird.</p>
+                      
+                      <div style="display: flex; gap: 20px; margin-bottom: 25px;">
+                          <div style="flex: 1; display: flex; flex-direction: column; gap: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                              <div>
+                                  <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Schriftfamilie</label>
+                                  <select id="at-lrs-font" onchange="updateLRSPreview()" style="width: 100%; background: #27272a; color: white; border: 1px solid #4b5563; padding: 6px; border-radius: 4px; font-size: 13px; cursor: pointer;">
+                                      <option value="serif">Serife (Times New Roman)</option>
+                                      <option value="sans">Serifenlos (Inter, Arial)</option>
+                                  </select>
+                              </div>
+                              <div>
+                                  <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Hintergrundschema</label>
+                                  <select id="at-lrs-theme" onchange="updateLRSPreview()" style="width: 100%; background: #27272a; color: white; border: 1px solid #4b5563; padding: 6px; border-radius: 4px; font-size: 13px; cursor: pointer;">
+                                      <option value="harsh">Weißer Hintergrund (Grell)</option>
+                                      <option value="pastel">Pastellgelber Hintergrund (Weich)</option>
+                                      <option value="dark">Dunkelmodus (Kontrastreich)</option>
+                                  </select>
+                              </div>
+                          </div>
+                          <div style="flex: 1; display: flex; flex-direction: column; gap: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                              <div>
+                                  <div style="display: flex; justify-content: space-between; font-size: 12px; color: #9ca3af; margin-bottom: 5px;">
+                                      <span>Zeichenabstand</span>
+                                      <span id="at-lrs-val-space">-3px</span>
+                                  </div>
+                                  <input type="range" id="at-lrs-slider-space" min="-4" max="4" step="0.5" value="-3" oninput="updateLRSPreview()" style="width: 100%; cursor: pointer;">
+                              </div>
+                              <div>
+                                  <div style="display: flex; justify-content: space-between; font-size: 12px; color: #9ca3af; margin-bottom: 5px;">
+                                      <span>Zeilenhöhe</span>
+                                      <span id="at-lrs-val-height">0.9</span>
+                                  </div>
+                                  <input type="range" id="at-lrs-slider-height" min="0.8" max="2.5" step="0.1" value="0.9" oninput="updateLRSPreview()" style="width: 100%; cursor: pointer;">
+                              </div>
+                          </div>
+                      </div>
+                      
+                      <div id="at-lrs-text-container" class="crowding-sim" style="background: #ffffff; color: #000000; padding: 25px; border-radius: 4px; border-left: 4px solid #ef4444; font-family: 'Times New Roman', Times, serif; font-size: 16px; transition: all 0.3s;">
+                          Die systematische Anpassung von typografischen Leseparametern ist eine essenzielle Hauptfunktion moderner, inklusiver Lernumgebungen. Sie verhindert kognitive Überlastung.
+                      </div>
+
+                      <div id="at-lrs-editor-feedback" style="margin-top: 15px; font-weight: bold; color: #10b981; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 10px; border-radius: 6px; display: none; font-size: 14px;">Ausgezeichnete Parametrisierung. Die gewählte serifenlose Schrift, der erhöhte Zeichenabstand und der weichere Kontrast optimieren die visuelle Decodierung signifikant.</div>
+                  </div>
+
+                  <div class="module-page" data-page="4" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Ausblick</h3>
+                      <p>Die Bereitstellung assistiver Technologien ist ein zweidimensionaler Prozess. Einerseits muss die Hardware-Schnittstelle (wie die 1-Taster-Steuerung) diagnostisch fundiert ausgewählt werden. Andererseits obliegt es den Lehrkräften, digitale Lernressourcen und Leseeinstellungen so zu konfigurieren, dass sie von den Systemen fehlerfrei verarbeitet und von den Lernenden kognitiv erfasst werden können.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-hoeren" class="learning-module-content" style="display:none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Hörschädigung</h3>
+                      <p>In den folgenden Lerninhalten geht es darum, das Thema Hörschädigung zu erkunden. Sie werden relevante Begriffe kennenlernen sowie sich mit dem Konzept des Audiogramms vertraut machen. Dabei erfahren Sie, wie Hörgeschädigte ihre Umwelt anders wahrnehmen als Hörende und welche technischen Hilfsmittel es für die einzelnen Fälle der Hörschädigung gibt.</p>
+                      <p>In Deutschland leben schätzungsweise 80.000 Kinder mit stark eingeschränktem Gehör. Man unterscheidet dabei zwischen peripherer und zentraler Hörschädigung. Je nach spezifischer Ursache für die Hörschädigung gibt es verschiedene Möglichkeiten dem Hörverlust entgegenzuwirken bzw. das Hören zu ermöglichen. Die Ursachen werden deshalb in Schalleitungsschwerhörigkeit, Schallempfindungsschwerhörigkeit und der Auditiven Verarbeitungs- und Wahrnehmungsstörung (AVWS) unterschieden.</p>
+                      <p>Leider lässt sich selbst durch Hörhilfen der Hörverlust nicht komplett beheben.</p>
+                  </div>
+
+                  <div class="module-page" data-page="2" style="display:none; box-sizing: border-box;">
+                      <h3 style="color: white; margin-top: 0; letter-spacing: 0.5px;">Interaktive Aufgabe 1: Akustik-Mischer</h3>
+                      <p style="color: #9ca3af; line-height: 1.6;">Ziehe die Faktoren, die für eine gute Raumakustik und Inklusion förderlich sind, in die untere Box. (Tipp: Klicke auf dem Smartphone einfach auf die Boxen, anstatt zu ziehen).</p>
+                      
+                      <div style="background: rgba(0,0,0,0.5); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); box-sizing: border-box; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);">
+                          <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
+                              <span style="font-weight: 600; color: #d1d5db; letter-spacing: 0.5px; font-size: 13px; text-transform: uppercase;">Qualität der Lernumgebung</span>
+                              <span id="acoustic-score-text" style="font-weight: 700; color: #ef4444; font-size: 14px; background: rgba(239, 68, 68, 0.1); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.2); transition: all 0.3s ease;">0%</span>
+                          </div>
+                          <div style="width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
+                              <div id="acoustic-score-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #ef4444, #f87171); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px;"></div>
+                          </div>
+                      </div>
+
+                      <div id="drag-source" ondrop="dropAcoustic(event)" ondragover="allowDropAcoustic(event)" style="display: flex; flex-wrap: wrap; gap: 10px; min-height: 80px; padding: 20px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; margin-bottom: 25px; box-sizing: border-box;">
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-teppich" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Teppiche verlegen</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-uform" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Sitzordnung U-Form</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-tafel" data-val="-25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Zur Tafel sprechen</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-fm" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">FM-Anlage / Mikrofon</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-akustik" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Akustikdecke einbauen</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-licht" data-val="-25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Frontales Gegenlicht</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-hall" data-val="-25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Kahle Betonwände</div>
+                      </div>
+
+                      <strong style="color: #9ca3af; display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Ideales Klassenzimmer (Elemente hierher ziehen)</strong>
+                      <div id="drop-target" ondrop="dropAcoustic(event)" ondragover="allowDropAcoustic(event)" style="display: flex; flex-wrap: wrap; align-content: flex-start; gap: 10px; min-height: 140px; padding: 20px; background: linear-gradient(145deg, rgba(0,0,0,0.6), rgba(0,0,0,0.2)); border: 2px dashed rgba(156, 163, 175, 0.3); border-radius: 12px; box-sizing: border-box; box-shadow: inset 0 4px 15px rgba(0,0,0,0.5);">
+                      </div>
+
+                      <div id="acoustic-feedback" style="margin-top: 20px; font-weight: 500; font-size: 15px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; padding: 15px; border-radius: 8px; display: none; box-sizing: border-box; letter-spacing: 0.3px;">
+                          Perfekt! 100% erreicht. Diese Faktoren schaffen eine ideale und barrierefreie Lernumgebung.
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="3" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 2: Einordnung der Ursachen</h3>
+                      <p>Ordnen Sie die richtige medizinische Ursache/Bezeichnung zu.</p>
+                      <div style="margin-bottom: 15px;">
+                          <label style="display:block; font-size:13px; color:#9ca3af; margin-bottom:5px;">Störung liegt im Außen- oder Mittelohr (Trommelfell, Gehörknöchelchen).</label>
+                          <select class="hoeren-select" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor: pointer;">
+                              <option value="" disabled selected>Bitte wählen...</option>
+                              <option value="leitung">Schallleitungsschwerhörigkeit</option>
+                              <option value="empfindung">Schallempfindungsschwerhörigkeit</option>
+                              <option value="avws">AVWS</option>
+                          </select>
+                      </div>
+                      <div style="margin-bottom: 15px;">
+                          <label style="display:block; font-size:13px; color:#9ca3af; margin-bottom:5px;">Das Gehörte kann vom Gehirn nicht richtig verarbeitet werden, obwohl das Ohr intakt ist.</label>
+                          <select class="hoeren-select" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor: pointer;">
+                              <option value="" disabled selected>Bitte wählen...</option>
+                              <option value="leitung">Schallleitungsschwerhörigkeit</option>
+                              <option value="empfindung">Schallempfindungsschwerhörigkeit</option>
+                              <option value="avws">AVWS</option>
+                          </select>
+                      </div>
+                      <button onclick="checkHoerenSelect()" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Überprüfen</button>
+                      <div id="hoeren-select-feedback" style="margin-top: 15px; font-weight: bold; display: none;"></div>
+                  </div>
+
+                  <div class="module-page" data-page="4" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Wissensabfrage</h3>
+                      <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px;">
+                          <p style="font-weight: bold; color: white;">Welche Aussage über Hörschädigungen bei Kindern in Deutschland ist laut Text korrekt?</p>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="hq1" value="wrong"> Hörgeräte können den Hörverlust in der Regel vollständig beheben.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="hq1" value="correct"> Es gibt schätzungsweise 80.000 Kinder mit stark eingeschränktem Gehör.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="hq1" value="wrong"> AVWS ist eine periphere Störung des Außenohrs.</label>
+                          <button onclick="checkHoerenMC()" style="margin-top:10px; background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">Antworten</button>
+                          <div id="hq1-feedback" style="margin-top: 10px; font-weight: bold; display:none;"></div>
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="5" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Weitere Informationen</h3>
+                      <p>Wunderbar! Sie haben nun einen ausführlichen Einblick in das schulische Leben gehörloser Lernender erhalten. Sie kennen die Probleme, mit denen sie konfrontiert sind sowie ihre Ursachen, sodass sie dem nun mit Verständnis begegnen können und Ihre Schüler:innen dafür sensibilisieren können.</p>
+                      <p>Eine bisher wenig eingesetzte Methode zur Begegnung des Problems der Hörschädigung wurde in diesem Teilmodul noch nicht genannt: die Verwendung von Untertiteln im Unterricht. Wir empfehlen Ihnen, sich mit diesem Ansatz ausführlich in der Lerneinheit zur Echtzeit-Transkription (AVA) zu beschäftigen.</p>
+                      <p>Und vergessen Sie nicht: Inklusion sollte stets ganzheitlich gedacht werden - was einem Schüler mit Hörschädigung zugute kommt, kann auch einer hörenden Schülerin helfen!</p>
+                  </div>
+              </div>
+
+              <div id="module-content-sehen" class="learning-module-content" style="display:none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Sehbeeinträchtigung</h3>
+                      <p>In Deutschland wird nicht erhoben, wie viele blinde und sehbehinderte Menschen hier leben. Schätzungen zufolge gibt es ca. 1,2 Millionen betroffene Menschen (REHADAT). Lediglich 1% aller Schüler:innen zählen zu dieser Gruppe.</p>
+                      <p>Eine Unterscheidung der Begriffe Sehschädigung, Sehbehinderung und Blindheit ist wichtig. Eine Sehbehinderung bedeutet nicht immer eine komplette Einschränkung: Menschen mit vorangeschrittenen Krankheiten und Gesichtsfeld- oder Visuseinschränkungen können in bestimmten Bereichen sehen. So ist es möglich, dass ein sehbehinderter Mensch Zeitung lesen kann und dennoch den weißen Langstock benötigt (Haasteren & Tomaszewski 2019).</p>
+                      <p>Ursachen können vielfältig sein, z. B. Retinitis Pigmentosa (Verlust des peripheren Sehens), Katarakt / Grauer Star (Trübung der Augenlinse, Kontrastverlust) oder CVI (Zerebrale Verarbeitungsstörung).</p>
+                  </div>
+
+                  <div class="module-page" data-page="2" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 1: Die "Ich-Perspektive"</h3>
+                      <p>Wähle einen Filter. Je nach Filter ändert sich der Text und das Passwort. Bewege deine Maus über die weiße Fläche (beim Tunnelblick musst du aktiv absuchen), finde das neue versteckte Passwort im Text und klicke es an!</p>
+                      
+                      <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                          <button onclick="applyVisionInteractive('none')" style="background: #374151; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight:bold;">Normal</button>
+                          <button onclick="applyVisionInteractive('katarakt')" style="background: #374151; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight:bold;">Grauer Star</button>
+                          <button onclick="applyVisionInteractive('rp')" style="background: #374151; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight:bold;">Tunnelblick (RP)</button>
+                      </div>
+
+                      <div id="vision-reading-container" onmousemove="handleVisionReadingMove(event)" style="box-sizing: border-box; position: relative; width: 100%; height: 250px; background: #fff; color: #000; padding: 20px; border-radius: 8px; font-size: 16px; line-height: 1.6; overflow: hidden; cursor: crosshair;">
+                          </div>
+                      
+                      <div id="vision-reading-feedback" style="margin-top: 15px; font-weight: bold; color: #10b981; display: none;">Passwort gefunden! Super.</div>
+                  </div>
+
+                  <div class="module-page" data-page="3" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 2: Symptome zuordnen</h3>
+                      <p>Ordne die beschriebenen Symptome der richtigen Ursache zu.</p>
+                      <div style="margin-bottom: 15px;">
+                          <label style="display:block; font-size:13px; color:#9ca3af; margin-bottom:5px;">Trübung der Augenlinse, führt zu starkem Kontrastverlust und Unschärfe.</label>
+                          <select class="sehen-select" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor:pointer;">
+                              <option value="" disabled selected>Bitte wählen...</option>
+                              <option value="katarakt">Katarakt (Grauer Star)</option>
+                              <option value="rp">Retinitis Pigmentosa</option>
+                              <option value="cvi">CVI</option>
+                          </select>
+                      </div>
+                      <div style="margin-bottom: 15px;">
+                          <label style="display:block; font-size:13px; color:#9ca3af; margin-bottom:5px;">Verlust des peripheren Sehens (Tunnelblick).</label>
+                          <select class="sehen-select" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor:pointer;">
+                              <option value="" disabled selected>Bitte wählen...</option>
+                              <option value="katarakt">Katarakt (Grauer Star)</option>
+                              <option value="rp">Retinitis Pigmentosa</option>
+                              <option value="cvi">CVI</option>
+                          </select>
+                      </div>
+                      <button onclick="checkSehenSelect()" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Überprüfen</button>
+                      <div id="sehen-select-feedback" style="margin-top: 15px; font-weight: bold; display: none;"></div>
+                  </div>
+
+                  <div class="module-page" data-page="4" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Wissensabfrage</h3>
+                      <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px;">
+                          <p style="font-weight: bold; color: white;">Was ist bezüglich Sehbehinderung und dem Bedarf an Hilfsmitteln wie dem weißen Langstock laut Text korrekt?</p>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="sq1" value="wrong"> Jeder, der den weißen Langstock benötigt, ist zu 100% vollblind.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="sq1" value="correct"> Es ist möglich, dass eine Person Zeitung lesen kann und für die Fortbewegung dennoch den Langstock benötigt.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="sq1" value="wrong"> Nur 20% aller Schüler weisen eine Sehbeeinträchtigung auf.</label>
+                          <button onclick="checkSehenMC()" style="margin-top:10px; background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">Antworten</button>
+                          <div id="sq1-feedback" style="margin-top: 10px; font-weight: bold; display:none;"></div>
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="5" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Weitere Informationen</h3>
+                      <p>Die simulierte Darstellung bestimmter Sehbeeinträchtigungen hat Ihnen hoffentlich einen Einblick in die unterschiedlichen Ausprägungen von Sehverlust gegeben und Sie auf die unterschiedlichen Bedürfnisse – je nach Krankheit – aufmerksam gemacht.</p>
+                      <p>WICHTIG: Die spezifische, medizinische Diagnostik ist selbstverständlich nicht Aufgabe der Lehrkraft. Dennoch sollten Sie sich der Ausprägungen bewusst sein, um besser auf die individuellen Bedarfe eingehen zu können.</p>
+                      <p>Gehen Sie individuell ins Gespräch mit den Lernenden und erarbeiten Sie gemeinsam Strategien zur Raumgestaltung (Kontraste, Blendfreiheit) und zur Informationsaufbereitung.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-tactonom" class="learning-module-content" style="display:none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Tactonom</h3>
+                      <p>Die folgende Lerneinheit stellt eine mögliche digitale Technologie vor, die Sie für Ihren inklusiven Unterricht einsetzen könnten - den Tactonom Reader. Auch wenn er als assistive Technologie für sehbeeinträchtigte Lernende konzipiert ist, werden Sie feststellen, dass sein Einsatz nicht darauf beschränkt sein muss.</p>
+                      <p>Der Tactonom verknüpft haptisch erfassbare Folien (taktile Grafiken) mit digitalen Audio-Informationen. Durch eine integrierte Kamera erkennt das Gerät die aufgelegte Grafik. Tippt der Lernende auf einen Bereich, wird die dazugehörige Audio-Spur abgespielt.</p>
+                      <p>Er bietet auch für sehende Lernende eine völlig neue Erfahrungsebene und bedient den im Schulunterricht oft verkannten Tastsinn.</p>
+                  </div>
+
+                  <div class="module-page" data-page="2" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 1: Taktiles Raster</h3>
+                      <p>Erlebe das Prinzip des Audio-Feedbacks. Bewege deine Maus über die schwarze Fläche. Das System gibt dir Feedback ("kalt", "wärmer"), bis du das versteckte Ziel blind gefunden hast und anklickst.</p>
+                      
+                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                          <span style="font-weight: bold; color: #9ca3af;">Audio-Feedback:</span>
+                          <span id="tactonom-audio-out" style="font-weight: bold; color: #3b82f6; font-size: 18px;">Bewege die Maus...</span>
+                      </div>
+
+                      <div id="tactile-grid" onmousemove="handleTactileMove(event)" onclick="handleTactileClick(event)" style="width: 100%; height: 250px; background: #000; border: 2px solid #374151; border-radius: 8px; cursor: crosshair; position: relative;">
+                      </div>
+                      <div id="tactonom-feedback" style="margin-top: 15px; font-weight: bold; color: #10b981; display: none;">Ziel erfasst! So hilft das Audio-Feedback bei der räumlichen Orientierung.</div>
+                  </div>
+
+                  <div class="module-page" data-page="3" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 2: Sinnesverknüpfung</h3>
+                      <p>Klicke genau die zwei Sinne an, die vom Tactonom Reader primär miteinander verknüpft werden.</p>
+                      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+                          <button class="sense-btn neutral-btn" data-correct="true" onclick="toggleNeutralBtn(this)" style="background: #27272a; color: #fff; border: 1px solid #374151; padding: 15px; border-radius: 6px; cursor: pointer;">Tastsinn (Haptik)</button>
+                          <button class="sense-btn neutral-btn" data-correct="false" onclick="toggleNeutralBtn(this)" style="background: #27272a; color: #fff; border: 1px solid #374151; padding: 15px; border-radius: 6px; cursor: pointer;">Geruchssinn</button>
+                          <button class="sense-btn neutral-btn" data-correct="true" onclick="toggleNeutralBtn(this)" style="background: #27272a; color: #fff; border: 1px solid #374151; padding: 15px; border-radius: 6px; cursor: pointer;">Gehör (Audio)</button>
+                          <button class="sense-btn neutral-btn" data-correct="false" onclick="toggleNeutralBtn(this)" style="background: #27272a; color: #fff; border: 1px solid #374151; padding: 15px; border-radius: 6px; cursor: pointer;">Geschmackssinn</button>
+                      </div>
+                      <div style="margin-top: 20px; text-align: right;">
+                          <button onclick="checkSenseTask()" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Prüfen</button>
+                      </div>
+                      <div id="sense-feedback" style="margin-top: 15px; font-weight: bold; display: none;"></div>
+                  </div>
+
+                  <div class="module-page" data-page="4" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Einsatzszenario: Physik-Unterricht</h3>
+                      <p>Hier sehen Sie eine konkrete Idee, wie der Tactonom Reader im Physik-Unterricht zum Thema Halbleiter eingesetzt werden könnte.</p>
+                      <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                          <strong style="color: #10b981; font-size: 15px;">Thema: Halbleiter (Silizium-Kristall)</strong>
+                          <ul style="color: #d1d5db; margin-top: 10px; line-height: 1.6;">
+                              <li><strong>Arbeitsblatt:</strong> Stellt ein Metall-Gitter dar.</li>
+                              <li><strong>Taktile Umsetzung:</strong> 
+                                  <ul style="margin-bottom: 10px;">
+                                      <li>Atome als haptische Kreise (Element-Symbol in Brailleschrift)</li>
+                                      <li>Freie Elektronen als erhabene Punkte</li>
+                                      <li>Elektronen-Löcher als leere, fühlbare Kreise</li>
+                                      <li>Positive und negative Elektroden an den Seiten durch unterschiedliche Struktur</li>
+                                  </ul>
+                              </li>
+                              <li><strong>Mögliche Audio-Aufgaben:</strong>
+                                  <ul>
+                                      <li>Bewegung der Elektronen und Löcher auf der Folie antippen und beschreiben lassen</li>
+                                      <li>Einzelne Gitter-Elemente blind ertasten und vom Gerät benennen lassen</li>
+                                      <li>Veränderungen der Leitfähigkeit bei Temperaturänderung erkunden</li>
+                                  </ul>
+                              </li>
+                          </ul>
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="5" style="display:none; box-sizing: border-box;">
+                      <h3 style="color: white; margin-top: 0;">Wissensabfrage Tactonom</h3>
+                      <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px;">
+                          
+                          <div style="margin-bottom: 20px;">
+                              <p style="font-weight: bold; color: white; margin-bottom: 10px;">1. Wie viele Knöpfe hat der Tactonom Reader?</p>
+                              <select id="tac-q1" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor:pointer;">
+                                  <option value="" disabled selected>Bitte wählen...</option>
+                                  <option value="wrong">4</option>
+                                  <option value="wrong">5</option>
+                                  <option value="wrong">6</option>
+                                  <option value="correct">7</option>
+                              </select>
+                          </div>
+
+                          <div style="margin-bottom: 20px;">
+                              <p style="font-weight: bold; color: white; margin-bottom: 10px;">2. Was ist beim Tactonom mit einem "zirkulären Menü" gemeint?</p>
+                              <select id="tac-q2" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor:pointer;">
+                                  <option value="" disabled selected>Bitte wählen...</option>
+                                  <option value="wrong">Die Menü-Knöpfe sind rund.</option>
+                                  <option value="correct">Das Menü fängt von vorn an, sobald die letzte Option erreicht wurde.</option>
+                                  <option value="wrong">Die Knöpfe sind im Kreis angeordnet.</option>
+                              </select>
+                          </div>
+
+                          <div style="margin-bottom: 20px;">
+                              <p style="font-weight: bold; color: white; margin-bottom: 10px;">3. Wie erkennt der Tactonom Reader die Fingerposition des Lernenden?</p>
+                              <select id="tac-q3" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor:pointer;">
+                                  <option value="" disabled selected>Bitte wählen...</option>
+                                  <option value="wrong">Über einen Touchscreen</option>
+                                  <option value="wrong">Durch Knöpfe unter dem Arbeitsblatt</option>
+                                  <option value="correct">Über eine Kamera über dem Arbeitsblatt</option>
+                              </select>
+                          </div>
+
+                          <div style="margin-bottom: 20px;">
+                              <p style="font-weight: bold; color: white; margin-bottom: 10px;">4. Wie erkennt der Tactonom Reader, welches Arbeitsblatt aufgelegt wurde?</p>
+                              <select id="tac-q4" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor:pointer;">
+                                  <option value="" disabled selected>Bitte wählen...</option>
+                                  <option value="wrong">Durch ein Foto des Arbeitsblatts</option>
+                                  <option value="wrong">Gar nicht - es ist immer manuell einzustellen</option>
+                                  <option value="correct">Über einen QR-Code in der Ecke der Folie</option>
+                              </select>
+                          </div>
+
+                          <div style="margin-bottom: 20px;">
+                              <p style="font-weight: bold; color: white; margin-bottom: 10px;">5. Für wen ist der Tactonom Reader nützlich?</p>
+                              <select id="tac-q5" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor:pointer;">
+                                  <option value="" disabled selected>Bitte wählen...</option>
+                                  <option value="wrong">Ausschließlich für völlig blinde Menschen, die Braille beherrschen.</option>
+                                  <option value="correct">Für blinde/sehbeeinträchtigte Menschen, bietet aber durch Multimodalität auch für sehende Lernende Vorteile.</option>
+                                  <option value="wrong">Nur für sehende Kinder im Kindergartenalter.</option>
+                              </select>
+                          </div>
+
+                          <button onclick="checkTactonomQuiz()" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Quiz auswerten</button>
+                          <div id="tactonom-quiz-feedback" style="margin-top: 15px; font-weight: bold; display: none;"></div>
+
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="6" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Weitere Informationen</h3>
+                      <p>Glückwunsch! Sie sind am Ende der Einheit angekommen. Der Tactonom Reader ist nur ein Beispiel für ein Gerät, welches als assistive Technologie konzipiert wurde, aber für ein breiteres Spektrum an Lernenden eingesetzt werden kann.</p>
+                      <p>Er bedient den im Schulunterricht oft verkannten Tastsinn, womit sich für Lernende eine weitere Erfahrungsebene eröffnet, was wiederum nach dem Prinzip der Multimodalität das Lernen begünstigt.</p>
+                      <p>Mit vermehrtem Einsatz solcher Technologien im Alltag sinken langfristig auch Preise und Stigmata werden abgebaut.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-ava" class="learning-module-content" style="display:none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: AVA (Untertitelung)</h3>
+                      <p>Neben didaktischen Ansätzen gibt es eine weitere Möglichkeit, Ungleichheiten großflächig zu bekämpfen: Durch das Zuschalten von Untertiteln, die in Echtzeit das Gesprochene der Lehrkraft transkribieren.</p>
+                      <p>AVA ist eine Software-Lösung zur Echtzeit-Transkription. Sie wird insbesondere eingesetzt, um hörgeschädigten Menschen die uneingeschränkte Teilhabe an Gesprächen und Unterricht zu ermöglichen.</p>
+                      <p>Die Lehrkraft trägt ein Mikrofon, die Sprache wird über KI sofort in Text umgewandelt. Lernende können den Text live auf ihrem eigenen Smartphone, Tablet oder Laptop mitlesen.</p>
+                  </div>
+
+                  <div class="module-page" data-page="2" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 1: KI-Fehlerkorrektur</h3>
+                      <p>Live-Transkriptionen sind fehleranfällig. Im folgenden Transkript hat die KI drei Wörter falsch verstanden. Lies genau mit und klicke exakt auf die drei falschen Wörter, um sie zu korrigieren. (Es gibt keine visuellen Hilfen!)</p>
+                      
+                      <div style="background: #18181b; border: 1px solid #374151; padding: 15px; border-radius: 8px; font-size: 16px; line-height: 1.8; user-select: none;">
+                          <span style="color: #9ca3af;">[Lehrkraft]:</span> 
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">Heute</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">schreiben</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">wir</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">den</span>
+                          <span class="ava-word" data-correct="Test" onclick="checkAvaWord(this, true)" style="cursor: pointer;">Pest</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">in</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">Biologie.</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">Bitte</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">achtet</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">darauf,</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">dass</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">die</span>
+                          <span class="ava-word" data-correct="Zellteilung" onclick="checkAvaWord(this, true)" style="cursor: pointer;">Zelt-Heilung</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">korrekt</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">beschrieben</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">wird.</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">Nutzt</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">dafür</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">die</span>
+                          <span class="ava-word" data-correct="Definition" onclick="checkAvaWord(this, true)" style="cursor: pointer;">Deflation</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">aus</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">dem</span>
+                          <span class="ava-word" onclick="checkAvaWord(this, false)">Buch.</span>
+                      </div>
+                      
+                      <div id="ava-feedback" style="margin-top: 15px; font-weight: bold; color: #10b981; display: none;">Alle 3 Fehler korrigiert! Dies zeigt, dass beim Mitlesen kognitive Kapazität für die Kontextprüfung erforderlich bleibt.</div>
+                  </div>
+
+                  <div class="module-page" data-page="3" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 2: Nachteile ergänzen</h3>
+                      <p>Untertitel sind kein Allheilmittel. Ergänzen Sie die Lücken sinnvoll.</p>
+                      <p style="font-size: 15px; line-height: 1.8; background: #27272a; padding: 15px; border-radius: 8px;">
+                          Die automatische Spracherkennung ist besonders fehleranfällig bei 
+                          <select class="ava-select" style="background:#111113; color:#fff; border:1px solid #374151; padding:4px; border-radius:4px; cursor:pointer;">
+                              <option value="" disabled selected>...</option>
+                              <option value="laut">lauter Aussprache</option>
+                              <option value="fach">Fachbegriffen</option>
+                          </select>. 
+                          Zudem erfordert das gleichzeitige Lesen des Textes und das Verfolgen des Geschehens eine hohe 
+                          <select class="ava-select" style="background:#111113; color:#fff; border:1px solid #374151; padding:4px; border-radius:4px; cursor:pointer;">
+                              <option value="" disabled selected>...</option>
+                              <option value="kog">kognitive Belastung</option>
+                              <option value="mot">motorische Fähigkeit</option>
+                          </select>.
+                      </p>
+                      <button onclick="checkAvaSelects()" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Überprüfen</button>
+                      <div id="ava-select-feedback" style="margin-top: 15px; font-weight: bold; display: none;"></div>
+                  </div>
+
+                  <div class="module-page" data-page="4" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Wissensabfrage</h3>
+                      <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px;">
+                          <p style="font-weight: bold; color: white;">Was ist ein großer Vorteil bei der Live-Untertitelung mit gekoppelten Geräten (z.B. AVA in Gruppenarbeit)?</p>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="aq1" value="wrong"> Sie übersetzt automatisch in Gebärdensprache.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="aq1" value="wrong"> Sie eliminiert jeglichen Raumhall.</label>
+                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="aq1" value="correct"> Durch Speaker-Identification (Sprecher-Erkennung) wird sichtbar, wer gerade in der Gruppe spricht.</label>
+                          <button onclick="checkAvaMC()" style="margin-top:10px; background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">Antworten</button>
+                          <div id="aq1-feedback" style="margin-top: 10px; font-weight: bold; display:none;"></div>
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="5" style="display:none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Alternativen</h3>
+                      <p>In diesem Lernmodul haben Sie AVA als Beispiel für eine Software zur Erstellung automatischer Untertitel kennengelernt. Der Nutzen sollte ersichtlich sein, wenngleich nicht alle Einsatzszenarien abgedeckt werden konnten. Es erfordert Kreativität und Kenntnis der Lernenden, um das Tool bestmöglich einzusetzen.</p>
+                      
+                      <div style="margin-top: 20px; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                          <strong style="color: #10b981; font-size: 14px; display: block; margin-bottom: 10px;">Gängige Alternativen zu AVA</strong>
+                          <ul style="padding-left: 20px; font-size: 13px; color: #d1d5db; margin: 0; line-height: 1.6;">
+                              <li><strong>Web Captioner:</strong> Kostenlose Web-App, Live Transkript im Browser</li>
+                              <li><strong>Microsoft Live Captions:</strong> Systemweite Integration (Kostenlos)</li>
+                              <li><strong>Speechmatics:</strong> KI-basiert, sehr hohe Genauigkeit (Kostenpflichtig)</li>
+                              <li><strong>Whisper (OpenAI):</strong> Sehr genau, kostenlos offline nutzbar, Fokus eher auf asynchrone Transkripte</li>
+                              <li><strong>Braina Pro:</strong> Live Transkript & Sprecher-Erkennung integriert</li>
+                          </ul>
+                      </div>
+                  </div>
+              </div> 
+              <div id="module-content-av1" class="learning-module-content" style="display: none;">
+                  
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Schulische Abwesenheit</h3>
+                      <p>Laut dem Kinder- und Jugendgesundheitssurvey leidet bereits jedes achte Kind unter einem chronischen gesundheitlichen Problem. Wenn Schüler:innen über längere Zeit nicht am Unterricht teilnehmen können, fehlen ihnen nicht nur Unterrichtsinhalte, sondern vor allem die soziale Teilhabe.</p>
+                      
+                      <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;">
+                          <strong style="color: white; font-size: 15px; display: block; margin-bottom: 12px;">Fallbeispiele für schulische Abwesenheit</strong>
+                          <ul style="color: #d1d5db; margin: 0; padding-left: 20px; line-height: 1.6;">
+                              <li style="margin-bottom: 8px;"><strong>Lena (14):</strong> Hat eine Autoimmunerkrankung und darf wegen ihres geschwächten Immunsystems nicht zur Schule.</li>
+                              <li style="margin-bottom: 8px;"><strong>Max (12):</strong> War nach einem Unfall mehrere Monate im Krankenhaus und hatte nur sporadischen Kontakt zur Klasse.</li>
+                              <li><strong>Sarah (17):</strong> Hat eine Angststörung und traut sich nicht, am Präsenzunterricht teilzunehmen.</li>
+                          </ul>
+                      </div>
+
+                      <div style="background: rgba(255,255,255,0.02); padding: 15px; border-left: 3px solid #3b82f6; border-radius: 4px;">
+                          <p style="font-style: italic; color: #9ca3af; font-size: 13px; margin: 0;">"Die Lehrer hier haben ja auch Verständnis, wenn es einem von der Symptomatik her mal einen Tag nicht so gut geht. [...] Hier kann man sich Zeit nehmen, hier kann man Aufgaben über Wochen verteilen." <br><span style="color: #6b7280; font-style: normal; display: inline-block; margin-top: 5px;">– Schüler:innen der 7. und 9. Klasse</span></p>
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="2" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Der AV1 Telepräsenzroboter</h3>
+                      <p>Bisherige Methoden wie „Notizenpaten“ decken oft nur den Wissenstransfer ab. Die soziale Isolation bleibt bestehen. Hier setzt der AV1 Telepräsenzroboter an.</p>
+                      
+                      <div style="text-align: center; margin: 35px 0;">
+                          <div style="width: 100%; height: 200px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #9ca3af; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">Bild: AV1 Telepräsenzroboter</div>
+                      </div>
+
+                      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                          <div style="background: rgba(0,0,0,0.2); border-top: 3px solid #ef4444; border-radius: 8px; padding: 15px; border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
+                              <strong style="color: white; font-size: 14px; margin-bottom: 10px; display: block;">Grenzen analoger Lösungen</strong>
+                              <p style="font-size: 13px; color: #9ca3af; margin: 0; line-height: 1.5;">Mitschriften von Mitschüler:innen helfen beim Nacharbeiten, aber das kranke Kind verpasst die Gruppendynamik, Witze in der Pause und das aktive Melden im Unterricht.</p>
+                          </div>
+                          <div style="background: rgba(0,0,0,0.2); border-top: 3px solid #10b981; border-radius: 8px; padding: 15px; border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
+                              <strong style="color: white; font-size: 14px; margin-bottom: 10px; display: block;">Stärken des Roboters</strong>
+                              <p style="font-size: 13px; color: #9ca3af; margin: 0; line-height: 1.5;">Der AV1 fungiert als Auge, Ohr und Stimme des Kindes. Über eine App steuert das Kind den Blickwinkel, meldet sich per Leuchtsignal und spricht in Echtzeit mit der Klasse.</p>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="3" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 1: Einsatz oder nicht?</h3>
+                      <p>Entscheiden Sie für die folgenden Unterrichtssituationen, ob der Einsatz des AV1-Roboters sinnvoll oder eher ungeeignet ist.</p>
+
+                      <div id="av1-scenario-container" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                          
+                          <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                              <div style="font-weight: bold; color: white; margin-bottom: 12px;">1. Online-Test in Informatik</div>
+                              <div style="display: flex; gap: 10px;">
+                                  <button onclick="checkAV1Scenario(this, false, 'Eher ungeeignet. Bei Tests steht die Eigenleistung im Vordergrund. Der Roboter bietet hier keinen sozialen Mehrwert und erschwert die Betrugsprävention.')" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #374151; background: #27272a; color: white; cursor: pointer; font-weight: bold; transition: background 0.2s;">Sinnvoll</button>
+                                  <button onclick="checkAV1Scenario(this, true, 'Korrekt! Bei Leistungskontrollen steht die Eigenleistung im Vordergrund. Der Roboter bietet hier keinen sozialen Mehrwert.')" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #374151; background: #27272a; color: white; cursor: pointer; font-weight: bold; transition: background 0.2s;">Eher ungeeignet</button>
+                              </div>
+                              <div class="scenario-feedback" style="display: none; margin-top: 15px; font-weight: bold; padding: 10px; border-radius: 6px;"></div>
+                          </div>
+                          
+                          <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                              <div style="font-weight: bold; color: white; margin-bottom: 12px;">2. Gruppenarbeit mit physischer Plakatgestaltung</div>
+                              <div style="display: flex; gap: 10px;">
+                                  <button onclick="checkAV1Scenario(this, false, 'Eher ungeeignet. Der Roboter hat keine Arme und kann nicht mitbasteln. Eine rein digitale Kooperationsplattform wäre hier für das kranke Kind besser.')" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #374151; background: #27272a; color: white; cursor: pointer; font-weight: bold; transition: background 0.2s;">Sinnvoll</button>
+                                  <button onclick="checkAV1Scenario(this, true, 'Korrekt! Der Roboter kann nicht physisch mitbasteln. Das Kind könnte sich ausgeschlossen fühlen.')" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #374151; background: #27272a; color: white; cursor: pointer; font-weight: bold; transition: background 0.2s;">Eher ungeeignet</button>
+                              </div>
+                              <div class="scenario-feedback" style="display: none; margin-top: 15px; font-weight: bold; padding: 10px; border-radius: 6px;"></div>
+                          </div>
+
+                          <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                              <div style="font-weight: bold; color: white; margin-bottom: 12px;">3. Referat mit anschließender Diskussion</div>
+                              <div style="display: flex; gap: 10px;">
+                                  <button onclick="checkAV1Scenario(this, true, 'Korrekt! Ein ideales Szenario. Das Kind kann über den Roboter zuhören, sich bei der Diskussion melden (Leuchtsignal) und verbal teilnehmen.')" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #374151; background: #27272a; color: white; cursor: pointer; font-weight: bold; transition: background 0.2s;">Sinnvoll</button>
+                                  <button onclick="checkAV1Scenario(this, false, 'Falsch. Dies ist ein hervorragendes Einsatzgebiet, da es stark auf Zuhören und verbale Interaktion ankommt.')" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #374151; background: #27272a; color: white; cursor: pointer; font-weight: bold; transition: background 0.2s;">Eher ungeeignet</button>
+                              </div>
+                              <div class="scenario-feedback" style="display: none; margin-top: 15px; font-weight: bold; padding: 10px; border-radius: 6px;"></div>
+                          </div>
+
+                          <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                              <div style="font-weight: bold; color: white; margin-bottom: 12px;">4. Wandertag mit der Klasse</div>
+                              <div style="display: flex; gap: 10px;">
+                                  <button onclick="checkAV1Scenario(this, false, 'Eher ungeeignet. Draußen gibt es oft Netzprobleme und der Roboter muss von Mitschüler:innen permanent getragen werden, was unpraktisch ist.')" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #374151; background: #27272a; color: white; cursor: pointer; font-weight: bold; transition: background 0.2s;">Sinnvoll</button>
+                                  <button onclick="checkAV1Scenario(this, true, 'Korrekt! Netzabdeckung im Freien und das ständige Tragen des Roboters machen dieses Szenario unpraktisch.')" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #374151; background: #27272a; color: white; cursor: pointer; font-weight: bold; transition: background 0.2s;">Eher ungeeignet</button>
+                              </div>
+                              <div class="scenario-feedback" style="display: none; margin-top: 15px; font-weight: bold; padding: 10px; border-radius: 6px;"></div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="module-page" data-page="4" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 2: Platzierung im Raum</h3>
+                      <p>Klicken Sie auf der Raumskizze auf die Position (A, B oder C), an der Sie den Telepräsenzroboter platzieren würden, um maximale Beteiligung zu ermöglichen.</p>
+
+                      <div style="position: relative; width: 100%; height: 280px; background: #111113; border-radius: 8px; border: 1px solid #374151; margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);">
+                          
+                          <div style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 140px; height: 30px; background: #27272a; text-align: center; line-height: 30px; border-radius: 4px; font-size: 13px; color: white; font-weight: bold; border: 1px solid #4b5563;">Tafel</div>
+                          
+                          <div style="position: absolute; top: 70px; left: 30px; width: 80px; height: 40px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 4px; text-align: center; line-height: 40px; font-size: 12px; color: #60a5fa; font-weight: bold;">Lehrkraft</div>
+
+                          <div style="position: absolute; top: 140px; left: 60px; width: 60px; height: 60px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;"></div>
+                          <div style="position: absolute; top: 140px; right: 60px; width: 60px; height: 60px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;"></div>
+
+                          <button class="room-btn-av1" onclick="checkAV1Room(this, 'orange', 'Gute Sicht auf die Tafel, aber der Roboter hat die Klasse im Rücken. Soziale Interaktionen mit Mitschüler:innen sind kaum möglich.')" style="position: absolute; top: 70px; left: 50%; transform: translateX(-50%); width: 44px; height: 44px; border-radius: 50%; background: #27272a; border: 2px solid #6b7280; cursor: pointer; color: white; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#3f3f46'" onmouseout="this.style.background='#27272a'">A</button>
+                          
+                          <button class="room-btn-av1" onclick="checkAV1Room(this, 'green', 'Ideal! Der Roboter sitzt direkt an einer Tischgruppe. Das kranke Kind ist sozial integriert, kann gut hören und die Tafel sehen.')" style="position: absolute; top: 148px; left: 130px; width: 44px; height: 44px; border-radius: 50%; background: #27272a; border: 2px solid #6b7280; cursor: pointer; color: white; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#3f3f46'" onmouseout="this.style.background='#27272a'">B</button>
+                          
+                          <button class="room-btn-av1" onclick="checkAV1Room(this, 'red', 'Ganz hinten in der Ecke: Die Akustik ist oft schlecht, die Sicht auf die Tafel verdeckt und das Kind fühlt sich leicht ausgeschlossen.')" style="position: absolute; bottom: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: #27272a; border: 2px solid #6b7280; cursor: pointer; color: white; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#3f3f46'" onmouseout="this.style.background='#27272a'">C</button>
+                      </div>
+
+                      <div id="av1-room-feedback" style="display: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 14px; text-align: center;"></div>
+                  </div>
+
+                  <div class="module-page" data-page="5" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Weitere Informationen</h3>
+                      <p>Der AV1 Telepräsenzroboter ist ein innovatives Hilfsmittel, um langzeiterkrankten Kindern die soziale Teilhabe am Schulalltag zu ermöglichen.</p>
+                      
+                      <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px; margin-top: 20px;">
+                          <ul style="margin: 0; padding-left: 20px; line-height: 1.6; color: #d1d5db;">
+                              <li style="margin-bottom: 10px;"><strong>Soziale Teilhabe:</strong> Das Hauptziel ist nicht primär Leistungskontrolle, sondern das Aufrechterhalten sozialer Bindungen.</li>
+                              <li style="margin-bottom: 10px;"><strong>Einsatzort:</strong> Der Roboter entfaltet seinen größten Nutzen bei Diskussionen, Vorträgen und Unterrichtsgesprächen.</li>
+                              <li style="margin-bottom: 10px;"><strong>Platzierung:</strong> Eine Position mittendrin (z.B. an einer Tischgruppe) ist deutlich besser als isoliert in der ersten oder letzten Reihe.</li>
+                              <li><strong>Grenzen:</strong> Bei rein physischen Aktivitäten (Sport, Basteln) oder schlechtem Netz (Wandertag) stößt das Konzept an seine Grenzen.</li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+              <div id="module-content-elevenlabs" class="learning-module-content" style="display: none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: ElevenLabs & KI-Sprache</h3>
+                      <p>Künstliche Intelligenz hat die Qualität von Text-to-Speech (TTS) Software revolutioniert. ElevenLabs ist ein führender Anbieter für die Generierung von extrem natürlichen, synthetischen Stimmen, welche Emotionen und Betonungen korrekt wiedergeben können.</p>
+                      <p>Im inklusiven Unterricht bietet dies immense Vorteile: Arbeitsblätter und Buchtexte können für Lernende mit Lese-Rechtschreib-Schwäche (LRS) oder Sehbeeinträchtigungen hochwertig vertont werden. So wird der Zugang zu Informationen nicht mehr durch die Lesekompetenz blockiert.</p>
+                  </div>
+                  <div class="module-page" data-page="2" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe: Stimm-Mischer</h3>
+                      <p>Stellen Sie sich vor, Sie bereiten ein Hörspiel für einen Lernenden mit einer Auditiven Verarbeitungs- und Wahrnehmungsstörung (AVWS) vor. Welche Sprachparameter sind für das Textverständnis am förderlichsten?</p>
+                      <div style="background: rgba(0,0,0,0.2); padding: 25px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: 20px;">
+                          <div style="display: flex; gap: 15px;">
+                              <button onclick="checkModuleTask(this, 'elevenlabs', false)" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer; transition: all 0.2s;">Schnell & Dynamisch</button>
+                              <button onclick="checkModuleTask(this, 'elevenlabs', true)" style="flex: 1; padding: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer; transition: all 0.2s;">Langsam & Überartikuliert</button>
+                          </div>
+                          <div class="task-feedback" style="display: none; margin-top: 15px; padding: 12px; border-radius: 8px; font-weight: bold; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">Korrekt! Bei AVWS ist es essenziell, dass das Tempo reduziert und die Pausensetzung sowie Artikulation überdeutlich sind.</div>
+                      </div>
+                  </div>
+                  <div class="module-page" data-page="3" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Ausblick</h3>
+                      <p>Moderne TTS-Systeme erlauben es Lehrkräften, mit wenigen Klicks aus Textdokumenten hochwertige Audio-Dateien zu erzeugen. Dies ist ein Paradebeispiel für das Universal Design for Learning (UDL), bei dem Informationen auf multiplen Kanälen angeboten werden, wovon letztlich die gesamte Klasse profitiert.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-geogebra" class="learning-module-content" style="display: none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: GeoGebra</h3>
+                      <p>GeoGebra ist eine dynamische Mathematiksoftware, die Geometrie, Algebra, Tabellen, grafische Darstellungen, Statistik und Analysis in einem einfach zu bedienenden Paket vereint.</p>
+                      <p>Für die Inklusion, insbesondere bei Dyskalkulie oder Lernschwierigkeiten, ist die Software von unschätzbarem Wert. Anstatt abstrakte Formeln statisch auf Papier zu betrachten, können Lernende Parameter dynamisch verändern und die direkten geometrischen Auswirkungen in Echtzeit beobachten. Dies verlagert das Verständnis von reiner Kognition hin zur visuellen und interaktiven Erfahrung.</p>
+                  </div>
+                  <div class="module-page" data-page="2" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe: Das Prinzip der Dynamik</h3>
+                      <p>Welches spezifische Werkzeug in dynamischen Geometriesystemen wie GeoGebra hilft Lernenden am meisten, funktionale Zusammenhänge (z.B. Steigung einer Geraden) selbstgesteuert zu begreifen?</p>
+                      <div style="background: rgba(0,0,0,0.2); padding: 25px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: 20px;">
+                          <div style="display: flex; flex-direction: column; gap: 10px;">
+                              <button onclick="checkModuleTask(this, 'geogebra', false)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">A) Der integrierte wissenschaftliche Taschenrechner</button>
+                              <button onclick="checkModuleTask(this, 'geogebra', true)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">B) Dynamische Schieberegler (Slider)</button>
+                              <button onclick="checkModuleTask(this, 'geogebra', false)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">C) Die automatische PDF-Exportfunktion für Arbeitsblätter</button>
+                          </div>
+                          <div class="task-feedback" style="display: none; margin-top: 15px; padding: 12px; border-radius: 8px; font-weight: bold; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">Richtig! Schieberegler ermöglichen das hypothesengeleitete Experimentieren ("Was passiert mit der Linie, wenn ich diesen Wert erhöhe?").</div>
+                      </div>
+                  </div>
+                  <div class="module-page" data-page="3" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Ausblick</h3>
+                      <p>Die Überführung von Mathematik in interaktive, veränderbare Modelle baut Barrieren der reinen Abstraktion ab. Die App ist zudem auf allen Endgeräten verfügbar, was BYOD-Konzepte (Bring Your Own Device) im Klassenzimmer unterstützt.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-rayban" class="learning-module-content" style="display: none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Meta Ray Ban & Smart Glasses</h3>
+                      <p>Smarte Brillen, ausgestattet mit Kameras und künstlicher Intelligenz, entwickeln sich zu mächtigen Assistenzsystemen für den Alltag. Die Meta Ray Ban Brille kann beispielsweise Bilder der Umgebung aufnehmen, diese durch KI analysieren und dem Tragenden per Audio-Feedback beschreiben.</p>
+                      <p>Für Menschen mit starken Sehbeeinträchtigungen eröffnet dies völlig neue Möglichkeiten der Orientierung im Raum, des Erkennens von Personen oder des Vorlesens von analogen Texten an der Tafel.</p>
+                  </div>
+                  <div class="module-page" data-page="2" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe: KI-Blickfeld</h3>
+                      <p>Simulieren wir den Einsatz der Brille. Klicken Sie auf den Button, um eine KI-gestützte Umgebungsanalyse auszulösen.</p>
+                      <div style="background: rgba(0,0,0,0.5); padding: 40px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: 20px; text-align: center; position: relative; overflow: hidden;">
+                          <div style="position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px); pointer-events: none;"></div>
+                          <button id="btn-rayban-sim" onclick="startRayBanSim()" style="padding: 12px 24px; background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; border-radius: 30px; color: white; cursor: pointer; font-weight: bold; position: relative; z-index: 2;">Hey Meta, was sehe ich?</button>
+                          <div id="rayban-output" style="margin-top: 25px; min-height: 40px; font-family: monospace; color: #60a5fa; font-size: 16px; position: relative; z-index: 2;"></div>
+                      </div>
+                  </div>
+                  <div class="module-page" data-page="3" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Ausblick</h3>
+                      <p>Technologien, die als Lifestyle-Produkte entwickelt wurden, finden zunehmend Anwendung im Bereich der Inklusion. Die unauffällige Integration von Hilfsmitteln (eine normale Brille statt eines klobigen Spezialgeräts) reduziert zudem das Risiko der Stigmatisierung der Lernenden erheblich.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-levumi" class="learning-module-content" style="display: none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Levumi</h3>
+                      <p>Levumi ist eine webbasierte Plattform zur formativen Lernverlaufsdiagnostik. Im Gegensatz zu klassischen, summativen Klassenarbeiten am Ende eines Halbjahres, ermöglicht Levumi das regelmäßige, spielerische Testen grundlegender Kompetenzen (z.B. Leseflüssigkeit, Grundrechenarten) in kurzen Abständen.</p>
+                      <p>Für die inklusive Bildung ist dies entscheidend: Lehrkräfte erkennen so frühzeitig, ob eine didaktische Maßnahme greift oder ob ein Kind abgehängt wird (Response to Intervention), und können ihren Unterricht datengestützt anpassen.</p>
+                  </div>
+                  <div class="module-page" data-page="2" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe: Lernverlauf analysieren</h3>
+                      <p>Betrachten Sie den stark vereinfachten Lernverlauf (Punkte pro Test) eines Schülers in der Leseflüssigkeit. An welchem Messzeitpunkt hätten Sie als Lehrkraft spätestens mit einer gezielten pädagogischen Intervention reagieren müssen?</p>
+                      <div style="background: rgba(0,0,0,0.2); padding: 30px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: 20px;">
+                          <div style="display: flex; justify-content: space-between; align-items: flex-end; height: 120px; border-bottom: 2px solid #374151; padding-bottom: 10px; margin-bottom: 20px;">
+                              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                  <div style="width: 40px; height: 80px; background: rgba(59, 130, 246, 0.4); border-radius: 4px;"></div>
+                                  <button onclick="checkModuleTask(this, 'levumi', false)" style="background: #27272a; border: 1px solid #4b5563; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px;">Woche 1</button>
+                              </div>
+                              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                  <div style="width: 40px; height: 90px; background: rgba(59, 130, 246, 0.4); border-radius: 4px;"></div>
+                                  <button onclick="checkModuleTask(this, 'levumi', false)" style="background: #27272a; border: 1px solid #4b5563; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px;">Woche 2</button>
+                              </div>
+                              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                  <div style="width: 40px; height: 85px; background: rgba(59, 130, 246, 0.4); border-radius: 4px;"></div>
+                                  <button onclick="checkModuleTask(this, 'levumi', false)" style="background: #27272a; border: 1px solid #4b5563; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px;">Woche 3</button>
+                              </div>
+                              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                  <div style="width: 40px; height: 30px; background: rgba(239, 68, 68, 0.6); border-radius: 4px;"></div>
+                                  <button onclick="checkModuleTask(this, 'levumi', true)" style="background: #27272a; border: 1px solid #4b5563; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px;">Woche 4</button>
+                              </div>
+                          </div>
+                          <div class="task-feedback" style="display: none; padding: 12px; border-radius: 8px; font-weight: bold; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">Richtig! Der signifikante Leistungsabfall in Woche 4 ist das klare Signal für die Lehrkraft, die Ursachen zu ergründen und unterstützend einzugreifen.</div>
+                      </div>
+                  </div>
+                  <div class="module-page" data-page="3" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Ausblick</h3>
+                      <p>Formative Diagnostikwerkzeuge wie Levumi nehmen den Leistungsdruck einer großen Prüfung heraus und ersetzen ihn durch kontinuierliches, förderorientiertes Feedback. Sie sind ein zentraler Baustein einer zeitgemäßen, datengestützten Förderplanung.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-zebis" class="learning-module-content" style="display: none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: zebis.digital</h3>
+                      <p>zebis.digital ist eine Plattform zur Erstellung und Nutzung digitaler, interaktiver Arbeitsblätter. Sie fördert den Gedanken von Open Educational Resources (OER), bei dem Lehrkräfte Materialien teilen und kollaborativ weiterentwickeln können.</p>
+                      <p>Ein massiver Vorteil digitaler Arbeitsblätter ist die Anpassbarkeit: Schriftgrößen lassen sich skalieren, Kontraste anpassen und multimodale Elemente (Audio, Video, Text) nahtlos integrieren, um verschiedenen Lerntypen und Beeinträchtigungen gerecht zu werden.</p>
+                  </div>
+                  <div class="module-page" data-page="2" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe: Das barrierefreie Arbeitsblatt</h3>
+                      <p>Wählen Sie aus den folgenden Optionen exakt die **drei** Eigenschaften aus, die ein digitales Arbeitsblatt inklusiv und barrierefrei machen.</p>
+                      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+                          <button class="zebis-btn" data-correct="true" onclick="toggleZebisBtn(this)" style="padding: 12px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">Alternative Bildbeschriftungen (Alt-Texte)</button>
+                          <button class="zebis-btn" data-correct="false" onclick="toggleZebisBtn(this)" style="padding: 12px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">Strikte, unauffällige Zeitlimits</button>
+                          <button class="zebis-btn" data-correct="true" onclick="toggleZebisBtn(this)" style="padding: 12px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">Vorlesefunktion (Text-to-Speech)</button>
+                          <button class="zebis-btn" data-correct="false" onclick="toggleZebisBtn(this)" style="padding: 12px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">Blinkende Animationen für Aufmerksamkeit</button>
+                          <button class="zebis-btn" data-correct="true" onclick="toggleZebisBtn(this)" style="padding: 12px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">Nutzung Leichter/Einfacher Sprache</button>
+                      </div>
+                      <div style="margin-top: 20px; text-align: left;">
+                          <button onclick="checkZebisTask()" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Auswahl prüfen</button>
+                      </div>
+                      <div id="zebis-feedback" style="display: none; margin-top: 15px; padding: 12px; border-radius: 8px; font-weight: bold;"></div>
+                  </div>
+                  <div class="module-page" data-page="3" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Ausblick</h3>
+                      <p>Durch Plattformen wie zebis.digital wird die Erstellung barrierefreier Materialien deutlich vereinfacht. Eine offene Fehlerkultur und der Austausch im Kollegium über Plattformen helfen dabei, die Qualität der Lernmaterialien stetig zu verbessern.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-sozio" class="learning-module-content" style="display: none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Sozio-emotionale Belastung</h3>
+                      <p>Kinder mit sozio-emotionalem Förderbedarf zeigen oft Verhaltensweisen, die den Schulalltag herausfordern. Man unterscheidet grob zwischen externalisierendem Verhalten (Aggression, Regelverletzung, Lautstärke) und internalisierendem Verhalten (Rückzug, Ängste, Depression).</p>
+                      <p>Inklusive Pädagogik bedeutet hier, das Verhalten nicht als böse Absicht, sondern als Lösungsversuch oder Ausdruck einer Überforderung zu verstehen. Der Aufbau sicherer Bindungen, verlässliche Raumstrukturen (Rückzugsorte) und Deeskalationsstrategien sind Kernaufgaben der Lehrkraft.</p>
+                  </div>
+                  <div class="module-page" data-page="2" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe: Deeskalation</h3>
+                      <p>Ein Schüler, der oft unter hoher innerer Anspannung steht, weigert sich plötzlich lautstark, die Aufgaben zu bearbeiten, und wirft sein Heft auf den Boden. Wie reagieren Sie professionell im Sinne der Deeskalation?</p>
+                      <div style="background: rgba(0,0,0,0.2); padding: 25px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                          <button onclick="checkModuleTask(this, 'sozio', false)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">A) Vor der versammelten Klasse streng ermahnen und mit Sanktionen drohen.</button>
+                          <button onclick="checkModuleTask(this, 'sozio', true)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">B) Die Situation beruhigen, eine kurze Auszeit anbieten und den Konflikt später unter vier Augen klären.</button>
+                          <button onclick="checkModuleTask(this, 'sozio', false)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">C) Das Verhalten ignorieren und den Unterricht unkommentiert fortsetzen.</button>
+                      </div>
+                      <div class="task-feedback" style="display: none; margin-top: 15px; padding: 12px; border-radius: 8px; font-weight: bold; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">Richtig! Öffentliche Maßregelungen führen bei emotional belasteten Kindern meist zu einer weiteren Eskalation. Eine Auszeit und ein privates Gespräch wahren das Gesicht des Kindes.</div>
+                  </div>
+                  <div class="module-page" data-page="3" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Ausblick</h3>
+                      <p>Emotionale Sicherheit ist die Grundvoraussetzung für kognitives Lernen. Ein professionelles, bindungsorientiertes Verhalten der Lehrkraft und eine Raumplanung, die Reizarmut und Rückzug ermöglicht, sind präventive Maßnahmen gegen Unterrichtsstörungen.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-classroom" class="learning-module-content" style="display: none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Classroom Management</h3>
+                      <p>Inklusives Classroom Management geht weit über Disziplinierung hinaus. Es ist die proaktive Gestaltung der entiren Lernumgebung. Dazu gehören klare, vorhersehbare Routinen, eine durchdachte Sitzordnung, visueller Halt (z.B. Tagespläne an der Tafel) und positiv formulierte Regeln.</p>
+                      <p>Das Ziel ist es, Rahmenbedingungen zu schaffen, in denen Störungen gar nicht erst entstehen, weil alle Lernenden (auch jene mit erhöhtem Strukturierungsbedarf wie bei ADHS) genau wissen, was erwartet wird und wo sie Unterstützung finden.</p>
+                  </div>
+                  <div class="module-page" data-page="2" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe: Regeln formulieren</h3>
+                      <p>Ein zentraler Aspekt des Managements ist die Art der Kommunikation. Welche der folgenden Klassenregeln ist ressourcenorientiert, positiv formuliert und gibt eine klare Handlungsorientierung?</p>
+                      <div style="background: rgba(0,0,0,0.2); padding: 25px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                          <button onclick="checkModuleTask(this, 'classroom', false)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">A) Wir rennen und toben nicht im Klassenzimmer.</button>
+                          <button onclick="checkModuleTask(this, 'classroom', true)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">B) Wir bewegen uns im Klassenraum langsam und leise.</button>
+                          <button onclick="checkModuleTask(this, 'classroom', false)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">C) Wer stört oder schreit, muss vor die Tür.</button>
+                      </div>
+                      <div class="task-feedback" style="display: none; margin-top: 15px; padding: 12px; border-radius: 8px; font-weight: bold; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">Exakt! Das Gehirn verarbeitet das Wort "nicht" sehr schlecht. Formulieren Sie das erwünschte Verhalten, statt das unerwünschte Verhalten zu verbieten.</div>
+                  </div>
+                  <div class="module-page" data-page="3" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Ausblick</h3>
+                      <p>Ein effektives Classroom Management ist das Fundament der Inklusion. Wenn äußere Strukturen Sicherheit geben, entsteht kognitiver und emotionaler Freiraum, um individuelle Lernziele zu erreichen.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-kommunikation" class="learning-module-content" style="display: none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Kommunikation & Kooperation</h3>
+                      <p>Inklusive Bildung ist keine Aufgabe für Einzelkämpfer. Sie erfordert zwingend die multiprofessionelle Zusammenarbeit zwischen Regelschullehrkräften, Sonderpädagog:innen, Schulbegleitungen und Therapeuten.</p>
+                      <p>Zudem ist eine ressourcenorientierte Elternarbeit unabdingbar. Eltern sind die Experten für ihr Kind. Regelmäßige, wertschätzende Kommunikation verhindert, dass der Austausch erst dann stattfindet, wenn Krisen entstehen. Ebenso haben sich im Unterricht verschiedene Modelle des "Co-Teachings" etabliert, um die Last zu teilen und Differenzierung zu ermöglichen.</p>
+                  </div>
+                  <div class="module-page" data-page="2" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe: Co-Teaching Modelle</h3>
+                      <p>Ordnen Sie die Definition dem richtigen Modell zu. Was versteht man in der inklusiven Pädagogik unter dem Begriff "Station Teaching" (Stationenunterricht)?</p>
+                      <div style="background: rgba(0,0,0,0.2); padding: 25px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                          <button onclick="checkModuleTask(this, 'kommunikation', false)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">A) Eine Lehrkraft unterrichtet frontal, die andere beobachtet das Verhalten einzelner Schüler.</button>
+                          <button onclick="checkModuleTask(this, 'kommunikation', true)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">B) Die Klasse wird in Gruppen aufgeteilt; beide Lehrkräfte betreuen zeitgleich feste inhaltliche Lernstationen.</button>
+                          <button onclick="checkModuleTask(this, 'kommunikation', false)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">C) Beide Lehrkräfte stehen vorn und erklären gemeinsam denselben Inhalt.</button>
+                      </div>
+                      <div class="task-feedback" style="display: none; margin-top: 15px; padding: 12px; border-radius: 8px; font-weight: bold; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">Richtig! Station Teaching nutzt die Präsenz beider Lehrkräfte optimal, um in Kleingruppen intensiver differenziert arbeiten zu können.</div>
+                  </div>
+                  <div class="module-page" data-page="3" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Ausblick</h3>
+                      <p>Kooperation kostet zunächst Zeit und Abspracheaufwand, entlastet aber langfristig enorm. Der Schlüssel liegt in der gemeinsamen Verantwortungsebene ("unsere Schüler") statt der Trennung von Zuständigkeiten.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-motorik" class="learning-module-content" style="display: none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Motorische Beeinträchtigungen</h3>
+                      <p>Physische und motorische Beeinträchtigungen können von Feinmotorikstörungen (z.B. Schwierigkeiten beim Stifthalten) bis hin zu starken Spastiken oder Lähmungen reichen. Neben der physischen Raumgestaltung (Rollstuhlgerechtigkeit, höhenverstellbare Tische) spielt der Zugang zur digitalen Welt eine große Rolle.</p>
+                      <p>Standard-Maus und Tastatur stellen oft unüberwindbare Barrieren dar. Assistive Eingabegeräte wie Trackballs, adaptierte Tastaturen mit Fingerführung, Taster (Switches) oder Augensteuerungen (Eye-Tracking) machen digitale Lerninhalte erst zugänglich.</p>
+                  </div>
+                  <div class="module-page" data-page="2" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe: Assistive Hardware</h3>
+                      <p>Situation: Ein Lernender hat aufgrund einer muskulären Erkrankung keine Kontrolle über seine Hände und Arme, verfügt aber über eine vollständige Kopf- und Blickkontrolle. Welches alternative Eingabegerät wählen Sie, um ihm die Nutzung eines Computers zu ermöglichen?</p>
+                      <div style="background: rgba(0,0,0,0.2); padding: 25px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                          <button onclick="checkModuleTask(this, 'motorik', false)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">A) Eine ergonomische Trackball-Maus</button>
+                          <button onclick="checkModuleTask(this, 'motorik', true)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">B) Einen Head-Tracker (Kopfmaus) oder eine Augensteuerung</button>
+                          <button onclick="checkModuleTask(this, 'motorik', false)" style="padding: 12px; text-align: left; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; cursor: pointer;">C) Eine Großfeldtastatur mit Abdeckplatte</button>
+                      </div>
+                      <div class="task-feedback" style="display: none; margin-top: 15px; padding: 12px; border-radius: 8px; font-weight: bold; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">Hervorragend! Wenn die Hände nicht genutzt werden können, bieten Technologien, die Kopf- oder Augenbewegungen in Mauszeigeraktionen umwandeln, die nötige Autonomie.</div>
+                  </div>
+                  <div class="module-page" data-page="3" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Ausblick</h3>
+                      <p>Motorische Einschränkungen bedeuten in der Regel keine kognitiven Einschränkungen. Mit der richtigen Kombination aus Raumplanung und assistiver Hardware können betroffene Lernende vollständig an kognitiv anspruchsvollen Aufgaben teilnehmen.</p>
+                  </div>
+              </div>
+
+              <div id="module-content-bookcreator" class="learning-module-content" style="display: none;">
+                  <div class="module-page" data-page="1">
+                      <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Book Creator</h3>
+                      <p>Book Creator ist ein webbasiertes Autorenwerkzeug zur Erstellung digitaler Bücher. Aus inklusionspädagogischer Perspektive operationalisiert die Software den Ansatz des Universal Design for Learning (UDL), indem sie eine nahtlose Entkopplung von fachlichem Informationsgehalt und der Darbietungsform ermöglicht.</p>
+                      <p>Der Erwerb von Sachwissen darf nicht durch mangelnde schriftsprachliche Decodierungsfähigkeiten limitiert werden. Durch die Bereitstellung von Text, Auditiv-Funktionen (Text-to-Speech / Sprachaufzeichnung) und visueller Strukturierung wird die kognitive Belastung der Lernenden signifikant gesenkt.</p>
+                  </div>
+                  
+                  <div class="module-page" data-page="2" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Interaktion: Multimediale Materialerweiterung</h3>
+                      <p>Ein rein textbasiertes Arbeitsblatt stellt für viele Lernende eine exkludierende Barriere dar. Nutzen Sie das simulierte Aktionsmenü, um die leere Buchseite um eine visuelle sowie eine auditive Repräsentationsebene zu erweitern.</p>
+                      
+                      <div style="background: #ffffff; border-radius: 8px; padding: 20px; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); min-height: 250px; position: relative;">
+                          <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #e5e7eb; padding-bottom: 15px; margin-bottom: 20px; position: relative;">
+                              <div style="color: #374151; font-weight: bold; font-size: 18px;">Meine Buchseite</div>
+                              
+                              <button onclick="toggleBCMenu()" style="background: #3b82f6; color: white; border: none; border-radius: 50%; width: 35px; height: 35px; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">+</button>
+                              
+                              <div id="bc-add-menu" style="display: none; position: absolute; top: 45px; right: 0; background: #1f2937; border: 1px solid #374151; border-radius: 6px; width: 180px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 10;">
+                                  <div onclick="addBCItem('audio')" style="padding: 12px; color: #d1d5db; border-bottom: 1px solid #374151; cursor: pointer; font-size: 13px;">Aufnahme (Audio)</div>
+                                  <div onclick="addBCItem('visual')" style="padding: 12px; color: #d1d5db; cursor: pointer; font-size: 13px;">Kamera (Bild)</div>
+                              </div>
+                          </div>
+
+                          <div style="display: flex; flex-direction: column; gap: 15px;">
+                              <div style="font-size: 16px; font-weight: bold; color: #1f2937;">Die Photosynthese</div>
+                              <div style="font-size: 13px; color: #4b5563; line-height: 1.6;">Pflanzen nutzen Lichtenergie, um aus Kohlenstoffdioxid und Wasser Sauerstoff und Glukose zu produzieren. Dieser Prozess ist die Grundlage allen Lebens auf der Erde.</div>
+                              
+                              <div style="display: flex; gap: 15px; margin-top: 10px;">
+                                  <div id="bc-page-audio" style="display: none; background: #dbeafe; border: 1px solid #bfdbfe; color: #1e3a8a; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; width: fit-content;">▶ Audiospur abspielen (0:15)</div>
+                                  <div id="bc-page-visual" style="display: none; background: #e5e7eb; border: 1px dashed #9ca3af; color: #6b7280; padding: 20px; border-radius: 8px; font-size: 11px; text-transform: uppercase; text-align: center; width: 120px;">Abbildung<br>eines Baumes</div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div id="bc-page-feedback" style="font-weight: bold; display: none; color: #10b981; margin-top: 15px; padding: 10px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 6px;">Transformation erfolgreich. Das Lernmaterial repräsentiert das Wissen nun auf verschiedenen Wahrnehmungskanälen und entspricht den UDL-Richtlinien.</div>
+                  </div>
+
+                  <div class="module-page" data-page="3" style="display: none;">
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Alternativen</h3>
+                      <p>Softwarelösungen zur multimodalen Aufbereitung transformieren statische Lehrwerke in adaptive Lernumgebungen. Die Anpassung an die Lernenden erfolgt systemseitig (Assimilierung) anstatt eine fortlaufende Akkommodation der Schüler:innen an starre Materialien zu erzwingen.</p>
+                      <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-top: 15px;">
+                          <strong style="color: #9ca3af; font-size: 13px; text-transform: uppercase;">Zulässige Software-Alternativen</strong>
+                          <ul style="color: #d1d5db; font-size: 13px; line-height: 1.6; margin-top: 10px; padding-left: 20px;">
+                              <li><strong>Canva for Education:</strong> Hervorragend für visuelles Layouting und kollaboratives Arbeiten.</li>
+                              <li><strong>Apple Keynote / Pages:</strong> Bietet tief integrierte Lesehilfen und Audio-Aufnahme-Features nativ in iOS/macOS.</li>
+                              <li><strong>Microsoft PowerPoint:</strong> Enthält den systemweiten "Immersive Reader" sowie automatisierte Live-Untertitelung.</li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+
+          </div>
+          <div class="pwa-footer" style="padding: 15px 24px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border-radius: 0 0 16px 16px;">
+              <button id="btn-prev-page" onclick="changePage(-1)" style="background: rgba(255,255,255,0.1); border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Zurück</button>
+              <span id="page-indicator" style="color: #9ca3af; font-size: 14px;">Seite 1 von 5</span>
+              <button id="btn-next-page" onclick="changePage(1)" style="background: #fde047; border: none; color: #1f2937; font-weight: bold; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Weiter</button>
+          </div>
+      </div>
+    </div>
+
+    <div id="literature-modal" style="position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 10000; display: none; align-items: center; justify-content: center; pointer-events: auto;">
+      <div class="pwa-glass-box" style="width: 850px; max-width: 95vw; height: 80vh; max-height: 800px; display: flex; flex-direction: column; background: #18181b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);">
+          <div class="pwa-header" style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border-radius: 16px 16px 0 0;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(253, 224, 71, 0.1); border: 1px solid rgba(253, 224, 71, 0.3); display: flex; align-items: center; justify-content: center; color: #fde047;">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                  </div>
+                  <h2 style="margin: 0; font-size: 18px; font-weight: 600; color: #f3f4f6; letter-spacing: 0.5px;">Literaturempfehlungen</h2>
+              </div>
+              <button onclick="window.location.href='index.html?tab=practice'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #9ca3af; width: 36px; height: 36px; border-radius: 8px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.color='#9ca3af'">✕</button>
+          </div>
+          <div class="pwa-content" style="flex-grow: 1; overflow-y: auto; padding: 30px; color: #d1d5db; line-height: 1.6; font-size: 14px; background: #111113; user-select: text; -webkit-user-select: text; cursor: text;">
+              <p style="margin-top: 0; margin-bottom: 25px; color: #9ca3af; font-size: 13px;">Hier finden Sie eine Übersicht relevanter Fachliteratur zu den in SensAble behandelten Themenbereichen. Texte können mit der Maus markiert werden. Digitale Ressourcen lassen sich direkt abrufen.</p>
+
+              <details open style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      Allgemeines
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Ferencik-Lehmkuhl, Daria; Huynh, Ilham; Laubmeister, Clara; Lee, Curie; Melzer, Conny; Schwank, Inge; Weck, Hannah; Ziemen, Kerstin (Hrsg.) (2023): Inklusion digital! Chancen und Herausforderungen inklusiver Bildung im Kontext von Digitalisierung. Bad Heilbrunn: Verlag Julius Klinkhardt.
+                              <br><a href="https://www.pedocs.de/volltexte/2023/26285/pdf/Ferencik-Lehmkuhl_et_al_2023_Inklusion_digital.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Betz, Joachim; Schluchter, Jan-René (Hrsg.) (2023): Schulische Medienbildung und Digitalisierung im Kontext von Behinderung und Benachteiligung. Weinheim: Beltz Juventa.
+                              <br><a href="https://www.pedocs.de/volltexte/2024/29052/pdf/Betz_Schluchter_2023_Schulische_Medienbildung_und_Digitalisierung_im_Kontext_von_Behinderung.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      Assistive Technologien
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Adebisi, R. O.; Liman, N. A.; Longpoe, P. K. (2015): Using Assistive Technology in Teaching Children with Learning Disabilities in the 21st Century. In: Journal of Education and Practice, 6(25), S. 14-20.
+                              <br><a href="https://files.eric.ed.gov/fulltext/EJ1078825.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Andersen, H. V.; Jensen, R. H. S. (2018): Assistive learning technologies for learners with ADHD and ASD: A review 2006-2016. In: Læring & Medier, 11(19), S. 1-30.
+                              <br><a href="https://vbn.aau.dk/ws/portalfiles/portal/309811850/document_8_.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Blume, C.; Würffel, N. (2018): Using Technologies for Foreign Language Learning in Inclusive Settings. In: Fremdsprachen Lehren und Lernen, 47(2), S. 8-27.
+                              <br><a href="https://www.esv.info/download/katalog/media/9783503181612/978-3-503-18161-2_IDT-2017-Band1.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Böttinger, Traugott; Schulz, Lea (2023): Teilhabe an digital-inklusiven Bildungsprozessen. Das Universal Design for Learning diklusiv als methodisch-didaktischer Unterrichtsrahmen. In: QfI - Qualifizierung für Inklusion, 5(2).
+                              <br><a href="https://www.pedocs.de/volltexte/2024/30168/pdf/QfI_2023_2_Boettinger_Schulz_Teilhabe_an_digital_inklusiven_Bildungsprozessen.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Capovilla, D.; Gebhardt, M. (2016): Assistive Technologien für Menschen mit Sehschädigung im inklusiven Unterricht. In: Zeitschrift für Heilpädagogik, 67(1), S. 4-15.
+                              <br><a href="https://epub.uni-regensburg.de/43894/7/Capovilla%2C%20Gebhardt%202016_4-15_Assistive%20Technologien_1.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Krstoski, I.; Schulz, L. (2023): Was Technologien ermöglichen könnten: Zur Bedeutung Assistiver Technologien für die Lehrer:innenbildung. In: QfI - Qualifizierung für Inklusion, 5(2).
+                              <br><a href="https://www.pedocs.de/volltexte/2024/30165/pdf/QfI_2023_2_Krstoski_Schulz_Was_Technologien_ermoeglichen_koennten.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      AV1 Telepräsenzroboter
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Johannessen, Lars E.F.; Rasmussen, Erik Børve; Haldar, Marit (2022): Student at a distance: exploring the potential and prerequisites of using telepresence robots in schools. In: Oxford Review of Education, 49(1), S. 1-18.
+                              <br><a href="https://www.researchgate.net/publication/358480289_Student_at_a_distance_exploring_the_potential_and_prerequisites_of_using_telepresence_robots_in_schools" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Weibel, M.; Nielsen, M. K.; Topperzer, V. N. (2020): Back to school with telepresence robot technology: A qualitative pilot study. In: Nursing Open, 7(4), S. 988-997.
+                              <br><a href="https://www.researchgate.net/publication/339881453_Back_to_school_with_telepresence_robot_technology_A_qualitative_pilot_study_about_how_telepresence_robots_help_school-aged_children_and_adolescents_with_cancer_to_remain_socially_and_academically_conn" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; list-style-type: none; margin-left: -20px;">
+                              <strong>Hersteller-Website:</strong> <a href="https://www.noisolation.com/av1" target="_blank" style="color: #60a5fa; text-decoration: none;">No Isolation - AV1</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      AVA (Live-Untertitelung)
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Bosse, Ingo; Schluchter, Jan-René; Zorn, Isabel (Hrsg.) (2019): Handbuch Inklusion und Medienbildung. Weinheim: Beltz Juventa.
+                              <br><a href="https://www.pedocs.de/volltexte/2024/29133/pdf/Bosse_et_al_2019_Handbuch_Inklusion_und_Medienbildung.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Christani, V. (2019): Intralinguale Untertitel für DaF-Studierende: Ein Beispiel für Sprachwissenschaftsvorlesungen. In: Barras, M.; Karges, K.; Studer, T.; Wiedenkeller, E. (Hrsg.): IDT 2017: Band 2. Berlin: Erich Schmidt Verlag, S. 363-368.
+                              <br><a href="https://air.unimi.it/handle/2434/607904" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; list-style-type: none; margin-left: -20px;">
+                              <strong>Anbieter-Website:</strong> <a href="https://www.ava.me/" target="_blank" style="color: #60a5fa; text-decoration: none;">AVA - Closed Captions</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+              
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      Book Creator & Multimodalität
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Bosse, I. (2014): Medienbildung im Zeitalter der Inklusion. Dortmund: TU Dortmund.
+                              <br><a href="https://e-pflicht.ulb.hhu.de/urn/urn:nbn:de:hbz:061:3-21250" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Böttinger, Traugott (2023): Inklusion in der Digitalität. Herausforderungen und Lösungsansätze. In: Grundschulverband e.V. (Hrsg.): Grundschule und Digitalität. Grundlagen, Herausforderungen, Praxisbeispiele. Frankfurt am Main: Grundschulverband e.V., S. 157-174.
+                              <br><a href="https://www.researchgate.net/publication/366530283_Inklusion_in_der_Digitalitat_Herausforderungen_und_Losungsansatze" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Böttinger, Traugott; Schulz, Lea (2023): Teilhabe an digital-inklusiven Bildungsprozessen. Das Universal Design for Learning diklusiv als methodisch-didaktischer Unterrichtsrahmen. In: QfI - Qualifizierung für Inklusion, 5(2).
+                              <br><a href="https://www.pedocs.de/volltexte/2024/30168/pdf/QfI_2023_2_Boettinger_Schulz_Teilhabe_an_digital_inklusiven_Bildungsprozessen.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; list-style-type: none; margin-left: -20px;">
+                              <strong>Anbieter-Website:</strong> <a href="https://bookcreator.com/" target="_blank" style="color: #60a5fa; text-decoration: none;">Book Creator</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      Classroom Management
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Eichhorn, Christoph (2024): Classroom-Management. Wie Lehrer, Eltern und Schüler guten Unterricht gestalten. Stuttgart: Klett-Cotta.
+                              <br><a href="https://katalog.slub-dresden.de/id/0-1886138842" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Haag, L.; Streber, D. (2020): Klassenführung: Erfolgreich unterrichten mit Classroom Management. Weinheim: Beltz.
+                              <br><a href="https://katalog.slub-dresden.de/id/0-1681814633" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Ophardt, Diemut; Thiel, Felicitas (2013): Klassenmanagement. Ein Handbuch für Studium und Praxis. Stuttgart: Kohlhammer.
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      ElevenLabs (Text-to-Speech)
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Schulz, Miklas (2024): Das inklusive Potenzial auditiven Lesens. Überlegungen zur Aneignung der gesprochenen Schrift von Sprachausgaben. In: Schweizerische Zeitschrift für Heilpädagogik, 30(06), S. 38.
+                              <br><a href="https://doi.org/10.57161/z2024-06-07" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Wood, Sarah G.; Moxley, Jerad H.; Tighe, Elizabeth L.; Wagner, Richard K. (2018): Does Use of Text-to-Speech and Related Read-Aloud Tools Improve Reading Comprehension for Students With Reading Disabilities? A Meta-Analysis. In: Journal of Learning Disabilities, 51(1), S. 73-84.
+                              <br><a href="https://doi.org/10.1177/0022219416688170" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; list-style-type: none; margin-left: -20px;">
+                              <strong>Anbieter-Website:</strong> <a href="https://elevenlabs.io/" target="_blank" style="color: #60a5fa; text-decoration: none;">ElevenLabs AI Audio</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      GeoGebra & Dynamische Geometrie
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Bonow, Jacqueline; Leiningen, Andreas; Timberlake, Michaela Greisbach; Schreiber, Christof (2019): Digital und inklusiv – Der Einsatz von Apps in inklusiven Settings im Mathematikunterricht. In: Digitale Medien in der Lehrerbildung Mathematik, S. 51-72.
+                              <br><a href="https://www.researchgate.net/publication/348552741_Digital_und_inklusiv_-_Der_Einsatz_von_Apps_in_inklusiven_Settings_im_Mathematikunterricht" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Laubmeister, Clara; Schwank, Inge (2023): Förderung geometrischer Fähigkeiten in heterogenen Lerngruppen durch Assistive Technologien mit dem Fokus Körperliche und motorische Entwicklung. In: Ferencik-Lehmkuhl, D. et al. (Hrsg.): Inklusion digital! Chancen und Herausforderungen inklusiver Bildung im Kontext von Digitalisierung. Bad Heilbrunn: Verlag Julius Klinkhardt, S. 66-80.
+                              <br><a href="https://www.pedocs.de/volltexte/2023/26303/pdf/Laubmeister_Schwank_2023_Foerderung_geometrischer_Faehigkeiten.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; list-style-type: none; margin-left: -20px;">
+                              <strong>Anbieter-Website:</strong> <a href="https://www.geogebra.org/" target="_blank" style="color: #60a5fa; text-decoration: none;">GeoGebra Mathematik Apps</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      Hörschädigung
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Bryant, D.; Rummel, S. C. (2015): Nachhaltige dramapädagogische Sprachförderung für Grundschulkinder mit DaZ: Ein durchgängiges Förderkonzept. In: Scenario, 2015(2), S. 7-32.
+                              <br><a href="https://www.researchgate.net/publication/348467346_Nachhaltige_dramapadagogische_Sprachforderung_fur_Grundschulkinder_mit_DaZ" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Fandrych, C.; Meißner, C.; Wallner, F. (2021): Gesprochene Sprache im DaF-DaZ-Unterricht: Zugänge zu authentischem sprachlichem Handeln mit ZuMult. In: Hinzmann, F. et al. (Hrsg.): Vermitteln - Verbinden - Verstehen. Göttingen: Universitätsverlag, S. 311-326.
+                              <br><a href="https://univerlag.uni-goettingen.de/handle/3/isbn-978-3-86395-523-6.16?locale-attribute=en" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Hugentobler, D. (2024): Diversität und sprachliche Ressourcen im DaF/DaZ-Unterricht. Winterthur: ZHAW Angewandte Linguistik.
+                              <br><a href="https://digitalcollection.zhaw.ch/server/api/core/bitstreams/9047172f-ef3d-4b73-bd4c-aff254909b82/content" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Kiupel, K.; Ruhe, C. (2016): refeRATgeber 6: Hörgeschädigte Kinder in Regelschulen. Berlin: Deutscher Schwerhörigenbund e. V.
+                              <br><a href="https://sda1abbe82465eed8.jimcontent.com/download/version/1604691044/module/13281138530/name/2016%2520H4%2520ZfA%2520H%25C3%25B6rgesch%2520Kinder%2520in%2520Regelschulen-k.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Skintey, L.; Wyss, E. L. (2020): Sprache und Integration im Lichte der Fachkräftezuwanderung: Herausforderungen und Gestaltungsoptionen des berufsbezogenen DaF-/DaZ-Unterrichts. In: Döring, O. (Hrsg.): Fachkräftezuwanderung in Deutschland. S. 159-181.
+                              <br><a href="https://www.researchgate.net/publication/345942092_Sprache_und_Integration_im_Lichte_der_Fachkraftezuwanderung_Herausforderungen_und_Gestaltungsoptionen_des_berufsbezogenen_DaF-DaZ-Unterrichts" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      Kommunikation & Kooperation
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Hackbarth, Anja; Ludwig, Johannes (2024): Kooperation am gemeinsamen Gegenstand in einer Unterrichtspraxis der Unterstützten Kommunikation aus praxeologisch-wissenssoziologischer Perspektive. In: Häcker, T. et al. (Hrsg.): EIN Unterricht für Alle? Zur Planbarkeit des Gemeinsamen und Kooperativen im Inklusiven. Bad Heilbrunn: Verlag Julius Klinkhardt, S. 193-205.
+                              <br><a href="https://www.pedocs.de/volltexte/2024/29117/pdf/Hackbarth_Ludwig_2024_Kooperation_am_gemeinsamen.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Lütje-Klose, B.; Urban, M. (2014): Professionelle Kooperation als Bedingung inklusiver Schul- und Unterrichtsentwicklung. In: Vierteljahrsschrift für Heilpädagogik und ihre Nachbargebiete, 83(2), S. 112-124.
+                              <br><a href="https://www.researchgate.net/publication/287451479_Professionelle_Kooperation_als_wesentliche_Bedingung_inklusiver_Schul-_und_Unterrichtsentwicklung_Teil_2_Forschungsergebnisse_zu_intra-_und_interprofessioneller_Kooperation" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Müller, Ulrike Beate; Kuhl, Poldi (2021): Kooperation an inklusiven Schulen: Zur Zusammenarbeit in einer inklusionsbezogenen Fortbildungsreihe und in der schulischen Praxis aus Sicht von Lehrkräften. In: QfI - Qualifizierung für Inklusion, 3(1).
+                              <br><a href="https://www.pedocs.de/volltexte/2021/23413/pdf/QfI_2021_1_Mueller_Kuhl_Kooperation_an_inklusiven_Schulen.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Richter, Dirk (2016): Lehrerkooperation in Deutschland: Eine Studie zu kooperativen Arbeitsbeziehungen bei Lehrkräften der Sekundarstufe I. Gütersloh: Bertelsmann Stiftung.
+                              <br><a href="https://www.researchgate.net/publication/296677616_Lehrerkooperation_in_Deutschland_Eine_Studie_zu_kooperativen_Arbeitsbeziehungen_bei_Lehrkraften_der_Sekundarstufe_I" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      Levumi & Lernverlaufsdiagnostik
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Buholzer, Alois; Brovelli, Dorothee (Hrsg.) (2023): Formatives Assessment. Perspektiven für Unterricht und Lehrerinnen- und Lehrerbildung. Münster: Waxmann.
+                              <br><a href="https://www.pedocs.de/volltexte/2024/28662/pdf/Buholzer_Brovelli_2023_Formatives_Assessment.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Gebhardt, Markus; Diehl, Kirsten; Mühling, Andreas (2016): Lern-Verlaufs-Monitoring LEVUMI Lehrerhandbuch. Version 1.1. Dortmund: Universitätsbibliothek Dortmund.
+                              <br><a href="https://eldorado.tu-dortmund.de/items/29fc9c2d-7538-40b9-9163-fb6c4c9c9b3d" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Klauer, K. J. (2014): Lernverlaufsdiagnostik. Konzepte, Verfahren, Evidenzen. In: Zeitschrift für Entwicklungspsychologie und Pädagogische Psychologie, 46(1), S. 1-13.
+                              <br><a href="https://www.pedocs.de/volltexte/2014/9324/pdf/ESP_2011_3_Klauer_Lernverlaufsdiagnostik.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; list-style-type: none; margin-left: -20px;">
+                              <strong>Anbieter-Website:</strong> <a href="https://www.levumi.de/" target="_blank" style="color: #60a5fa; text-decoration: none;">Levumi Plattform</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      Meta Ray Ban & Smart Glasses
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Bühler, Christian (2016): Barrierefreiheit und Assistive Technologie als Voraussetzung und Hilfe zur Inklusion. Oberhausen: ATHENA-Verlag.
+                              <br><a href="https://qualitaetsoffensive-teilhabe.de/wp-content/uploads/2020/10/Buehler_Barrierefreiheit-und-Assistive-Technologie-als-Voraussetzung-und-Hilfe-zur-Inklusion.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Geuting, Jessica; Keeley, Caren (2023): Chancen und Herausforderungen digitaler Bildung für Schüler:innen mit dem Förderschwerpunkt geistige Entwicklung. In: Ferencik-Lehmkuhl, D. et al. (Hrsg.): Inklusion digital! Chancen und Herausforderungen inklusiver Bildung im Kontext von Digitalisierung. Bad Heilbrunn: Verlag Julius Klinkhardt, S. 94-110.
+                              <br><a href="https://www.pedocs.de/volltexte/2023/26305/pdf/Geuting_Keeley_2023_Chancen_und_Herausforderungen.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Zhao, Y.; Szpiro, S.; Azenkot, S. (2015): Foresee: A customizable smart glass vision enhancement system. In: Proceedings of the 17th International ACM SIGACCESS Conference, S. 239-249.
+                              <br><a href="https://dl.acm.org/doi/epdf/10.1145/2700648.2809865" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; list-style-type: none; margin-left: -20px;">
+                              <strong>Anbieter-Website:</strong> <a href="https://www.meta.com/smart-glasses/" target="_blank" style="color: #60a5fa; text-decoration: none;">Meta Ray-Ban</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      Motorik
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Hoffmann, Mirjam; Hoffmann, Thomas; Pfahl, Lisa; Rasell, Michael; Richter, Hendrik; Seebo, Rouven; Sonntag, Miriam; Wagner, Josefine (Hrsg.) (2023): Raum. Macht. Inklusion. Inklusive Räume erforschen und entwickeln. Bad Heilbrunn: Verlag Julius Klinkhardt.
+                              <br><a href="https://www.pedocs.de/volltexte/2023/26509/pdf/Hoffmann_et_al_2023_Raum_Macht_Inklusion.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Staatsministerium für Kultus Sachsen (o. J.): Förderschwerpunkt körperliche und motorische Entwicklung. Dresden: SMK.
+                              <br><a href="https://www.inklusion.bildung.sachsen.de/koerperliche-und-motorische-entwicklung-6991.html" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      Sehbeeinträchtigung
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Capovilla, D.; Gebhardt, M. (2016): Assistive Technologien für Menschen mit Sehschädigung im inklusiven Unterricht. In: Zeitschrift für Heilpädagogik, 67(1), S. 4-15.
+                              <br><a href="https://epub.uni-regensburg.de/43894/7/Capovilla%2C%20Gebhardt%202016_4-15_Assistive%20Technologien_1.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Castro, J. V.; Cruz, C. E. C. (2024): DYNAMIC EFL TEACHING PRACTICES FOR STUDENTS WITH VISUAL IMPAIRMENT. In: REVISTA BOLETÍN REDIPE, 13(4), S. 109-121.
+                              <br><a href="https://www.researchgate.net/publication/379491935_Dynamic_EFL_teaching_practices_for_students_with_visual_impairment" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              del Mar Ogea Pozo, M. (2022): Into the Shoes of Visually Impaired Viewers. In: IJ21CE, 9(4), S. 73-87.
+                              <br><a href="https://www.researchgate.net/publication/367163037_Into_the_shoes_of_visually_impaired_viewers_A_pedagogical_experiment_to_improve_audio_description_and_English_language_skills" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Mahnke, T.; Möhring, M. M. (2016): Inklusiver Unterricht in MINT-Fächern bei Sehbehinderung. In: Voß-Nakkour, S. et al. (Hrsg.): Digitale Barrierefreiheit weiter denken. Frankfurt am Main: Universitätsbibliothek Johann Christian Senckenberg, S. 121-134.
+                              <br><a href="https://d-nb.info/1297508513/34" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              van Haasteren, P. M.; Tomaszewski, F. (2019): Ich sehe das einfach anders: Wie sich die berufliche Teilhabe von Menschen mit Sehbehinderung und Blindheit gestalten lässt. Köln: REHADAT.
+                              <br><a href="https://www.bih.de/fileadmin/user_upload/20190601_Wissensreihe_Sehbehinderung_und_Blindheit.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      Sozio-emotionale Belastung
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Piegsda, Felix; Jurkowski, Susanne (2022): Die Bedeutung sozial-emotionalen Lernens für die Entwicklung von Kindern und Jugendlichen. Perspektiven auf unterrichtliche Förderansätze und Pädagog:innenkompetenzen. In: Emotionale und soziale Entwicklung in der Pädagogik der Erziehungshilfe und bei Verhaltensstörungen (ESE), 4(4), S. 44-56.
+                              <br><a href="https://www.pedocs.de/volltexte/2022/24713/pdf/ESE_2022_4_Piegsda_Jurkowski_Die_Bedeutung_sozial-emotionalen.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Schellenberg, Claudia; Röösli, Patrizia; Krauss, Annette (2023): Stärkung sozio-emotionaler Kompetenzen in der Beruflichen Orientierung. In: Schweizerische Zeitschrift für Heilpädagogik, 29(01), S. 1-8.
+                              <br><a href="https://ojs.szh.ch/zeitschrift/article/view/1116" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      Tactonom
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Voß-Nakkour, Sarah; Rustemeier, Linda; Möhring, Monika Maria; Deitmer, Andreas; Grimminger, Sanja (Hrsg.) (2023): Digitale Barrierefreiheit in der Bildung weiter denken. Innovative Impulse aus Praxis, Technik und Didaktik. Frankfurt am Main: Universitätsbibliothek Johann Christian Senckenberg.
+                              <br><a href="https://publikationen.ub.uni-frankfurt.de/frontdoor/index/index/docId/62773" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; list-style-type: none; margin-left: -20px;">
+                              <strong>Anbieter-Website:</strong> <a href="https://inventivio.com/" target="_blank" style="color: #60a5fa; text-decoration: none;">Tactonom Reader (Inventivio)</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+              <details style="margin-bottom: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;">
+                  <summary style="padding: 15px 20px; color: #f3f4f6; font-size: 14px; font-weight: 600; cursor: pointer; user-select: none; outline: none; list-style: none; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02);">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fde047" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      zebis.digital (OER)
+                  </summary>
+                  <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                      <ul style="padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #d1d5db;">
+                          <li>
+                              Herbstreit, Mareike (2019): Open Educational Resources (OER). Möglichkeiten und Grenzen des Einsatzes in Hochschulen. In: Robra-Bissantz, S. et al. (Hrsg.): Teaching Trends 2018. Die Präsenzhochschule und die digitale Transformation. Münster: Waxmann, S. 166-174.
+                              <br><a href="https://www.pedocs.de/volltexte/2019/17935/pdf/Robra-Bissantz_et_al_2019_20_Teaching_Trends_2018_Herbstreit_Open_Educational_Resources.pdf" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li>
+                              Schön, S.; Ebner, M.; Schön, M. (2016): Open Educational Resources (OER) in der Schule. In: Mayrberger, K. (Hrsg.): Synergien bündeln, Potenziale erkennen. S. 13-25.
+                              <br><a href="https://www.researchgate.net/publication/369180090_Open_Educational_Resources_OER_-_Grundlagen_und_Beispiele_aus_der_Okonomischen_Bildung" target="_blank" style="display: inline-block; background: #fde047; color: #1f2937; padding: 3px 8px; border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: bold; margin-top: 6px;">Online Lesen</a>
+                          </li>
+                          <li style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; list-style-type: none; margin-left: -20px;">
+                              <strong>Anbieter-Website:</strong> <a href="https://www.zebis.digital/" target="_blank" style="color: #60a5fa; text-decoration: none;">zebis.digital Plattform</a>
+                          </li>
+                      </ul>
+                  </div>
+              </details>
+
+          </div>
+      </div>
+    </div>
+
+    <script>
+      let currentModuleId = '';
+      let currentPage = 1;
+
+      window.onload = function() {
+          // Liest den Parameter "module" aus der URL aus (?module=hoeren)
+          const urlParams = new URLSearchParams(window.location.search);
+          const module = urlParams.get('module');
+          
+          if (module === 'literature') {
+              document.getElementById('literature-modal').style.display = 'flex';
+          } else if (module) {
+              openLearningModule(module);
+          } else {
+              window.location.href = 'index.html';
+          }
+      };
+
+      function openLearningModule(id) {
+          currentModuleId = id;
+          currentPage = 1;
+          
+          const titles = {
+              'assistive': 'Assistive Technologien',
+              'hoeren': 'Hörschädigung',
+              'sehen': 'Sehbeeinträchtigung',
+              'tactonom': 'Tactonom',
+              'ava': 'AVA',
+              'av1': 'AV1 Telepräsenzroboter',
+              'elevenlabs': 'ElevenLabs',
+              'geogebra': 'GeoGebra',
+              'rayban': 'Meta Ray Ban',
+              'levumi': 'Levumi',
+              'zebis': 'zebis.digital',
+              'sozio': 'Sozio-emotionale Belastung',
+              'classroom': 'Classroom Management',
+              'kommunikation': 'Kommunikation & Kooperation',
+              'motorik': 'Motorische Beeinträchtigungen',
+              'bookcreator': 'Book Creator'
+          };
+          document.getElementById('learning-module-title').innerText = titles[id] || 'Lernmodul';
+          document.getElementById('learning-module-modal').style.display = 'flex';
+          
+          if (id === 'sehen') {
+              applyVisionInteractive('none'); 
+          }
+          if (id === 'hoeren') {
+              resetRoomTask(); 
+          }
+
+          updatePaginationUI();
+      }
+
+      function changePage(delta) {
+          const targetMod = document.getElementById('module-content-' + currentModuleId);
+          const totalPages = targetMod ? targetMod.querySelectorAll('.module-page').length : 5;
+          
+          currentPage += delta;
+          if (currentPage < 1) currentPage = 1;
+          if (currentPage > totalPages) currentPage = totalPages;
+          updatePaginationUI();
+      }
+
+      function updatePaginationUI() {
+          document.querySelectorAll('.learning-module-content').forEach(el => el.style.display = 'none');
+          document.querySelectorAll('.module-page').forEach(el => el.style.display = 'none');
+
+          let currentTotalPages = 5;
+          const targetMod = document.getElementById('module-content-' + currentModuleId);
+          if (targetMod) {
+              targetMod.style.display = 'block';
+              const pages = targetMod.querySelectorAll('.module-page');
+              currentTotalPages = pages.length > 0 ? pages.length : 5;
+              
+              const targetPage = targetMod.querySelector('.module-page[data-page="' + currentPage + '"]');
+              if (targetPage) targetPage.style.display = 'block';
+          }
+
+          document.getElementById('btn-prev-page').style.visibility = (currentPage === 1) ? 'hidden' : 'visible';
+          document.getElementById('btn-next-page').style.visibility = (currentPage === currentTotalPages) ? 'hidden' : 'visible';
+          document.getElementById('page-indicator').innerText = 'Seite ' + currentPage + ' von ' + currentTotalPages;
+      }
+
+      function toggleNeutralBtn(btn) {
+          if (btn.classList.contains('active')) {
+              btn.classList.remove('active');
+              btn.style.background = '#27272a';
+          } else {
+              btn.classList.add('active');
+              btn.style.background = '#4b5563';
+          }
+      }
+
+      // --- LOGIK: MODUL HÖREN ---
+      function resetRoomTask() {
+          const source = document.getElementById('drag-source');
+          const target = document.getElementById('drop-target');
+          if(source && target) {
+              const items = target.querySelectorAll('.drag-item');
+              items.forEach(item => source.appendChild(item));
+              updateAcousticScore();
+          }
+      }
+
+      function allowDropAcoustic(ev) { ev.preventDefault(); }
+      function dragAcoustic(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+      function dropAcoustic(ev) {
+          ev.preventDefault();
+          const data = ev.dataTransfer.getData("text");
+          let target = ev.target;
+          while (target && target.id !== 'drag-source' && target.id !== 'drop-target') {
+              target = target.parentNode;
+          }
+          if (target && data) {
+              const el = document.getElementById(data);
+              if(el) target.appendChild(el);
+              updateAcousticScore();
+          }
+      }
+
+      function toggleAcousticMove(el) {
+          const source = document.getElementById('drag-source');
+          const target = document.getElementById('drop-target');
+          if (el.parentNode === source) {
+              target.appendChild(el);
+          } else {
+              source.appendChild(el);
+          }
+          updateAcousticScore();
+      }
+
+      function updateAcousticScore() {
+          let score = 0;
+          const target = document.getElementById('drop-target');
+          if(!target) return;
+          
+          const items = target.querySelectorAll('.drag-item');
+          items.forEach(item => {
+              score += parseInt(item.getAttribute('data-val'));
+          });
+          
+          score = Math.max(0, Math.min(100, score));
+          
+          const bar = document.getElementById('acoustic-score-bar');
+          const text = document.getElementById('acoustic-score-text');
+          const feedback = document.getElementById('acoustic-feedback');
+          
+          if(bar && text) {
+              bar.style.width = score + '%';
+              text.innerText = score + '%';
+              
+              if(score < 50) {
+                  bar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
+                  text.style.color = '#ef4444';
+                  text.style.background = 'rgba(239, 68, 68, 0.1)';
+                  text.style.borderColor = 'rgba(239, 68, 68, 0.2)';
+              } else if (score < 100) {
+                  bar.style.background = 'linear-gradient(90deg, #f59e0b, #fbbf24)';
+                  text.style.color = '#f59e0b';
+                  text.style.background = 'rgba(245, 158, 11, 0.1)';
+                  text.style.borderColor = 'rgba(245, 158, 11, 0.2)';
+              } else {
+                  bar.style.background = 'linear-gradient(90deg, #10b981, #34d399)';
+                  text.style.color = '#10b981';
+                  text.style.background = 'rgba(16, 185, 129, 0.1)';
+                  text.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+              }
+          }
+          if(feedback) { feedback.style.display = (score === 100) ? 'block' : 'none'; }
+      }
+
+      function checkHoerenSelect() {
+          const selects = document.querySelectorAll('.hoeren-select');
+          const fb = document.getElementById('hoeren-select-feedback');
+          fb.style.display = 'block';
+          if (selects[0].value === 'leitung' && selects[1].value === 'avws') {
+              fb.style.color = '#10b981'; fb.innerText = 'Perfekt zugeordnet!';
+          } else {
+              fb.style.color = '#ef4444'; fb.innerText = 'Das stimmt noch nicht bei beiden. Versuch es nochmal!';
+          }
+      }
+
+      function checkHoerenMC() {
+          const selected = document.querySelector('input[name="hq1"]:checked');
+          const fb = document.getElementById('hq1-feedback');
+          if(!selected) return;
+          fb.style.display = 'block';
+          if (selected.value === 'correct') {
+              fb.style.color = '#10b981'; fb.innerText = 'Korrekt!';
+          } else {
+              fb.style.color = '#ef4444'; fb.innerText = 'Falsch. Lies noch einmal in der Informationsgrundlage nach.';
+          }
+      }
+
+      // --- LOGIK: MODUL SEHEN ---
+      let currentVisionInteractive = 'none';
+      const visionTexts = {
+          'none': `Der Schulalltag ist voller visueller Reize. An der Tafel stehen wichtige Formeln, im Buch gibt es kleine Diagramme und auf dem Boden liegen oft Schulranzen im Weg. Für Menschen mit einer Sehbehinderung kann das ständige Fokussieren extrem anstrengend sein. Die Inklusion erfordert daher eine aufmerksame Raumgestaltung. Das erste versteckte Lösungswort lautet <span onclick="checkVisionPw('none')" style="cursor:pointer; color:inherit; font-weight:inherit;">Barrierefreiheit</span>. Wer das findet, hat das Prinzip verstanden. Achten Sie auf gute Ausleuchtung.`,
+          'katarakt': `Eine Trübung der Linse führt dazu, dass alles wie durch einen dichten Nebel erscheint. Farben verblassen und grelles Licht blendet stark. Schwarze Schrift auf weißem Grund kann extrem unangenehm sein. Oft helfen nur invertierte Farben oder eine starke <span onclick="checkVisionPw('katarakt')" style="cursor:pointer; color:inherit; font-weight:inherit;">Kontrastverstärkung</span> an Tafeln und Arbeitsblättern. Selbst große Objekte im Raum verschmelzen mit dem Hintergrund, wenn sie sich farblich nicht abheben.`,
+          'rp': `Bei dieser Erkrankung stirbt die Netzhaut von außen nach innen ab. Das zentrale Sehen bleibt oft lange erhalten, aber man verliert den Überblick über den Raum. Man sieht die Welt buchstäblich wie durch ein Rohr. Unerwartete Hindernisse auf dem Boden werden zur enormen Stolperfalle. Ein festes <span onclick="checkVisionPw('rp')" style="cursor:pointer; color:inherit; font-weight:inherit;">Ordnungssystem</span> im Klassenzimmer ist absolut essenziell, damit Taschen und Stühle nicht zu ständigen Gefahrenquellen werden.`
+      };
+
+      function applyVisionInteractive(type) {
+          currentVisionInteractive = type;
+          const box = document.getElementById('vision-reading-container');
+          const fb = document.getElementById('vision-reading-feedback');
+          
+          fb.style.display = 'none';
+          box.innerHTML = visionTexts[type];
+
+          if (type === 'none') {
+              box.style.filter = 'none'; box.style.clipPath = 'none';
+          } else if (type === 'katarakt') {
+              box.style.clipPath = 'none'; box.style.filter = 'blur(4px) contrast(0.6)';
+          } else if (type === 'rp') {
+              box.style.filter = 'none'; box.style.clipPath = 'circle(50px at 50% 50%)'; 
+          }
+      }
+
+      function handleVisionReadingMove(e) {
+          if (currentVisionInteractive === 'rp') {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const y = e.clientY - rect.top;
+              document.getElementById('vision-reading-container').style.clipPath = `circle(50px at ${x}px ${y}px)`;
+          }
+      }
+
+      function checkVisionPw(expectedType) {
+          if(expectedType === currentVisionInteractive) {
+              const fb = document.getElementById('vision-reading-feedback');
+              fb.style.display = 'block'; fb.innerText = `Lösungswort gefunden!`;
+              event.target.style.color = '#10b981'; event.target.style.fontWeight = 'bold';
+          }
+      }
+
+      function checkSehenSelect() {
+          const selects = document.querySelectorAll('.sehen-select');
+          const fb = document.getElementById('sehen-select-feedback');
+          fb.style.display = 'block';
+          if (selects[0].value === 'katarakt' && selects[1].value === 'rp') {
+              fb.style.color = '#10b981'; fb.innerText = 'Korrekt zugeordnet!';
+          } else {
+              fb.style.color = '#ef4444'; fb.innerText = 'Das stimmt noch nicht. Versuch es nochmal.';
+          }
+      }
+
+      function checkSehenMC() {
+          const selected = document.querySelector('input[name="sq1"]:checked');
+          const fb = document.getElementById('sq1-feedback');
+          if(!selected) return;
+          fb.style.display = 'block';
+          if (selected.value === 'correct') {
+              fb.style.color = '#10b981'; fb.innerText = 'Korrekt! Eine Einschränkung bedeutet nicht immer völlige Blindheit.';
+          } else {
+              fb.style.color = '#ef4444'; fb.innerText = 'Leider falsch.';
+          }
+      }
+
+      // --- LOGIK: MODUL TACTONOM ---
+      const targetX = 0.7; const targetY = 0.3; 
+      function handleTactileMove(e) {
+          const rect = e.target.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          
+          const dist = Math.sqrt(Math.pow(x - targetX, 2) + Math.pow(y - targetY, 2));
+          const audioOut = document.getElementById('tactonom-audio-out');
+          
+          if (dist < 0.05) { audioOut.innerText = "HEISS! Hier klicken!"; audioOut.style.color = '#ef4444'; } 
+          else if (dist < 0.2) { audioOut.innerText = "Sehr warm..."; audioOut.style.color = '#f59e0b'; } 
+          else if (dist < 0.4) { audioOut.innerText = "Wärmer..."; audioOut.style.color = '#fcd34d'; } 
+          else { audioOut.innerText = "Kalt."; audioOut.style.color = '#3b82f6'; }
+      }
+
+      function handleTactileClick(e) {
+          const rect = e.target.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          const dist = Math.sqrt(Math.pow(x - targetX, 2) + Math.pow(y - targetY, 2));
+          if (dist < 0.05) {
+              document.getElementById('tactonom-feedback').style.display = 'block';
+              document.getElementById('tactonom-audio-out').innerText = "Ziel erfasst.";
+              document.getElementById('tactonom-audio-out').style.color = '#10b981';
+          }
+      }
+
+      function checkSenseTask() {
+          let correctSelected = 0; let wrongSelected = 0;
+          document.querySelectorAll('.sense-btn').forEach(btn => {
+              const isCorrect = btn.getAttribute('data-correct') === 'true';
+              const isActive = btn.classList.contains('active');
+              if (isActive && isCorrect) correctSelected++;
+              if (isActive && !isCorrect) wrongSelected++;
+          });
+          const fb = document.getElementById('sense-feedback');
+          fb.style.display = 'block';
+          if (correctSelected === 2 && wrongSelected === 0) {
+              fb.style.color = '#10b981'; fb.innerText = 'Richtig! Tastsinn (taktile Grafiken) und Gehör (Audio) werden verknüpft.';
+          } else {
+              fb.style.color = '#ef4444'; fb.innerText = 'Noch nicht richtig. Wähle exakt die zwei zutreffenden Sinne aus.';
+          }
+      }
+
+      function checkTactonomQuiz() {
+          let correctCount = 0;
+          for(let i=1; i<=5; i++) {
+              const sel = document.getElementById('tac-q' + i);
+              if(sel && sel.value === 'correct') { correctCount++; sel.style.borderColor = '#10b981'; } 
+              else if(sel) { sel.style.borderColor = '#ef4444'; }
+          }
+          const fb = document.getElementById('tactonom-quiz-feedback');
+          fb.style.display = 'block';
+          if (correctCount === 5) {
+              fb.style.color = '#10b981'; fb.innerText = 'Exzellent! Alle 5 Fragen richtig beantwortet.';
+          } else {
+              fb.style.color = '#f59e0b'; fb.innerText = `Du hast ${correctCount} von 5 Fragen richtig. Überprüfe die rot markierten Antworten!`;
+          }
+      }
+
+      // --- LOGIK: MODUL AVA ---
+      let avaFixedCount = 0;
+      function checkAvaWord(el, isError) {
+          if (el.getAttribute('data-fixed') === 'true') return;
+          if (isError) {
+              el.innerText = el.getAttribute('data-correct'); el.style.color = '#10b981';
+              el.setAttribute('data-fixed', 'true'); el.style.cursor = 'default';
+              avaFixedCount++;
+              if(avaFixedCount >= 3) { document.getElementById('ava-feedback').style.display = 'block'; }
+          } else {
+              const origColor = el.style.color; el.style.color = '#ef4444';
+              setTimeout(() => el.style.color = origColor, 300);
+          }
+      }
+
+      function checkAvaSelects() {
+          const selects = document.querySelectorAll('.ava-select');
+          const fb = document.getElementById('ava-select-feedback');
+          fb.style.display = 'block';
+          if (selects[0].value === 'fach' && selects[1].value === 'kog') {
+              fb.style.color = '#10b981'; fb.innerText = 'Richtig ergänzt!';
+          } else {
+              fb.style.color = '#ef4444'; fb.innerText = 'Das stimmt noch nicht bei beiden Lücken.';
+          }
+      }
+
+      function checkAvaMC() {
+          const selected = document.querySelector('input[name="aq1"]:checked');
+          const fb = document.getElementById('aq1-feedback');
+          if(!selected) return;
+          fb.style.display = 'block';
+          if (selected.value === 'correct') {
+              fb.style.color = '#10b981'; fb.innerText = 'Korrekt! Speaker-Identification ist ein starkes Tool für Gruppenarbeiten.';
+          } else {
+              fb.style.color = '#ef4444'; fb.innerText = 'Leider falsch.';
+          }
+      }
+
+      // --- WEITERE MODULE ---
+      function checkModuleTask(btnElement, moduleId, isCorrect) {
+          const container = btnElement.parentElement;
+          const feedbackDiv = container.parentElement.querySelector('.task-feedback');
+          const buttons = container.querySelectorAll('button');
+          
+          buttons.forEach(b => {
+              b.style.background = 'rgba(255,255,255,0.05)';
+              b.style.borderColor = 'rgba(255,255,255,0.1)';
+          });
+          if (isCorrect) {
+              btnElement.style.background = 'rgba(16, 185, 129, 0.2)'; btnElement.style.borderColor = '#10b981';
+              feedbackDiv.style.display = 'block';
+          } else {
+              btnElement.style.background = 'rgba(239, 68, 68, 0.2)'; btnElement.style.borderColor = '#ef4444';
+              feedbackDiv.style.display = 'none';
+          }
+      }
+
+      function startRayBanSim() {
+          const output = document.getElementById('rayban-output');
+          const textToType = "KI-Audio: 'Ich sehe ein analoges Arbeitsblatt zur Zellteilung auf dem Tisch. Soll ich den Text vorlesen?'";
+          output.innerText = "";
+          let i = 0;
+          function typeWriter() {
+              if (i < textToType.length) {
+                  output.innerText += textToType.charAt(i); i++;
+                  setTimeout(typeWriter, 30);
+              }
+          }
+          typeWriter();
+      }
+
+      function toggleZebisBtn(btn) {
+          if (btn.classList.contains('active')) {
+              btn.classList.remove('active'); btn.style.background = 'rgba(255,255,255,0.05)'; btn.style.borderColor = 'rgba(255,255,255,0.1)';
+          } else {
+              btn.classList.add('active'); btn.style.background = 'rgba(59, 130, 246, 0.2)'; btn.style.borderColor = '#3b82f6';
+          }
+      }
+
+      function checkZebisTask() {
+          let correctSelected = 0; let wrongSelected = 0;
+          document.querySelectorAll('.zebis-btn').forEach(btn => {
+              const isCorrect = btn.getAttribute('data-correct') === 'true';
+              const isActive = btn.classList.contains('active');
+              if (isActive && isCorrect) correctSelected++;
+              if (isActive && !isCorrect) wrongSelected++;
+          });
+          const fb = document.getElementById('zebis-feedback');
+          fb.style.display = 'block';
+          if (correctSelected === 3 && wrongSelected === 0) {
+              fb.style.background = 'rgba(16, 185, 129, 0.1)'; fb.style.color = '#10b981'; fb.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+              fb.innerText = 'Exzellent! Alle 3 Merkmale für ein barrierefreies Dokument sind korrekt.';
+          } else {
+              fb.style.background = 'rgba(239, 68, 68, 0.1)'; fb.style.color = '#ef4444'; fb.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+              fb.innerText = 'Das stimmt noch nicht. Achten Sie auf Optionen, die die Wahrnehmung wirklich unterstützen, ohne abzulenken oder unnötig Druck aufzubauen.';
+          }
+      }
+
+      function checkAV1Scenario(btnElement, isCorrect, feedbackText) {
+          const container = btnElement.parentElement.parentElement;
+          const feedbackDiv = container.querySelector('.scenario-feedback');
+          const buttons = container.querySelectorAll('button');
+          buttons.forEach(b => { b.style.background = '#27272a'; b.style.borderColor = '#374151'; b.style.color = '#9ca3af'; b.disabled = true; });
+          if (isCorrect) {
+              btnElement.style.background = 'rgba(16, 185, 129, 0.2)'; btnElement.style.borderColor = '#10b981'; btnElement.style.color = 'white'; feedbackDiv.style.color = '#10b981';
+          } else {
+              btnElement.style.background = 'rgba(239, 68, 68, 0.2)'; btnElement.style.borderColor = '#ef4444'; btnElement.style.color = 'white'; feedbackDiv.style.color = '#ef4444';
+          }
+          feedbackDiv.innerText = feedbackText; feedbackDiv.style.display = 'block';
+      }
+
+      function checkAV1Room(btnElement, type, feedbackText) {
+          const feedbackDiv = document.getElementById('av1-room-feedback');
+          const allButtons = document.querySelectorAll('.room-btn-av1');
+          allButtons.forEach(b => { b.style.background = '#27272a'; b.style.borderColor = '#6b7280'; });
+          feedbackDiv.style.display = 'block';
+          if (type === 'green') {
+              feedbackDiv.style.color = '#10b981'; btnElement.style.background = 'rgba(16, 185, 129, 0.4)'; btnElement.style.borderColor = '#10b981';
+          } else if (type === 'red') {
+              feedbackDiv.style.color = '#ef4444'; btnElement.style.background = 'rgba(239, 68, 68, 0.4)'; btnElement.style.borderColor = '#ef4444';
+          } else {
+              feedbackDiv.style.color = '#f59e0b'; btnElement.style.background = 'rgba(245, 158, 11, 0.4)'; btnElement.style.borderColor = '#f59e0b';
+          }
+          feedbackDiv.innerText = feedbackText;
+      }
+
+      // --- LOGIK: MODUL ASSISTIVE TECHNOLOGIEN ---
+      let scanInterval;
+      let currentScanIndex = -1;
+      const scanItems = ['at-scan-1', 'at-scan-2', 'at-scan-3', 'at-scan-4'];
+      
+      function startSwitchScan() {
+          if(scanInterval) clearInterval(scanInterval);
+          currentScanIndex = -1;
+          document.getElementById('at-scan-feedback').style.display = 'none';
+          
+          scanItems.forEach(id => {
+              document.getElementById(id).style.borderColor = '#4b5563';
+              document.getElementById(id).style.background = '#27272a';
+          });
+
+          scanInterval = setInterval(() => {
+              scanItems.forEach(id => {
+                  document.getElementById(id).style.borderColor = '#4b5563';
+                  document.getElementById(id).style.background = '#27272a';
+              });
+              currentScanIndex = (currentScanIndex + 1) % scanItems.length;
+              const activeEl = document.getElementById(scanItems[currentScanIndex]);
+              activeEl.style.borderColor = '#3b82f6';
+              activeEl.style.background = 'rgba(59, 130, 246, 0.2)';
+          }, 900); // 900ms pro Modul
+      }
+      
+      function pressSwitch() {
+          if (currentScanIndex === -1) return;
+          clearInterval(scanInterval);
+          const activeId = scanItems[currentScanIndex];
+          const fb = document.getElementById('at-scan-feedback');
+          fb.style.display = 'block';
+          
+          if (activeId === 'at-scan-3') {
+              fb.style.color = '#10b981';
+              fb.style.background = 'rgba(16, 185, 129, 0.1)';
+              fb.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+              fb.innerText = 'Exzellent. Das Timing war präzise. Dies veranschaulicht, wie hoch die kognitive Belastung und Konzentrationsanforderung bei der 1-Taster-Steuerung ist.';
+          } else {
+              fb.style.color = '#ef4444';
+              fb.style.background = 'rgba(239, 68, 68, 0.1)';
+              fb.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+              fb.innerText = 'Fehlauswahl. Das Timing hat nicht gestimmt. Bitte starten Sie den Scan erneut.';
+          }
+          currentScanIndex = -1;
+      }
+
+      function updateLRSPreview() {
+          const font = document.getElementById('at-lrs-font').value;
+          const theme = document.getElementById('at-lrs-theme').value;
+          const space = parseFloat(document.getElementById('at-lrs-slider-space').value);
+          const height = parseFloat(document.getElementById('at-lrs-slider-height').value);
+          
+          document.getElementById('at-lrs-val-space').innerText = space + 'px';
+          document.getElementById('at-lrs-val-height').innerText = height;
+
+          const container = document.getElementById('at-lrs-text-container');
+          
+          container.style.letterSpacing = space + 'px';
+          container.style.lineHeight = height;
+          container.style.fontFamily = (font === 'sans') ? "'Inter', sans-serif" : "'Times New Roman', Times, serif";
+
+          if(theme === 'harsh') {
+              container.style.background = '#ffffff'; container.style.color = '#000000';
+          } else if (theme === 'pastel') {
+              container.style.background = '#fef3c7'; container.style.color = '#374151';
+          } else if (theme === 'dark') {
+              container.style.background = '#1f2937'; container.style.color = '#f3f4f6';
+          }
+
+          if (space > 0 && height > 1.4 && font === 'sans' && theme !== 'harsh') {
+              container.classList.remove('crowding-sim');
+              container.style.borderLeftColor = '#10b981';
+              document.getElementById('at-lrs-editor-feedback').style.display = 'block';
+          } else {
+              container.classList.add('crowding-sim');
+              container.style.borderLeftColor = '#ef4444';
+              document.getElementById('at-lrs-editor-feedback').style.display = 'none';
+          }
+      }
+
+      // --- LOGIK: MODUL BOOK CREATOR ---
+      let bcItemsAdded = { audio: false, visual: false };
+      
+      function toggleBCMenu() {
+          const menu = document.getElementById('bc-add-menu');
+          menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+      }
+      
+      function addBCItem(type) {
+          document.getElementById('bc-add-menu').style.display = 'none';
+          if (bcItemsAdded[type]) return;
+          bcItemsAdded[type] = true;
+          
+          if (type === 'audio') {
+              document.getElementById('bc-page-audio').style.display = 'block';
+          } else if (type === 'visual') {
+              document.getElementById('bc-page-visual').style.display = 'flex';
+          }
+          
+          if (bcItemsAdded.audio && bcItemsAdded.visual) {
+              document.getElementById('bc-page-feedback').style.display = 'block';
+          }
+      }
+    </script>
+  </body>
+</html>
