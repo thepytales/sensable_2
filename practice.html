@@ -37,6 +37,47 @@
       ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
       ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
 
+      /* NEU: Hochkontrast-Modus CSS für die Lernmodule */
+      body.high-contrast {
+        --primary: #ffff00;
+        --text: #ffffff;
+        background: #000000 !important;
+        color: #ffffff !important;
+      }
+      body.high-contrast .pwa-glass-box {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+        box-shadow: none !important;
+      }
+      body.high-contrast .pwa-header, 
+      body.high-contrast .pwa-footer,
+      body.high-contrast .learning-module-content > div {
+        background: #000000 !important;
+        border-color: #ffffff !important;
+      }
+      body.high-contrast button {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+        color: #ffffff !important;
+      }
+      body.high-contrast button:hover {
+        background: #333333 !important;
+      }
+      body.high-contrast h2, 
+      body.high-contrast h3, 
+      body.high-contrast p, 
+      body.high-contrast span,
+      body.high-contrast label,
+      body.high-contrast div {
+        color: #ffffff !important;
+      }
+      body.high-contrast select, 
+      body.high-contrast input {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+        color: #ffffff !important;
+      }
+
       .pwa-glass-box {
           background: #18181b; 
           border: 1px solid rgba(255, 255, 255, 0.1);
@@ -165,14 +206,14 @@
               <div id="module-content-hoeren" class="learning-module-content" style="display:none;">
                   <div class="module-page" data-page="1">
                       <h3 style="color: white; margin-top: 0;">Informationsgrundlage: Hörschädigung</h3>
-                      <p>In den folgenden Lerninhalten geht es darum, das Thema Hörschädigung zu erkunden. Sie werden relevante Begriffe kennenlernen sowie sich mit dem Konzept des Audiogramms vertraut machen. Dabei erfahren Sie, wie Hörgeschädigte ihre Umwelt anders wahrnehmen als Hörende und welche technischen Hilfsmittel es für die einzelnen Fälle der Hörschädigung gibt.</p>
-                      <p>In Deutschland leben schätzungsweise 80.000 Kinder mit stark eingeschränktem Gehör. Man unterscheidet dabei zwischen peripherer und zentraler Hörschädigung. Je nach spezifischer Ursache für die Hörschädigung gibt es verschiedene Möglichkeiten dem Hörverlust entgegenzuwirken bzw. das Hören zu ermöglichen. Die Ursachen werden deshalb in Schalleitungsschwerhörigkeit, Schallempfindungsschwerhörigkeit und der Auditiven Verarbeitungs- und Wahrnehmungsstörung (AVWS) unterschieden.</p>
-                      <p>Leider lässt sich selbst durch Hörhilfen der Hörverlust nicht komplett beheben.</p>
+                      <p>Hörschädigungen im schulischen Kontext umfassen ein weites Spektrum, das von leichten Einschränkungen bis zur vollständigen Gehörlosigkeit reicht. In Deutschland weisen schätzungsweise 80.000 Kinder signifikante auditive Einschränkungen auf.</p>
+                      <p>Aus medizinischer Perspektive wird grundsätzlich zwischen peripherer und zentraler Hörschädigung differenziert. Die Ursachen unterteilen sich in Schallleitungsschwerhörigkeit (Störung im Außen- oder Mittelohr), Schallempfindungsschwerhörigkeit (Schädigung im Innenohr oder Hörnerv) und die Auditive Verarbeitungs- und Wahrnehmungsstörung (AVWS), bei welcher das Gehörte zentralnervös nicht korrekt verarbeitet werden kann.</p>
+                      <p>Assistive Technologien kompensieren den Verlust teilweise, stellen jedoch das natürliche Hörvermögen nicht vollständig wieder her. Die Raumakustik bleibt ein entscheidender exogener Faktor.</p>
                   </div>
 
                   <div class="module-page" data-page="2" style="display:none; box-sizing: border-box;">
-                      <h3 style="color: white; margin-top: 0; letter-spacing: 0.5px;">Interaktive Aufgabe 1: Akustik-Mischer</h3>
-                      <p style="color: #9ca3af; line-height: 1.6;">Ziehe die Faktoren, die für eine gute Raumakustik und Inklusion förderlich sind, in die untere Box. (Tipp: Klicke auf dem Smartphone einfach auf die Boxen, anstatt zu ziehen).</p>
+                      <h3 style="color: white; margin-top: 0; letter-spacing: 0.5px;">Interaktion: Akustik-Mischer</h3>
+                      <p style="color: #9ca3af; line-height: 1.6;">Die Reduktion der Nachhallzeit ist für Lernende mit Hörschädigung essenziell. Ordnen Sie die raumakustischen und didaktischen Faktoren dem idealen Klassenzimmer zu, um den Barrierefreiheits-Score zu maximieren.</p>
                       
                       <div style="background: rgba(0,0,0,0.5); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); box-sizing: border-box; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);">
                           <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
@@ -185,13 +226,13 @@
                       </div>
 
                       <div id="drag-source" ondrop="dropAcoustic(event)" ondragover="allowDropAcoustic(event)" style="display: flex; flex-wrap: wrap; gap: 10px; min-height: 80px; padding: 20px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; margin-bottom: 25px; box-sizing: border-box;">
-                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-teppich" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Teppiche verlegen</div>
-                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-uform" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Sitzordnung U-Form</div>
-                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-tafel" data-val="-25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Zur Tafel sprechen</div>
-                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-fm" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">FM-Anlage / Mikrofon</div>
-                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-akustik" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Akustikdecke einbauen</div>
-                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-licht" data-val="-25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Frontales Gegenlicht</div>
-                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-hall" data-val="-25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.borderColor='rgba(59, 130, 246, 0.4)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)';">Kahle Betonwände</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-teppich" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;">Schallabsorbierende Teppiche</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-uform" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;">Sitzordnung U-Form (Lippenlesen)</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-tafel" data-val="-25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;">Zur Tafel gerichtet sprechen</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-fm" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;">Konsistente FM-Anlagen-Nutzung</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-akustik" data-val="25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;">Installation einer Akustikdecke</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-licht" data-val="-25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;">Frontales Gegenlicht (Fenster)</div>
+                          <div class="drag-item" draggable="true" ondragstart="dragAcoustic(event)" onclick="toggleAcousticMove(this)" id="item-hall" data-val="-25" style="background: rgba(255,255,255,0.05); color: #f3f4f6; padding: 10px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); cursor: grab; user-select: none; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;">Kahle Betonwände ohne Struktur</div>
                       </div>
 
                       <strong style="color: #9ca3af; display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Ideales Klassenzimmer (Elemente hierher ziehen)</strong>
@@ -199,52 +240,151 @@
                       </div>
 
                       <div id="acoustic-feedback" style="margin-top: 20px; font-weight: 500; font-size: 15px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; padding: 15px; border-radius: 8px; display: none; box-sizing: border-box; letter-spacing: 0.3px;">
-                          Perfekt! 100% erreicht. Diese Faktoren schaffen eine ideale und barrierefreie Lernumgebung.
+                          Hervorragende Auswahl. Diese Konfiguration etabliert eine inklusive Lehr- und Lernumgebung durch Minimierung akustischer und visueller Störfaktoren.
                       </div>
                   </div>
 
                   <div class="module-page" data-page="3" style="display:none;">
-                      <h3 style="color: white; margin-top: 0;">Interaktive Aufgabe 2: Einordnung der Ursachen</h3>
-                      <p>Ordnen Sie die richtige medizinische Ursache/Bezeichnung zu.</p>
-                      <div style="margin-bottom: 15px;">
-                          <label style="display:block; font-size:13px; color:#9ca3af; margin-bottom:5px;">Störung liegt im Außen- oder Mittelohr (Trommelfell, Gehörknöchelchen).</label>
-                          <select class="hoeren-select" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor: pointer;">
-                              <option value="" disabled selected>Bitte wählen...</option>
-                              <option value="leitung">Schallleitungsschwerhörigkeit</option>
-                              <option value="empfindung">Schallempfindungsschwerhörigkeit</option>
-                              <option value="avws">AVWS</option>
-                          </select>
+                      <h3 style="color: white; margin-top: 0;">Interaktion: Multimodale Sprachwahrnehmung</h3>
+                      <p>Lernende mit Hörschädigung gleichen akustische Defizite zwingend durch visuelle Informationen (Lippenlesen, Mimik) aus. Konfigurieren Sie die Lehr- und Raumsituation in allen vier Kategorien optimal, damit der gesprochene Zielsatz der Lehrkraft fehlerfrei decodiert werden kann.</p>
+                      
+                      <div style="display: flex; gap: 20px; margin-bottom: 25px; align-items: stretch; flex-wrap: wrap;">
+                          
+                          <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 15px; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                              
+                              <div>
+                                  <div style="font-size: 12px; color: #9ca3af; margin-bottom: 8px; text-transform: uppercase; font-weight: bold;">Sitzposition der lernenden Person</div>
+                                  <div style="display: flex; gap: 5px;">
+                                      <button class="hoeren-btn-dist" onclick="setHoerenParam('dist', 0, this)" style="flex:1; padding: 8px; font-size: 11px; background: #27272a; border: 1px solid #4b5563; color: #d1d5db; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Letzte Reihe</button>
+                                      <button class="hoeren-btn-dist" onclick="setHoerenParam('dist', 1, this)" style="flex:1; padding: 8px; font-size: 11px; background: #27272a; border: 1px solid #4b5563; color: #d1d5db; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Reihe 2, zentral</button>
+                                      <button class="hoeren-btn-dist" onclick="setHoerenParam('dist', 2, this)" style="flex:1; padding: 8px; font-size: 11px; background: #27272a; border: 1px solid #4b5563; color: #d1d5db; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Reihe 1, Rand</button>
+                                  </div>
+                              </div>
+                              
+                              <div>
+                                  <div style="font-size: 12px; color: #9ca3af; margin-bottom: 8px; text-transform: uppercase; font-weight: bold;">Körperhaltung der Lehrkraft</div>
+                                  <div style="display: flex; gap: 5px;">
+                                      <button class="hoeren-btn-blick" onclick="setHoerenParam('blick', 0, this)" style="flex:1; padding: 8px; font-size: 11px; background: #27272a; border: 1px solid #4b5563; color: #d1d5db; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Profilansicht</button>
+                                      <button class="hoeren-btn-blick" onclick="setHoerenParam('blick', 1, this)" style="flex:1; padding: 8px; font-size: 11px; background: #27272a; border: 1px solid #4b5563; color: #d1d5db; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Rücken (Tafel)</button>
+                                      <button class="hoeren-btn-blick" onclick="setHoerenParam('blick', 2, this)" style="flex:1; padding: 8px; font-size: 11px; background: #27272a; border: 1px solid #4b5563; color: #d1d5db; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Frontal zum Raum</button>
+                                  </div>
+                              </div>
+
+                              <div>
+                                  <div style="font-size: 12px; color: #9ca3af; margin-bottom: 8px; text-transform: uppercase; font-weight: bold;">Lichtverhältnisse</div>
+                                  <div style="display: flex; gap: 5px;">
+                                      <button class="hoeren-btn-licht" onclick="setHoerenParam('licht', 0, this)" style="flex:1; padding: 8px; font-size: 11px; background: #27272a; border: 1px solid #4b5563; color: #d1d5db; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Gegenlicht (Fenster)</button>
+                                      <button class="hoeren-btn-licht" onclick="setHoerenParam('licht', 1, this)" style="flex:1; padding: 8px; font-size: 11px; background: #27272a; border: 1px solid #4b5563; color: #d1d5db; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Gleichmäßig hell</button>
+                                      <button class="hoeren-btn-licht" onclick="setHoerenParam('licht', 2, this)" style="flex:1; padding: 8px; font-size: 11px; background: #27272a; border: 1px solid #4b5563; color: #d1d5db; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Abgedunkelt (Beamer)</button>
+                                  </div>
+                              </div>
+
+                              <div>
+                                  <div style="font-size: 12px; color: #9ca3af; margin-bottom: 8px; text-transform: uppercase; font-weight: bold;">Sozialform / Grundrauschen</div>
+                                  <div style="display: flex; gap: 5px;">
+                                      <button class="hoeren-btn-laerm" onclick="setHoerenParam('laerm', 0, this)" style="flex:1; padding: 8px; font-size: 11px; background: #27272a; border: 1px solid #4b5563; color: #d1d5db; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Stillarbeit</button>
+                                      <button class="hoeren-btn-laerm" onclick="setHoerenParam('laerm', 1, this)" style="flex:1; padding: 8px; font-size: 11px; background: #27272a; border: 1px solid #4b5563; color: #d1d5db; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Gruppenarbeit</button>
+                                      <button class="hoeren-btn-laerm" onclick="setHoerenParam('laerm', 2, this)" style="flex:1; padding: 8px; font-size: 11px; background: #27272a; border: 1px solid #4b5563; color: #d1d5db; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Offenes Fenster</button>
+                                  </div>
+                              </div>
+
+                          </div>
+
+                          <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 15px;">
+                              
+                              <div style="background: #111113; padding: 15px; border-radius: 8px; border: 1px solid #374151;">
+                                  <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px; font-weight: bold; color: #d1d5db;">
+                                      <span>Akustische Klarheit (Audio)</span>
+                                      <span id="sim-text-akustik" style="color: #3b82f6;">0%</span>
+                                  </div>
+                                  <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden;">
+                                      <div id="sim-bar-akustik" style="width: 0%; height: 100%; background: #3b82f6; transition: width 0.3s;"></div>
+                                  </div>
+
+                                  <div style="display: flex; justify-content: space-between; margin-bottom: 5px; margin-top: 15px; font-size: 12px; font-weight: bold; color: #d1d5db;">
+                                      <span>Visuelles Signal (Lippenbild/Mimik)</span>
+                                      <span id="sim-text-visuell" style="color: #10b981;">0%</span>
+                                  </div>
+                                  <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden;">
+                                      <div id="sim-bar-visuell" style="width: 0%; height: 100%; background: #10b981; transition: width 0.3s;"></div>
+                                  </div>
+                              </div>
+
+                              <div style="font-size: 12px; color: #9ca3af; text-transform: uppercase; font-weight: bold; margin-bottom: -5px;">Decodiertes Sprachverständnis der lernenden Person</div>
+                              <div id="sim-text-output" style="font-family: monospace; font-size: 18px; line-height: 1.5; letter-spacing: 1px; background: #000; padding: 20px; border-radius: 8px; border: 1px solid #374151; color: #ef4444; min-height: 100px; display: flex; align-items: center; justify-content: center; text-align: center; transition: color 0.3s;">
+                                  _e__e _n____s_e_e_ __r __e_U_s_c_e_ __s __i_a_a___l_.
+                              </div>
+
+                              <div id="sim-feedback-hoeren" style="padding: 15px; border-radius: 8px; font-weight: bold; font-size: 13px; line-height: 1.5; display: none; border: 1px solid transparent;"></div>
+
+                          </div>
                       </div>
-                      <div style="margin-bottom: 15px;">
-                          <label style="display:block; font-size:13px; color:#9ca3af; margin-bottom:5px;">Das Gehörte kann vom Gehirn nicht richtig verarbeitet werden, obwohl das Ohr intakt ist.</label>
-                          <select class="hoeren-select" style="width:100%; background:#27272a; color:#fff; border:1px solid #374151; padding:10px; border-radius:6px; cursor: pointer;">
-                              <option value="" disabled selected>Bitte wählen...</option>
-                              <option value="leitung">Schallleitungsschwerhörigkeit</option>
-                              <option value="empfindung">Schallempfindungsschwerhörigkeit</option>
-                              <option value="avws">AVWS</option>
-                          </select>
-                      </div>
-                      <button onclick="checkHoerenSelect()" style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Überprüfen</button>
-                      <div id="hoeren-select-feedback" style="margin-top: 15px; font-weight: bold; display: none;"></div>
                   </div>
 
                   <div class="module-page" data-page="4" style="display:none;">
-                      <h3 style="color: white; margin-top: 0;">Wissensabfrage</h3>
-                      <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px;">
-                          <p style="font-weight: bold; color: white;">Welche Aussage über Hörschädigungen bei Kindern in Deutschland ist laut Text korrekt?</p>
-                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="hq1" value="wrong"> Hörgeräte können den Hörverlust in der Regel vollständig beheben.</label>
-                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="hq1" value="correct"> Es gibt schätzungsweise 80.000 Kinder mit stark eingeschränktem Gehör.</label>
-                          <label style="display:block; margin-bottom:10px; cursor:pointer;"><input type="radio" name="hq1" value="wrong"> AVWS ist eine periphere Störung des Außenohrs.</label>
-                          <button onclick="checkHoerenMC()" style="margin-top:10px; background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">Antworten</button>
-                          <div id="hq1-feedback" style="margin-top: 10px; font-weight: bold; display:none;"></div>
+                      <h3 style="color: white; margin-top: 0;">Interaktion: Digitale Frequenzkompression</h3>
+                      <p>Bei einer Hochtonschwerhörigkeit fallen wichtige Konsonanten (wie Zischlaute: s, f, sch) oft komplett aus dem hörbaren Spektrum. Tiefere Laute (Vokale wie a, u, o) bleiben hingegen meist gut verständlich. Assistive Hörgeräte nutzen hier ein innovatives Verfahren: die sogenannte <strong>Frequenzkompression</strong>.</p>
+                      <p>Die Funktionsweise lässt sich mit einer defekten Klaviertastatur vergleichen, bei der die obersten Tasten stumm bleiben. Das System greift nun die unhörbaren hohen Töne auf, staucht sie zusammen und verschiebt sie auf tiefere, noch funktionierende "Tasten". Kalibrieren Sie das System mit den beiden Reglern so, dass die orangefarbenen Zischlaute in die grüne, intakte Hörzone verschoben werden. Achten Sie darauf, die blauen Vokale dabei nicht zu verzerren.</p>
+                      
+                      <div style="background: rgba(0,0,0,0.2); padding: 25px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 25px;">
+                          <div style="position: relative; height: 160px; background: #111113; border: 1px solid #374151; border-radius: 8px; overflow: hidden; margin-bottom: 25px;">
+                              
+                              <div style="position: absolute; left: 0; top: 0; width: 60%; height: 100%; background: rgba(16, 185, 129, 0.05); border-right: 2px dashed #10b981;">
+                                  <span style="position: absolute; top: 10px; right: 10px; color: #10b981; font-size: 11px; font-weight: bold; text-transform: uppercase;">Intaktes Hörfeld</span>
+                              </div>
+                              <div style="position: absolute; left: 60%; top: 0; width: 40%; height: 100%; background: rgba(239, 68, 68, 0.05);">
+                                  <span style="position: absolute; top: 10px; right: 10px; color: #ef4444; font-size: 11px; font-weight: bold; text-transform: uppercase;">Hörverlust-Zone</span>
+                              </div>
+                              
+                              <div id="freq-cutoff-line" style="position: absolute; left: 80%; top: 0; width: 2px; height: 100%; background: #3b82f6; box-shadow: 0 0 8px #3b82f6; z-index: 10; transition: left 0.1s;">
+                                  <span style="position: absolute; bottom: 5px; left: 5px; color: #3b82f6; font-size: 10px; font-weight: bold; background: rgba(17,17,19,0.8); padding: 2px 4px; border-radius: 4px;">Startpunkt</span>
+                              </div>
+
+                              <div id="freq-vowels" style="position: absolute; left: 5%; width: 25%; top: 30%; height: 40%; background: rgba(59, 130, 246, 0.8); border: 1px solid #3b82f6; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px; transition: all 0.1s; z-index: 5; overflow: hidden; white-space: nowrap;">Vokale (a, u)</div>
+                              
+                              <div id="freq-consonants" style="position: absolute; left: 70%; width: 20%; top: 30%; height: 40%; background: rgba(245, 158, 11, 0.8); border: 1px solid #f59e0b; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px; transition: all 0.1s; z-index: 5; overflow: hidden; white-space: nowrap;">Zischlaute (s, f)</div>
+                              
+                              <div style="position: absolute; bottom: 5px; left: 10px; color: #9ca3af; font-size: 10px;">Tiefe Töne</div>
+                              <div style="position: absolute; bottom: 5px; right: 10px; color: #9ca3af; font-size: 10px;">Hohe Töne</div>
+                          </div>
+
+                          <div style="display: flex; flex-direction: column; gap: 20px;">
+                              <div>
+                                  <div style="display: flex; justify-content: space-between; font-size: 12px; color: #d1d5db; margin-bottom: 5px; font-weight: bold; text-transform: uppercase;">
+                                      <span>Startpunkt der Verschiebung (Cut-Off)</span>
+                                      <span id="freq-val-cutoff" style="color: #3b82f6;">8.0 kHz</span>
+                                  </div>
+                                  <div style="font-size: 11px; color: #6b7280; margin-bottom: 10px;">Legt fest, ab welcher Frequenz (Tonhöhe) das Hörgerät eingreift und beginnt, die Töne zu verschieben.</div>
+                                  <input type="range" id="sim-slider-cutoff" min="10" max="90" step="1" value="80" oninput="updateFreqKomp()" style="width: 100%; cursor: pointer;">
+                              </div>
+
+                              <div>
+                                  <div style="display: flex; justify-content: space-between; font-size: 12px; color: #d1d5db; margin-bottom: 5px; font-weight: bold; text-transform: uppercase;">
+                                      <span>Stärke der Stauchung (Kompression)</span>
+                                      <span id="freq-val-ratio" style="color: #3b82f6;">1.0 : 1</span>
+                                  </div>
+                                  <div style="font-size: 11px; color: #6b7280; margin-bottom: 10px;">Legt fest, wie eng die hohen Töne zusammengepresst werden, damit sie in den verbleibenden hörbaren Bereich passen.</div>
+                                  <input type="range" id="sim-slider-ratio" min="10" max="50" step="1" value="10" oninput="updateFreqKomp()" style="width: 100%; cursor: pointer;">
+                              </div>
+                          </div>
+                          
+                          <div id="freq-feedback-komp" style="margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 13px; line-height: 1.5; border: 1px solid transparent; display: none;"></div>
                       </div>
                   </div>
 
                   <div class="module-page" data-page="5" style="display:none;">
-                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Weitere Informationen</h3>
-                      <p>Wunderbar! Sie haben nun einen ausführlichen Einblick in das schulische Leben gehörloser Lernender erhalten. Sie kennen die Probleme, mit denen sie konfrontiert sind sowie ihre Ursachen, sodass sie dem nun mit Verständnis begegnen können und Ihre Schüler:innen dafür sensibilisieren können.</p>
-                      <p>Eine bisher wenig eingesetzte Methode zur Begegnung des Problems der Hörschädigung wurde in diesem Teilmodul noch nicht genannt: die Verwendung von Untertiteln im Unterricht. Wir empfehlen Ihnen, sich mit diesem Ansatz ausführlich in der Lerneinheit zur Echtzeit-Transkription (AVA) zu beschäftigen.</p>
-                      <p>Und vergessen Sie nicht: Inklusion sollte stets ganzheitlich gedacht werden - was einem Schüler mit Hörschädigung zugute kommt, kann auch einer hörenden Schülerin helfen!</p>
+                      <h3 style="color: white; margin-top: 0;">Zusammenfassung & Ausblick</h3>
+                      <p>Die Unterstützung von Lernenden mit Hörschädigungen erfordert ein duales Vorgehen: Physische Raumakustik (Teppiche, Decken) muss zwingend mit didaktischer Methodik (Lippenbild freihalten, Frontalunterricht bei Kerninformationen) kombiniert werden.</p>
+                      <p>Technische Hilfsmittel (Hörgeräte, FM-Anlagen) filtern und komprimieren Frequenzen hochkomplex, entlasten die Lernenden jedoch nicht immer kognitiv. Daher sollten begleitend visuelle Repräsentationsformen gewählt werden (Universal Design for Learning).</p>
+                      
+                      <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-top: 15px;">
+                          <strong style="color: #9ca3af; font-size: 13px; text-transform: uppercase;">Software-Alternativen & Digitale Helfer</strong>
+                          <ul style="color: #d1d5db; font-size: 13px; line-height: 1.6; margin-top: 10px; padding-left: 20px;">
+                              <li><strong>AVA / Live Transcribe (Google):</strong> App-basierte Echtzeit-Transkription auf dem Smartphone oder Tablet der Lernenden.</li>
+                              <li><strong>Microsoft Translator:</strong> Ermöglicht Live-Untertitel in Gruppenarbeiten auf gekoppelten Endgeräten.</li>
+                              <li><strong>PowerPoint Live-Untertitel:</strong> Native Integration in Office 365, um Präsentationen in Echtzeit visuell zu untertiteln.</li>
+                          </ul>
+                      </div>
                   </div>
               </div>
 
@@ -1372,8 +1512,100 @@
       let currentModuleId = '';
       let currentPage = 1;
 
+      let readAloudActive = false;
+      let ttsTimeout = null;
+
       window.onload = function() {
-          // Liest den Parameter "module" aus der URL aus (?module=hoeren)
+          // Barrierefreiheit aus LocalStorage übernehmen
+          if (localStorage.getItem('elmeks_high_contrast') === 'true') {
+              document.body.classList.add('high-contrast');
+          }
+          if (localStorage.getItem('elmeks_read_aloud') === 'true') {
+              readAloudActive = true;
+          }
+          
+          // Elegantes Vollbild-Icon oben rechts neben dem Schließen-Button
+          if (localStorage.getItem('elmeks_fullscreen') === 'true') {
+              const headers = document.querySelectorAll('.pwa-header');
+              
+              headers.forEach(header => {
+                  const closeBtn = header.querySelector('button');
+                  if (closeBtn) {
+                      const rightContainer = document.createElement('div');
+                      rightContainer.style.display = 'flex';
+                      rightContainer.style.alignItems = 'center';
+                      rightContainer.style.gap = '8px';
+                      
+                      const fsBtn = document.createElement('button');
+                      // Minimalistisches SVG-Icon für Vollbild
+                      fsBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>';
+                      fsBtn.style.background = 'transparent';
+                      fsBtn.style.border = '1px solid transparent';
+                      fsBtn.style.color = '#9ca3af';
+                      fsBtn.style.width = '36px';
+                      fsBtn.style.height = '36px';
+                      fsBtn.style.borderRadius = '8px';
+                      fsBtn.style.cursor = 'pointer';
+                      fsBtn.style.display = 'flex';
+                      fsBtn.style.alignItems = 'center';
+                      fsBtn.style.justifyContent = 'center';
+                      fsBtn.style.transition = 'all 0.2s';
+                      fsBtn.title = "Vollbild aktivieren";
+                      
+                      fsBtn.onmouseover = () => { 
+                          fsBtn.style.background = 'rgba(255,255,255,0.1)'; 
+                          fsBtn.style.color = '#fff'; 
+                      };
+                      fsBtn.onmouseout = () => { 
+                          fsBtn.style.background = 'transparent'; 
+                          fsBtn.style.color = '#9ca3af'; 
+                      };
+                      
+                      fsBtn.onclick = function() {
+                          const docEl = document.documentElement;
+                          if (!document.fullscreenElement) {
+                              if (docEl.requestFullscreen) docEl.requestFullscreen();
+                              else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
+                          } else {
+                              if (document.exitFullscreen) document.exitFullscreen();
+                              else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                          }
+                      };
+                      
+                      closeBtn.parentNode.insertBefore(rightContainer, closeBtn);
+                      rightContainer.appendChild(fsBtn);
+                      rightContainer.appendChild(closeBtn);
+                  }
+              });
+          }
+
+          // Vorlesemodus (TTS) initialisieren
+          if ('speechSynthesis' in window) {
+              document.body.addEventListener('mouseover', (e) => {
+                  if (!readAloudActive) return;
+                  const validTags = ['BUTTON', 'H2', 'H3', 'P', 'SPAN', 'DIV', 'LI', 'STRONG', 'LABEL'];
+                  if (validTags.includes(e.target.tagName)) {
+                      let text = e.target.innerText;
+                      if (!text || text.trim().length === 0) return;
+                      
+                      window.speechSynthesis.cancel();
+                      clearTimeout(ttsTimeout);
+                      ttsTimeout = setTimeout(() => {
+                          const utterance = new SpeechSynthesisUtterance(text.trim());
+                          utterance.lang = 'de-DE';
+                          window.speechSynthesis.speak(utterance);
+                      }, 400);
+                  }
+              });
+
+              document.body.addEventListener('mouseout', () => {
+                  if (!readAloudActive) return;
+                  clearTimeout(ttsTimeout);
+                  window.speechSynthesis.cancel();
+              });
+          }
+
+          // URL Parameter auslesen
           const urlParams = new URLSearchParams(window.location.search);
           const module = urlParams.get('module');
           
@@ -1470,6 +1702,34 @@
               items.forEach(item => source.appendChild(item));
               updateAcousticScore();
           }
+          
+          hoerenState = { dist: 0, blick: 1, licht: 0, laerm: 1 };
+          if (document.getElementById('sim-text-output')) {
+              const categories = ['dist', 'blick', 'licht', 'laerm'];
+              categories.forEach(cat => {
+                  const btns = document.querySelectorAll('.hoeren-btn-' + cat);
+                  btns.forEach((b, index) => {
+                      if(index === hoerenState[cat]) {
+                          b.style.background = 'rgba(239, 68, 68, 0.2)'; 
+                          b.style.borderColor = '#ef4444';
+                          b.style.color = 'white';
+                      } else {
+                          b.style.background = '#27272a';
+                          b.style.borderColor = '#4b5563';
+                          b.style.color = '#d1d5db';
+                      }
+                  });
+              });
+              updateHoerenSimulation();
+          }
+
+          const cutoffSlider = document.getElementById('sim-slider-cutoff');
+          const ratioSlider = document.getElementById('sim-slider-ratio');
+          if(cutoffSlider && ratioSlider) {
+              cutoffSlider.value = 80;
+              ratioSlider.value = 10;
+              updateFreqKomp();
+          }
       }
 
       function allowDropAcoustic(ev) { ev.preventDefault(); }
@@ -1539,26 +1799,162 @@
           if(feedback) { feedback.style.display = (score === 100) ? 'block' : 'none'; }
       }
 
-      function checkHoerenSelect() {
-          const selects = document.querySelectorAll('.hoeren-select');
-          const fb = document.getElementById('hoeren-select-feedback');
-          fb.style.display = 'block';
-          if (selects[0].value === 'leitung' && selects[1].value === 'avws') {
-              fb.style.color = '#10b981'; fb.innerText = 'Perfekt zugeordnet!';
+      let hoerenState = { dist: 0, blick: 1, licht: 0, laerm: 1 };
+      
+      const hoerenData = {
+          dist: [{a: 40, v: 30}, {a: 100, v: 100}, {a: 80, v: 50}], 
+          blick: [{v: 40}, {v: 0}, {v: 100}], 
+          licht: [{v: 20}, {v: 100}, {v: 50}], 
+          laerm: [{a: 100}, {a: 20}, {a: 50}]  
+      };
+
+      function setHoerenParam(category, index, btn) {
+          hoerenState[category] = index;
+          const buttons = document.querySelectorAll('.hoeren-btn-' + category);
+          buttons.forEach(b => {
+              b.style.background = '#27272a';
+              b.style.borderColor = '#4b5563';
+              b.style.color = '#d1d5db';
+          });
+          btn.style.background = 'rgba(59, 130, 246, 0.2)';
+          btn.style.borderColor = '#3b82f6';
+          btn.style.color = '#fff';
+          updateHoerenSimulation();
+      }
+
+      function updateHoerenSimulation() {
+          const aDist = hoerenData.dist[hoerenState.dist].a;
+          const vDist = hoerenData.dist[hoerenState.dist].v;
+          const vBlick = hoerenData.blick[hoerenState.blick].v;
+          const vLicht = hoerenData.licht[hoerenState.licht].v;
+          const aLaerm = hoerenData.laerm[hoerenState.laerm].a;
+
+          const aTotal = Math.round((aDist + aLaerm) / 2);
+          const vTotal = Math.round((vDist + vBlick + vLicht) / 3);
+
+          document.getElementById('sim-bar-akustik').style.width = aTotal + '%';
+          document.getElementById('sim-text-akustik').innerText = aTotal + '%';
+          document.getElementById('sim-bar-visuell').style.width = vTotal + '%';
+          document.getElementById('sim-text-visuell').innerText = vTotal + '%';
+
+          const totalScore = (aTotal + vTotal) / 2;
+          const targetText = "Heute analysieren wir die Ursachen des Klimawandels.";
+          let scrambled = "";
+
+          for(let i=0; i<targetText.length; i++) {
+              if (targetText[i] === " " || targetText[i] === ".") {
+                  scrambled += targetText[i];
+                  continue;
+              }
+              const threshold = ((i * 17) % 100);
+              if (totalScore >= 95 || totalScore > threshold) {
+                  scrambled += targetText[i];
+              } else {
+                  scrambled += "_";
+              }
+          }
+
+          const outputDiv = document.getElementById('sim-text-output');
+          outputDiv.innerText = scrambled;
+
+          const fb = document.getElementById('sim-feedback-hoeren');
+          
+          if (totalScore >= 95) {
+              outputDiv.style.color = '#10b981';
+              fb.style.display = 'block';
+              fb.style.color = '#10b981';
+              fb.style.background = 'rgba(16, 185, 129, 0.1)';
+              fb.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+              fb.innerText = 'Exzellent! Durch die zentrale Sitzposition, blendfreies Licht, frontale Ansprache und ruhige Akustik wird das Sprachverständnis multimodal abgesichert.';
           } else {
-              fb.style.color = '#ef4444'; fb.innerText = 'Das stimmt noch nicht bei beiden. Versuch es nochmal!';
+              if (totalScore >= 50) {
+                  outputDiv.style.color = '#f59e0b';
+              } else {
+                  outputDiv.style.color = '#ef4444';
+              }
+              
+              fb.style.display = 'block';
+              fb.style.color = '#ef4444';
+              fb.style.background = 'rgba(239, 68, 68, 0.1)';
+              fb.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+              
+              if (hoerenState.blick === 1) {
+                  fb.innerText = 'Die Lehrkraft spricht zur Tafel. Das visuelle Mundbild wird dem Lernenden komplett entzogen.';
+              } else if (hoerenState.laerm === 1) {
+                  fb.innerText = 'Der diffuse Lärmpegel einer Gruppenarbeitsphase überlagert die dedizierte Ansprache massiv.';
+              } else if (hoerenState.licht === 0) {
+                  fb.innerText = 'Frontales Gegenlicht vom Fenster legt das Gesicht der Lehrkraft in den Schatten. Mimik ist nicht ablesbar.';
+              } else if (hoerenState.dist === 2) {
+                  fb.innerText = 'Ein Platz am äußeren Rand erschwert den frontalen visuellen Kontakt enorm.';
+              } else {
+                  fb.innerText = 'Die akustischen und visuellen Informationen reichen zur Decodierung des Satzes noch nicht aus. Passen Sie die Parameter weiter an.';
+              }
           }
       }
 
-      function checkHoerenMC() {
-          const selected = document.querySelector('input[name="hq1"]:checked');
-          const fb = document.getElementById('hq1-feedback');
-          if(!selected) return;
+      function updateFreqKomp() {
+          const cutoffSlider = document.getElementById('sim-slider-cutoff');
+          const ratioSlider = document.getElementById('sim-slider-ratio');
+          if(!cutoffSlider || !ratioSlider) return;
+
+          let cutoff = parseInt(cutoffSlider.value);
+          let ratio = parseInt(ratioSlider.value) / 10;
+
+          document.getElementById('freq-val-cutoff').innerText = (cutoff / 10).toFixed(1) + ' kHz';
+          document.getElementById('freq-val-ratio').innerText = ratio.toFixed(1) + ' : 1';
+
+          document.getElementById('freq-cutoff-line').style.left = cutoff + '%';
+
+          let vowelStart = 5;
+          let vowelEnd = 30;
+          let consStart = 70;
+          let consEnd = 90;
+
+          function compress(val) {
+              if (val <= cutoff) return val;
+              return cutoff + ((val - cutoff) / ratio);
+          }
+
+          let newVowelStart = compress(vowelStart);
+          let newVowelEnd = compress(vowelEnd);
+          let newConsStart = compress(consStart);
+          let newConsEnd = compress(consEnd);
+
+          const vBox = document.getElementById('freq-vowels');
+          vBox.style.left = newVowelStart + '%';
+          vBox.style.width = (newVowelEnd - newVowelStart) + '%';
+
+          const cBox = document.getElementById('freq-consonants');
+          cBox.style.left = newConsStart + '%';
+          cBox.style.width = (newConsEnd - newConsStart) + '%';
+
+          let vowelsDistorted = cutoff < 30 || (ratio > 4.0 && cutoff < 35);
+          let consAudible = newConsEnd <= 60;
+          let tooCompressed = ratio > 3.5;
+
+          const fb = document.getElementById('freq-feedback-komp');
           fb.style.display = 'block';
-          if (selected.value === 'correct') {
-              fb.style.color = '#10b981'; fb.innerText = 'Korrekt!';
+
+          if (vowelsDistorted) {
+              fb.style.color = '#ef4444';
+              fb.style.background = 'rgba(239, 68, 68, 0.1)';
+              fb.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+              fb.innerText = 'Korrekturbedarf: Sie beginnen mit der Verschiebung schon bei sehr tiefen Tönen. Dadurch werden die wichtigen Vokale (a, u, o) mitgestaucht und klingen für die lernende Person nun völlig verzerrt.';
+          } else if (!consAudible) {
+              fb.style.color = '#f59e0b';
+              fb.style.background = 'rgba(245, 158, 11, 0.1)';
+              fb.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+              fb.innerText = 'Noch nicht optimal: Die Zischlaute (s, f, sch) liegen weiterhin teilweise im unhörbaren, roten Bereich. Schieben Sie den Startpunkt etwas weiter nach links oder erhöhen Sie die Stauchung leicht.';
+          } else if (tooCompressed) {
+              fb.style.color = '#ef4444';
+              fb.style.background = 'rgba(239, 68, 68, 0.1)';
+              fb.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+              fb.innerText = 'Korrekturbedarf: Sie stauchen die Töne zu stark zusammen. Das Gehirn kann die verschiedenen Laute nun kaum noch voneinander unterscheiden – es klingt extrem synthetisch und blechern.';
           } else {
-              fb.style.color = '#ef4444'; fb.innerText = 'Falsch. Lies noch einmal in der Informationsgrundlage nach.';
+              fb.style.color = '#10b981';
+              fb.style.background = 'rgba(16, 185, 129, 0.1)';
+              fb.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+              fb.innerText = 'Exzellent kalibriert! Die hohen Zischlaute sind nun im hörbaren (grünen) Bereich angekommen. Gleichzeitig bleiben die tiefen Vokale natürlich und unverzerrt. Genau nach diesem Prinzip arbeiten Hörakustiker:innen.';
           }
       }
 

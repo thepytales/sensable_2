@@ -8,24 +8,11 @@ import Stats from "stats"; // <-- NEU HINZUGEFÜGT
 // Eigene Module
 import { initRightSidebar } from "./js/modules/ui.js"; 
 import { toggleAvatar, toggleAvatarView, isFirstPersonActive } from "./js/modules/avatar.js";
+import { SCENARIOS, SIM_GLOSSARY, ASSETS } from "./js/modules/data.js";
 
 // === 1. Setup & Globale Variablen ===
-window.app = {}; 
-
-// Sicherheits-Funktion (XSS-Schutz)
-window.app.escapeHTML = function(str) {
-    if (!str) return "";
-    return String(str).replace(/[&<>'"]/g, function(tag) {
-        const charsToReplace = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            "'": '&#39;',
-            '"': '&quot;'
-        };
-        return charsToReplace[tag] || tag;
-    });
-};
+window.app = window.app || {}; 
+// XSS-Schutz und UI-Methoden sind nach ui.js ausgelagert.
 
 const GLOBAL_SCALE = 0.6; 
 const FURNITURE_Y_OFFSET = 0.22; // Standardhöhe für Möbels
@@ -36,260 +23,7 @@ const TOP_VIEW_HEIGHT = 18;
 let isScenarioMode = false;
 let currentScenarioId = null;
 
-const SCENARIOS = {
-    'rollstuhl_falle': {
-        title: "Die Rollstuhl-Falle",
-        difficulty: "Leicht",
-        desc: "Die Lehrkraft hat die Tische in einem U-Form-ähnlichen Konstrukt aufgebaut. Ein Lernende im Rollstuhl sitzt hinten links an der Wand. <br><br><b>Problem:</b> Der Fluchtweg bzw. Gang zur Tür ist durch einen Schrank und Tische blockiert.",
-        tasks: ["Stelle sicher, dass der engste Durchgang im Raum (Rollstuhlmaß) mindestens 90cm beträgt."],
-        setupRoom: "raummodell_leer.glb",
-        setup: [
-            { type: 'board', x: 0, z: -4.2, rot: 0 },
-            { type: 'teacher', x: -1.5, z: -3.0, rot: 0 },
-            // Blockade im Mittelgang
-            { type: 'cabinet_long', x: 0.5, z: 0, rot: Math.PI / 2 },
-            // Schülergruppe
-            { type: 'k3', x: -2.0, z: 1.0, rot: 0 },
-            { type: 'k3', x: 2.5, z: 1.0, rot: 0 }
-        ],
-        tools: [],
-        type: 'dragdrop',
-        validate: () => {
-            const stats = getAccessibilityStats();
-            return { success: stats.minCm >= 90, msg: stats.minCm >= 90 ? "Perfekt! Der Weg ist breit genug." : `Der engste Durchgang ist aktuell nur ${stats.minCm}cm breit. (Min. 90cm nötig)` };
-        }
-    },
-    'akustik_hoelle': {
-        title: "Die Akustik-Hölle",
-        difficulty: "Mittel",
-        desc: "Ein großer, leerer Raum (70qm) mit vielen Stühlen. Hier entsteht extremer Nachhall. Lernende mit Hörgeräten leiden massiv unter dieser Umgebung.",
-        tasks: ["Nutzen Sie die Hilfsmittel, um die Akustik-Prognose auf 'Akzeptabel' oder 'Gut' zu bringen."],
-        setupRoom: "leer_70qm.glb",
-        setup: [
-            { type: 'board', x: 0, z: -5.3, rot: 0 },
-            { type: 'k6', x: -2, z: -1, rot: 0 },
-            { type: 'k6', x: 2, z: -1, rot: 0 },
-            { type: 'k6', x: 0, z: 2, rot: 0 }
-        ],
-        tools: ['carpet_proc', 'partition_proc', 'absorber_proc'],
-        type: 'dragdrop',
-        validate: () => {
-            const stats = getAccessibilityStats();
-            const isGood = stats.acousticScore > stats.targets.warn;
-            return { success: isGood, msg: isGood ? "Sehr gut! Die Nachhallzeit wurde deutlich gesenkt." : "Die Akustik ist noch zu schlecht. Fügen Sie mehr schallschluckende Elemente hinzu!" };
-        }
-    },
-    'hemianopsie_neglect': {
-        title: "Hemianopsie (Gesichtsfeldausfall)",
-        difficulty: "Schwer",
-        desc: "Setze einen Avatar auf den markierten Tisch. Starte dann die Seh-Simulation 'Hemianopsie Rechts'. Der Lernende kann die rechte Hälfte der Welt nicht wahrnehmen.",
-        tasks: ["Beantworte die Multiple-Choice Frage zur korrekten Platzierung des Lernenden."],
-        setupRoom: "raummodell_leer.glb",
-        setup: [
-            { type: 'board', x: 0, z: -4.2, rot: 0 },
-            { type: 'table_double', x: 0, z: -1, rot: 0 }
-        ],
-        tools: ['btn-spawn-avatar'],
-        type: 'mc',
-        mcQuestion: "Du hast durch die Simulation gesehen, wie eine rechtsseitige Hemianopsie wirkt. Wo sollte dieser Lernende im Plenum idealerweise sitzen, damit er Tafel und Lehrkraft gut sehen kann?",
-        mcAnswers: [
-            { text: "Möglichst weit rechts im Raum, damit die Klasse in seinem Sichtfeld liegt.", correct: false },
-            { text: "Möglichst weit links im Raum, damit die Klasse und Tafel im gesunden (linken) Sichtfeld liegen.", correct: true },
-            { text: "Zentral in der ersten Reihe, direkt vor der Tafel.", correct: false }
-        ]
-    },
-    'licht_blendung': {
-        title: "Katarakt & Blendung",
-        difficulty: "Mittel",
-        desc: "Ein Schüler mit Katarakt (Grauer Star) klagt über Kopfschmerzen. Der Avatar ist bereits an seinem Platz platziert.",
-        tasks: ["Nutzen Sie die Visuelle Simulation (Ich-Perspektive + Grauer Star), um das Problem zu erkennen, und beantworten Sie die Frage."],
-        setupRoom: "raummodell_leer.glb",
-        setup: [
-            { type: 'board', x: 0, z: -4.2, rot: 0 },
-            { type: 'row_combo', x: -3.5, z: 0, rot: -Math.PI/2 }, // Schaut zum Fenster (X-Achse in 3D-Räumen oft Fensterseite)
-            { type: 'avatar_procedural', x: -3.5, z: 0, rot: -Math.PI/2 }
-        ],
-        tools: [],
-        type: 'mc',
-        mcQuestion: "Was ist das Hauptproblem an diesem Sitzplatz für ein Kind mit Katarakt (Grauer Star)?",
-        mcAnswers: [
-            { text: "Die Tafel ist zu weit weg, der Visus reicht nicht aus.", correct: false },
-            { text: "Der Blick geht direkt in Richtung Fenster. Die extreme Blendempfindlichkeit bei Katarakt macht Sehen hier fast unmöglich.", correct: true },
-            { text: "Der Platz ist isoliert, was zu sozialer Ausgrenzung führt.", correct: false }
-        ]
-    },
-    'fluchtweg_tuer': {
-        title: "Der Tür-Blocker",
-        difficulty: "Leicht",
-        desc: "Die Tür befindet sich hinten rechts im Raum (in diesem Modell ca. bei X: 4, Z: 4). Die Schüler haben beim Umbauen für die Gruppenarbeit die Schränke verschoben.",
-        tasks: ["Räume den Bereich um die fiktive Tür (hinten rechts) komplett frei. Verschiebe Möbel, die im Weg stehen."],
-        setupRoom: "raummodell_leer.glb",
-        setup: [
-            { type: 'cabinet_long', x: 3.5, z: 3.8, rot: 0 },
-            { type: 'chair', x: 2.5, z: 4.0, rot: 0 },
-            { type: 'k6', x: -2, z: 2, rot: 0 }
-        ],
-        tools: [],
-        type: 'dragdrop',
-        validate: () => {
-            // Prüfe ob Objekte im Bereich x > 2.0 und z > 2.0 sind
-            let isClear = true;
-            for(let obj of movableObjects) {
-                if(obj.position.x > 2.0 && obj.position.z > 2.0) isClear = false;
-            }
-            return { success: isClear, msg: isClear ? "Sehr gut! Der Fluchtweg ist gesichert." : "Es stehen noch Möbelstücke im Türbereich (hinten rechts)!" };
-        }
-    }
-};
-
-// Glossar Texte & Pädagogische Tipps  
-const SIM_GLOSSARY = {  
-    // Visus  
-    normal: { title: "Normale Sicht", text: "Keine Einschränkungen aktiv.", tip: "" },  
-    low: { 
-        title: "Sehbehinderung (z.B. Myopie, Hyperopie, Astigmatismus)",  
-        text: "Visus < 0.3. Details an der Tafel oder in Büchern sind nur schwer erkennbar. Vergrößerungshilfen sind nötig. Bei Kindern meistens durch Fehlbildung des Augapfels oder asymmetrische Hornhautkrümmung.",  
-        tip: "Vergrößerte Arbeitsblätter (A3) anbieten. Tafelbild verbalisieren (alles laut vorlesen). Sitzplatz nah an der Tafel."  
-    },  
-    severe: {  
-        title: "Hochgradige Sehbehinderung",  
-        text: "Visus < 0.05. Orientierung ist noch möglich, aber Lesen normaler Schrift ist unmöglich.",  
-        tip: "Digitale Hilfsmittel (Tablet mit Zoom/VoiceOver) zulassen. Taktile Leitsysteme im Raum freihalten. Starke Kontraste bei Farben, Linien und Texturen nutzen."  
-    },  
-    blind: {  
-        title: "Blindheit",  
-        text: "Visus < 0.02. Visuelle Informationen fehlen fast vollständig. Tast- und Hörsinn sind entscheidend.",  
-        tip: "Fester Sitzplatz (Orientierung). Materialien digital barrierefrei oder in Braille bereitstellen. Laufwege zwingend freihalten!"  
-    },  
-
-    // Gesichtsfeld  
-    tunnel: {  
-        title: "Retinitis Pigmentosa (RP) / Tunnelblick",  
-        text: "Verlust der Peripherie (Röhrengesichtsfeld/Tunnelblick), Nachtblindheit. Orientierung im Raum ist massiv erschwert, zentrales Lesen oft noch gut möglich.",  
-        tip: "Ordnung halten! Taschen gehören nicht in den Gang (Stolperfallen). Lernende zentral vor die Tafel setzen (nicht seitlich)."  
-    },  
-    spot: {  
-        title: "Juvenile Makuladegeneration (Morbus Stargardt, Best)",  
-        text: "Einschränkung des zentralen Gesichtsfelds. Verzerrung von Formen bis hin zu komplettem Ausfall. Gesichter und Texte können nicht fixiert werden. Orientierung im Raum funktioniert über peripheres Sehen.",  
-        tip: "Kind schaut oft 'daneben', um zu sehen – das ist kein Desinteresse! Vergrößerung hilft oft nicht (fällt in den toten Winkel)."  
-    },  
-    scotoma: {  
-        title: "Parazentralskotom",  
-        text: "Inselförmige Ausfälle neben dem Zentrum, bspw. als Folge von Makuladegeneration oder des Glaukoms. Buchstaben oder Wörter 'springen' oder fehlen beim Lesen.",  
-        tip: "Geduld beim Lesen. Serifenlose, klare Schriftarten (Arial, Verdana) mit erhöhtem Zeilenabstand nutzen."  
-    },  
-    hemi: {  
-        title: "Hemianopsie (Rechts)",  
-        text: "Rechtsseitiger Ausfall (z. B. nach Schlaganfall). Die rechte Hälfte der Welt fehlt.",  
-        tip: "Sitzplatz LINKS im Raum wählen, damit das Geschehen im gesunden (linken) Sichtfeld liegt. Lernende nicht von rechts ansprechen."  
-    },  
-    'hemi-l': {  
-        title: "Hemianopsie (Links)",  
-        text: "Linksseitiger Ausfall. Die linke Hälfte der Welt fehlt.",  
-        tip: "Sitzplatz RECHTS im Raum wählen. Achtung bei Gruppenarbeit: Partner sollte rechts sitzen."  
-    },  
-    quadrant: {  
-        title: "Quadrantenanopsie",  
-        text: "Ausfall eines Viertels (hier oben rechts). Kann beim Blick auf die Tafel stören.",  
-        tip: "Tafelbild kompakt halten. Prüfen, ob der Lernende den oberen Tafelrand sehen kann, ohne den Kopf extrem zu verrenken."  
-    },  
-    ring: {  
-        title: "Ringskotom",  
-        text: "Ein blinder Ring um das Zentrum, bspw. als Folge von Retinits Pigmentosa. Objekte verschwinden beim Näherkommen kurzzeitig.",  
-        tip: "Vorsicht im Sportunterricht (Bälle verschwinden plötzlich). Klare Absprachen bei Bewegungen im Raum."  
-    },  
-
-    // Licht & Trübung  
-    cataract: {  
-        title: "Katarakt (Grauer Star)",  
-        text: "Trübung der Linse. Alles wirkt milchig. Hohe Blendempfindlichkeit bei Gegenlicht. Reduzierte Farbintensität.",  
-        tip: "Platz mit Rücken zum Fenster. Jalousien nutzen, um Blendung auf der Tafel zu vermeiden. Hohe Kontraste an der Tafel (Gelb auf Blau). Große weiße Flächen vermeiden."  
-    },  
-    glaucoma: {  
-        title: "Glaukom (Grüner Star)",  
-        text: "Überhöhter Augeninnendruck. Schleichender, schmerzfreier Prozess. Oft Mischung aus Gesichtsfeldausfällen (bogenförmige, blinde Flecken) und Nebel.",  
-        tip: "Stressfreies Sehumfeld schaffen. Pausen für die Augen einplanen. Gute, blendfreie Raumbeleuchtung sicherstellen. In fortgeschrittenen Stadien auf taktile Materialien setzen."  
-    },  
-    photophobia: {  
-        title: "Extreme Photophobie",  
-        text: "Lichtschmerz (z. B. bei Albinismus). Normale Raumbeleuchtung blendet massiv. Kontraste verschwinden. Hinweis: Lichtgazing als gegensätzliche Folge von CVI.",  
-        tip: "Dunkelster Platz im Raum (Ecke). Erlaubnis für Sonnenbrille/Kappi im Unterricht. 'Dark Mode' auf Tablets nutzen."  
-    },  
-    nyctalopia: {  
-        title: "Nachtblindheit",  
-        text: "Sehversagen bei Dämmerung. Im dunklen Klassenzimmer (Beamer) orientierungslos.",  
-        tip: "Bei Filmvorführungen/Beamer-Einsatz: Lernende nicht im Raum umherlaufen lassen. Kleine Platzbeleuchtung erlauben."  
-    },  
-    retina: {  
-        title: "Diabetische / Frühgeborenen-Retinopathie",  
-        text: "Fleckige Ausfälle (Skotome) im ganzen Bild bis hin zu kompletter Netzhautablösung (Erblindung). Tagesform schwankt stark.",  
-        tip: "Flexibilität bei der Leistungserwartung (Tagesform). Kopien in sehr guter Qualität (keine blassen Matrizen)."  
-    },  
-
-    // Neuro & Verarbeitung  
-    cvi: {  
-        title: "CVI (Zerebrale Sehstörung)",  
-        text: "Oberbegriff. Gehirn kann visuelle Reize nicht (komplett) verarbeiten. 'Wimmelbilder' (voller Raum) führen zu Wahrnehmungsstörungen, die zu Stress/Orientierungsverlust führen.",  
-        tip: "Reizreduktion! Arbeitsblätter entschlacken (nur eine Aufgabe pro Seite). Ruhiger Sitzplatz (Wandblick, nicht in den Raum)."  
-    },  
-    crowding: {  
-        title: "Crowding",  
-        text: "Visuelle Überfüllung. Einzelne Objekte in ruhiger Umgebung werden erkannt. Eng stehende/viele Objekte verschmelzen miteinander.",  
-        tip: "Größerer Buchstabenabstand und Zeilenabstand. Abdeckschablone beim Lesen nutzen. Visuelle Komplexität massiv reduzieren (≠ 'Aufgaben einfacher machen'!)."  
-    },  
-    neglect: {
-        title: "Neglect",
-        text: "Halbseitige Vernachlässigung des Raumes. Neurologisch bedingt wird die Hälfte der visuellen Informationen vernachlässigt.",
-        tip: "Sitzplatz entsprechend der gesunden Gesichtsfeldhälfte wählen."
-    },
-    metamorphopsia: {  
-        title: "Metamorphopsie",  
-        text: "Verzerrtsehen, meist als Folge von Makuladegeneration. Gerade Linien (Tafel, Karopapier) wirken wellig. Lesen/Schreiben erschwert.",  
-        tip: "Linienverstärktes Papier anbieten. Schreiben am Tablet erlauben (Zoom/Raster hilft)."  
-    },  
-    diplopia: {  
-        title: "Diplopie (Doppelbilder)",  
-        text: "Bilder decken sich nicht. Führt zu Kopfschmerzen, Übelkeit und Greif-Fehlern. Betroffene ermüden schnell.",  
-        tip: "Leseportionen einteilen. Beim Experimentieren (Chemie/Physik) Assistenz stellen."  
-    },  
-    noise: {  
-        title: "Visual Snow",  
-        text: "Dauerhaftes Bildrauschen ('Schnee'). Senkt Kontraste und erhöht die Konzentrationslast.",  
-        tip: "Kognitive Pausen. Vermeidung von stark gemusterten Hintergründen auf Arbeitsblättern/Tafeln. Hohe visuelle Kontraste herstellen."  
-    },
-    strabismus: {
-        title: "Strabismus (Schielen)",
-        text: "Fehlstellung der visuellen Achsen. Doppelbilder oder Unterdrückung des Inputs des abweichenden Auges. Führt zu fehlendem räumlichen Sehen (Orientierung/Motorik).",
-        tip: "Besondere Führung bei räumlichen Tätigkeiten, insbesondere im Sportunterricht. Treppensteigen vermeiden bzw. dabei unterstützen."
-    },
-    amblyopia: {
-        title: "Amblyopie ('Lazy Eye')",
-        text: "Stark unterentwickelte Sehfähigkeit auf einem Auge. Wird häufig durch Okklusionstherapie behandelt. Räumliches Sehen wird beeinträchtigt.",
-        tip: "In Absprache mit Betroffenen Klasse aufklären. Besondere Führung bei räumlichen Tätigkeiten. Treppensteigen unterstützen."
-    },  
-
-    // Farbe  
-    achromatopsia: {  
-        title: "Achromatopsie",  
-        text: "Totale Farbenblindheit. Oft verbunden mit hoher Lichtempfindlichkeit.",  
-        tip: "Niemals Informationen nur über Farbe codieren! Immer Muster, Worte oder Beschriftungen nutzen (z.B. in Diagrammen)."  
-    },  
-    protanopia: {  
-        title: "Protanomalie/Protanopie (Rot-Schwäche/-Blindheit)",  
-        text: "Rot wird nicht wahrgenommen. Ampeln/Warnhinweise wirken dunkelgrau.",  
-        tip: "Achtung bei Korrekturen (Roter Stift ist schwer lesbar). Rot nicht als Signalfarbe an der Tafel nutzen."  
-    },  
-    deuteranopia: {  
-        title: "Deuteranomalie/Deuteranopie (Grün-Schwäche/-Blindheit)",  
-        text: "Rot und Grün sind schwer zu unterscheiden. Relevant für Landkarten.",  
-        tip: "Farbige Kreide an der Tafel vermeiden (Kontrast zu Grün/Grau schlecht). Landkarten beschriften statt färben."  
-    },  
-    tritanopia: {  
-        title: "Tritanomalie/Tritanopie (Blau-Schwäche/-Blindheit)",  
-        text: "Blau und Gelb werden verwechselt. Sehr Selten.",  
-        tip: "Farbcodierungen in Unterrichtsmaterialien prüfen (nicht Gelb auf Weiß oder Blau auf Grün)."  
-    }  
-};
+// SCENARIOS und SIM_GLOSSARY werden nun aus data.js importiert
 
 // Einstellungen
 let settings = {
@@ -307,79 +41,7 @@ const inputState = {
     zoomIn: false, zoomOut: false 
 };
 
-const ASSETS = {
-  rooms: {
-    "raummodell_leer.glb": { 
-        data: null, playableArea: { x: 4.4, z: 4.3 }, area: 50, name: "LLR Standard (Leer)",
-        acousticTargets: { warn: 0.25, good: 0.45 } 
-    },
-    "50qm_möbliertglb.glb": { 
-        data: null, playableArea: { x: 4.5, z: 4.5 }, area: 50, name: "LLR Möbliert (Standard)",
-        acousticTargets: { warn: 0.25, good: 0.45 } 
-    },
-    "leer_70qm.glb": { 
-        data: null, playableArea: { x: 5.5, z: 5.5 }, area: 70, name: "Großer Raum (70qm)",
-        acousticTargets: { warn: 0.20, good: 0.40 } 
-    },
-    "leer_30qm.glb": { 
-        data: null, playableArea: { x: 3.5, z: 3.5 }, area: 30, name: "Kleiner Raum (30qm)",
-        acousticTargets: { warn: 0.35, good: 0.60 } 
-    },
-  },
-  furniture: {
-    // --- Standard Möbel ---
-    'row_combo': { file: 'Tischplusstuhleinzeln.glb', dims: {x: 0.8, z: 1.2}, radius: 0.8, seats: 1, name: "Tisch+Stuhl", acousticBonus: 2.0 },
-    'tano':      { file: 'trapezTisch.glb',           dims: {x: 1.2, z: 0.7}, radius: 0.6, seats: 1, name: "Trapeztisch", acousticBonus: 1.5 },
-    'triangle':  { file: 'dreiecksTisch.glb',         dims: {x: 1.0, z: 0.9}, radius: 0.5, seats: 1, name: "Dreieckstisch", acousticBonus: 1.5 },
-    'chair':     { file: 'roterStuhl.glb',            dims: {x: 0.5, z: 0.5}, radius: 0.4, seats: 1, name: "Stuhl", acousticBonus: 0.8 },
-    'teacher':   { file: 'Lehrertisch.glb',           dims: {x: 1.6, z: 0.8}, radius: 1.0, seats: 0, name: "Lehrerpult", acousticBonus: 2.5 },
-    'cupboard':  { file: 'runderSchrank.glb',         dims: {x: 1.2, z: 0.4}, radius: 0.8, seats: 0, name: "Regal (Rund)", acousticBonus: 3.5 },
-    'board':     { file: 'tafel_skaliert.glb',        dims: {x: 2.0, z: 0.2}, radius: 0.2, seats: 0, isWallItem: true, name: "Tafel", acousticBonus: 1.0 },
-    
-    // --- NEUE ASSETS ---
-    'laptop':        { file: 'Laptop.glb',         dims: {x: 0.4, z: 0.3}, radius: 0.3, seats: 0, name: "Laptop", acousticBonus: 0.1, yOffset: 1.23 }, 
-    'cabinet_short': { file: 'kurzer Schrank.glb', dims: {x: 1.0, z: 0.5}, radius: 0.7, seats: 0, name: "Schrank (Kurz)", acousticBonus: 4.0 },
-    'cabinet_long':  { file: 'langer_Schrank.glb', dims: {x: 1.8, z: 0.5}, radius: 1.0, seats: 0, name: "Schrank (Lang)", acousticBonus: 6.0 },
-    'sofa':          { file: 'Sofa.glb',           dims: {x: 2.0, z: 0.9}, radius: 1.1, seats: 2, name: "Sofa", acousticBonus: 8.0 },
-    'table_square':  { file: 'Quadrat_Tisch.glb',  dims: {x: 1.0, z: 1.0}, radius: 0.8, seats: 0, name: "Quadrat-Tisch", acousticBonus: 2.0 },
-    'table_double':  { file: '2er_Tisch.glb',      dims: {x: 1.6, z: 0.8}, radius: 1.0, seats: 0, name: "2er Tisch", acousticBonus: 3.0 },
-
-    // --- Schüler Personas (Nur für Szenario Editor) ---
-    'persona_mia':   { procedural: true, type: 'persona', color: 0x3b82f6, name: "Mia (Rollstuhl)", dims: {x: 0.7, y: 1.0, z: 0.7}, radius: 0.6, seats: 0, yOffset: 0.10, 
-                       req: { type: 'distance', minClearance: 90, desc: "Rollstuhl-Bewegungsradius (90cm) muss frei sein." } },
-    'persona_ben':   { procedural: true, type: 'persona', color: 0xf59e0b, name: "Ben (ADHS)", dims: {x: 0.4, y: 1.0, z: 0.4}, radius: 0.3, seats: 0, yOffset: 0.10, 
-                       req: { type: 'zone', preferredZone: "Zone Grün", desc: "Benötigt einen reizarmen Rückzugsort (z.B. grüne Zone)." } },
-    'persona_lukas': { procedural: true, type: 'persona', color: 0x10b981, name: "Lukas (Hörschäd.)", dims: {x: 0.4, y: 1.0, z: 0.4}, radius: 0.3, seats: 0, yOffset: 0.10, 
-                       req: { type: 'view', target: 'board', desc: "Muss zwingend die Tafel / Lehrkraft gut sehen können (Lippenlesen)." } },
-    'persona_tim':   { procedural: true, type: 'persona', color: 0x8b5cf6, name: "Tim (Visus 30%)", dims: {x: 0.4, y: 1.0, z: 0.4}, radius: 0.3, seats: 0, yOffset: 0.10, 
-                       req: { type: 'proximity', target: 'board', maxDist: 2.5, desc: "Sitzplatz darf max. 2,5m von der Tafel entfernt sein." } },
-    'persona_emma':  { procedural: true, type: 'persona', color: 0xec4899, name: "Emma (Regulär)", dims: {x: 0.4, y: 1.0, z: 0.4}, radius: 0.3, seats: 0, yOffset: 0.10, 
-                       req: { type: 'none', desc: "Lernende ohne sichtbare Einschränkung." } },
-    'persona_leon':  { procedural: true, type: 'persona', color: 0x14b8a6, name: "Leon (Regulär)", dims: {x: 0.4, y: 1.0, z: 0.4}, radius: 0.3, seats: 0, yOffset: 0.10, 
-                       req: { type: 'none', desc: "Lernender ohne sichtbare Einschränkung." } },
-
-    // --- Zonen (Nur für Szenario Editor) ---
-    'zone_custom': { procedural: true, type: 'zone', color: 0x10b981, name: "Zone", seats: 0, yOffset: 0.125, noShadow: true },
-    
-    // --- Prozedurale Objekte ---
-    'carpet_proc': { procedural: true, type: 'box', dims: {x: 3.0, y: 0.04, z: 2.0}, color: 0x8D6E63, name: "Akustik-Teppich", acousticBonus: 5.0, seats: 0, yOffset: 0.18, radius: 0.1, noShadow: true },
-    'partition_proc': { procedural: true, type: 'box', dims: {x: 1.5, y: 1.8, z: 0.1}, color: 0x336699, name: "Schallschutzwand", acousticBonus: 8.0, seats: 0, radius: 0.8, noShadow: false },
-    'absorber_proc': { procedural: true, type: 'box', dims: {x: 1.0, y: 1.0, z: 0.05}, color: 0xcccccc, name: "Wand-Absorber", acousticBonus: 3.0, seats: 0, isWallItem: true, radius: 0.1, noShadow: true, yOffset: 1.5 },
-
-    // --- Avatar ---
-    'avatar_procedural': { data: null, name: "Avatar (Lernender)", radius: 0.4, seats: 0, acousticBonus: 0.5 },
-
-    // --- Gruppenkonstellationen ---
-    'k1': { file: 'Tischaufstellung1.glb',    dims: {x: 1.6, z: 1.2}, radius: 1.0, seats: 2, name: "2er Ecktisch", acousticBonus: 4.0 }, 
-    'k2': { file: 'Tischaufstellung2.glb',    dims: {x: 1.6, z: 1.4}, radius: 1.1, seats: 2, name: "2er Vis-a-Vis", acousticBonus: 4.0 },
-    'k3': { file: 'Tischaufstellung3.glb',    dims: {x: 3.2, z: 1.6}, radius: 1.8, seats: 8, name: "8er Gruppentisch", acousticBonus: 16.0 },
-    'k4': { file: 'Tischkonstellation4.glb',  dims: {x: 3.5, z: 3.5}, radius: 2.0, seats: 8, name: "8er Kreis", acousticBonus: 16.0 },
-    'k5': { file: 'Tischkonstellation5.glb',  dims: {x: 2.2, z: 2.2}, radius: 1.5, seats: 4, name: "4er Ecktisch", acousticBonus: 8.0 },
-    'k6': { file: 'Tischkonstellation6.glb',  dims: {x: 3.0, z: 2.0}, radius: 1.8, seats: 6, name: "6er Gruppentisch", acousticBonus: 12.0 }, 
-    'k7': { file: 'Tischkonstellation7.glb',  dims: {x: 4.0, z: 3.0}, radius: 2.2, seats: 11, name: "11er U-Form", acousticBonus: 22.0 },
-    'k8': { file: 'Tischkonstellation8.glb',  dims: {x: 3.5, z: 3.0}, radius: 2.0, seats: 9, name: "9er U-Form", acousticBonus: 18.0 },
-  },
-};
+// ASSETS werden nun aus data.js importiert
 
 // THREE.js Variablen
 let scene, camera, renderer, controls;
@@ -564,7 +226,7 @@ window.app.deleteZone = function(uuid) {
     
     scene.remove(zone);
     movableObjects = movableObjects.filter(o => o !== zone);
-    zone.traverse(c => { if(c.geometry) c.geometry.dispose(); });
+    window.app.loesche3DObjekt(zone);
     app.updateZoneListUI();
 };
 
@@ -855,6 +517,20 @@ function init() {
       // Start App
       startApp();
       
+      // NEU: Einstellungen aus LocalStorage laden (beim Zurückkehren aus Modulen)
+      const savedHC = localStorage.getItem('elmeks_high_contrast') === 'true';
+      const savedRA = localStorage.getItem('elmeks_read_aloud') === 'true';
+      
+      const hcApp = document.getElementById('set-high-contrast');
+      const hcHome = document.getElementById('start-high-contrast');
+      if (hcApp) hcApp.checked = savedHC;
+      if (hcHome) hcHome.checked = savedHC;
+      
+      const raApp = document.getElementById('set-read-aloud');
+      const raHome = document.getElementById('start-read-aloud');
+      if (raApp) raApp.checked = savedRA;
+      if (raHome) raHome.checked = savedRA;
+
       // Controls zu Beginn sichtbar schalten
       settings.controlsEnabled = true;
       app.updateSettings(); 
@@ -923,164 +599,8 @@ function startApp() {
 }
 
 // === HOMESCREEN & NAVIGATION ===
-window.app.currentMode = 'planner'; // 'planner', 'editor', 'play'
-
-window.app.applyModeUI = function() {
-    const isEditor = window.app.currentMode === 'editor';
-    const isPlay = window.app.currentMode === 'play';
-
-    const topBar = document.getElementById('main-top-bar');
-    const brandText = document.getElementById('main-brand-text');
-    
-    // Theme-Switch: Die body.theme-scenario Klasse färbt alle Menüs/Buttons um!
-    if (isEditor || isPlay) {
-        document.body.classList.add('theme-scenario');
-    } else {
-        document.body.classList.remove('theme-scenario');
-    }
-
-    if (topBar && brandText) {
-        if (isEditor || isPlay) {
-            topBar.style.borderBottom = '1px solid rgba(16, 185, 129, 0.4)';
-            brandText.style.color = '#10b981';
-            brandText.innerText = isPlay ? 'SensAble Play' : 'SensAble Editor';
-        } else {
-            topBar.style.borderBottom = ''; 
-            brandText.style.color = '';     
-            brandText.innerText = 'SensAble Planer';
-        }
-    }
-
-    const stdTopBar = document.querySelector('#ui-layer .top-bar');
-    const stdSidebarL = document.querySelector('#ui-layer .sidebar');
-    const stdSidebarR = document.querySelector('#ui-layer .sidebar-right');
-    const playUiNodes = document.querySelectorAll('#scenario-ui-layer');
-
-    if (isPlay) {
-        if (stdTopBar) stdTopBar.style.display = 'none';
-        if (stdSidebarL) stdSidebarL.style.display = 'none';
-        if (stdSidebarR) stdSidebarR.style.display = 'none';
-        playUiNodes.forEach(node => node.style.display = 'block');
-
-        // Aufgaben ins HUD laden (Neu via ausgelagerter Funktion)
-        if (window.app.updateHUDTasks) {
-            window.app.updateHUDTasks();
-        }
-
-        // Tools ins HUD laden
-        const toolGridNodes = document.querySelectorAll('#scenario-hud-tools');
-        toolGridNodes.forEach(toolGrid => {
-            if (toolGrid) {
-                toolGrid.innerHTML = '';
-                const tools = app.scenarioData.allowedTools || [];
-                if (tools.length === 0) {
-                    toolGrid.innerHTML = `<div style="grid-column: 1 / -1; font-size: 11px; color: #6b7280; text-align: center; padding: 10px 0;">Keine Werkzeuge erlaubt.</div>`;
-                } else {
-                    tools.forEach(key => {
-                        const name = ASSETS.furniture[key]?.name || key;
-                        toolGrid.innerHTML += `<button style="font-size: 11px; padding: 8px 4px;" onclick="app.addFurniture('${key}')">+ ${name}</button>`;
-                    });
-                }
-            }
-        });
-
-    } else {
-        if (stdTopBar) stdTopBar.style.display = 'flex';
-        if (stdSidebarL) stdSidebarL.style.display = 'flex';
-        if (stdSidebarR) stdSidebarR.style.display = 'flex';
-        playUiNodes.forEach(node => node.style.display = 'none');
-
-        document.getElementById('btn-save').style.display = isEditor ? 'none' : 'inline-block';
-        document.getElementById('btn-load').style.display = isEditor ? 'none' : 'inline-block';
-        document.getElementById('btn-pdf').style.display = isEditor ? 'none' : 'inline-block';
-        document.getElementById('btn-export-scenario').style.display = isEditor ? 'inline-block' : 'none';
-        
-        const btnTest = document.getElementById('btn-test-scenario');
-        if(btnTest) btnTest.style.display = isEditor ? 'inline-block' : 'none';
-        const btnHelp = document.getElementById('btn-editor-help');
-        if(btnHelp) btnHelp.style.display = isEditor ? 'inline-block' : 'none';
-
-        document.getElementById('panel-wizard').style.display = isEditor ? 'none' : 'block';
-        document.getElementById('panel-personas').style.display = isEditor ? 'block' : 'none';
-        
-        const zonePanel = document.getElementById('panel-zones');
-        if (zonePanel) zonePanel.style.display = 'block';
-        
-        const objPanel = document.getElementById('panel-objects');
-        if (objPanel) objPanel.style.display = isEditor ? 'none' : 'block';
-
-        if (isEditor) {
-            document.getElementById('panel-personas').classList.remove('collapsed');
-            document.getElementById('panel-furniture').classList.add('collapsed');
-        } else {
-            document.getElementById('panel-wizard').classList.remove('collapsed');
-            document.getElementById('panel-furniture').classList.add('collapsed');
-        }
-
-        document.getElementById('panel-simulation').style.display = isEditor ? 'none' : 'block';
-        document.getElementById('panel-check').style.display = isEditor ? 'none' : 'block';
-        
-        // Neue aufgeteilte Panels ein/ausblenden
-        const pDetails = document.getElementById('panel-scenario-details');
-        if (pDetails) pDetails.style.display = isEditor ? 'block' : 'none';
-        
-        const pRules = document.getElementById('panel-scenario-rules');
-        if (pRules) pRules.style.display = isEditor ? 'block' : 'none';
-    }
-};
-
-window.app.startStandardPlanner = function() {
-    window.app.currentMode = 'planner';
-    
-    // BUGFIX: Auch im normalen Planer sicherstellen, dass keine Regeln aktiv sind
-    window.app.scenarioData = { title: "", desc: "", tasks: [], allowedTools: [] };
-    
-    app.updateSettings(); 
-    document.getElementById('homescreen').style.display = 'none';
-    const ui = document.getElementById('ui-layer');
-    if(ui) ui.style.display = 'flex'; 
-    app.applyModeUI();
-};
-
-window.app.startScenarioEditor = function() {
-    window.app.currentMode = 'editor';
-    
-    // BUGFIX: Komplettes Reset der Szenario-Daten & UI beim Start eines neuen Szenarios
-    window.app.scenarioData = { title: "", desc: "", tasks: [], allowedTools: [] };
-    const titleInput = document.getElementById('scenario-title');
-    if (titleInput) titleInput.value = "";
-    const descInput = document.getElementById('scenario-desc');
-    if (descInput) descInput.value = "";
-    if (window.app.renderTaskList) window.app.renderTaskList();
-    const toolsPreview = document.getElementById('allowed-tools-preview');
-    if (toolsPreview) toolsPreview.innerText = "Standardmäßig sind keine Werkzeuge erlaubt.";
-    
-    // On-Screen Controls im Editor standardmäßig aus
-    if(window.app.editorControlsSet === undefined) {
-        const ctrlToggle = document.getElementById('set-controls');
-        if(ctrlToggle) ctrlToggle.checked = false;
-        window.app.editorControlsSet = true;
-    }
-    
-    app.updateSettings(); 
-    document.getElementById('homescreen').style.display = 'none';
-    const ui = document.getElementById('ui-layer');
-    if(ui) ui.style.display = 'flex'; 
-    app.applyModeUI();
-    showNotification("Szenario-Editor gestartet");
-};
-
-window.app.startSession = window.app.startStandardPlanner;
-
-window.app.confirmGoHome = function() {
-    showModal("Hauptmenü", `
-        <p>Möchten Sie wirklich zum Hauptmenü zurückkehren? Nicht gespeicherte Änderungen gehen verloren.</p>
-        <div style="display:flex; gap:10px; flex-direction:column; margin-top:20px;">
-            <button class="primary" onclick="${window.app.currentMode === 'editor' ? 'alert(\'Export folgt\');' : 'app.savePlan(); setTimeout(app.goHome, 500);'}">Speichern & Beenden</button>
-            <button class="danger" onclick="app.goHome()">Ohne Speichern beenden</button>
-        </div>
-    `);
-};
+// App-States und Navigation (startStandardPlanner, startScenarioEditor, applyModeUI, etc.) 
+// wurden in die js/modules/ui.js ausgelagert.
 
 window.app.showEditorHelp = function(startTutorialAfter = false) {
     const btnCode = startTutorialAfter 
@@ -1687,237 +1207,11 @@ window.app.moveCamera = function(x, z) {};
 window.app.zoomCamera = function(dir) {};
 window.app.tiltCamera = function(dir) {};
 
-// === SETTINGS ===
-window.app.toggleSettings = function() {
-    const el = document.getElementById('settings-overlay');
-    el.classList.toggle('active');
-};
+// toggleSettings wurde nach js/modules/ui.js ausgelagert
 
 // === CHATBOT LOGIK & DATENBANK ===
-window.app.toggleChatbot = function() {
-    const modal = document.getElementById('chatbot-modal');
-    if(modal) {
-        modal.style.display = 'flex';
-        const input = document.getElementById('chat-input');
-        if(input) input.focus();
-    }
-};
-
-window.app.speakText = function(textToSpeak) {
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(textToSpeak.trim());
-        utterance.lang = 'de-DE';
-        utterance.rate = 1.0;
-        window.speechSynthesis.speak(utterance);
-    } else {
-        alert("Ihr Browser unterstützt die Vorlesefunktion leider nicht.");
-    }
-};
-
-window.app.startSpeechRecognition = function(btnElement) {
-    // 1. DSGVO Check: Wurde schon zugestimmt?
-    if (localStorage.getItem('elmeks_speech_consent') === 'true') {
-        window.app.executeSpeechRecognition(btnElement);
-        return;
-    }
-    
-    // Wenn nicht: Unser eigenes, hübsches Pop-Up anzeigen
-    const consentModal = document.getElementById('speech-consent-modal');
-    if(consentModal) {
-        consentModal.style.display = 'flex';
-    }
-};
-
-window.app.acceptSpeechConsent = function() {
-    // Zustimmung lokal im Browser speichern
-    localStorage.setItem('elmeks_speech_consent', 'true');
-    
-    // Modal schließen
-    const consentModal = document.getElementById('speech-consent-modal');
-    if(consentModal) consentModal.style.display = 'none';
-    
-    // Nach Zustimmung direkt die Aufnahme starten
-    const micBtn = document.querySelector('[title="Spracheingabe (Diktieren)"]');
-    if(micBtn) {
-        window.app.executeSpeechRecognition(micBtn);
-    }
-};
-
-window.app.declineSpeechConsent = function() {
-    // Einfach nur das Modal schließen, nichts weiter tun
-    const consentModal = document.getElementById('speech-consent-modal');
-    if(consentModal) consentModal.style.display = 'none';
-};
-
-window.app.executeSpeechRecognition = function(btnElement) {
-    // 2. Prüfen, ob der Browser Web Speech API unterstützt
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-        const errorModal = document.getElementById('speech-error-modal');
-        if (errorModal) {
-            errorModal.style.display = 'flex';
-        }
-        return;
-    }
-
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'de-DE'; // Deutsche Spracherkennung
-    recognition.interimResults = false; 
-    recognition.maxAlternatives = 1;
-
-    // 3. UI Feedback: Button rot färben während der Aufnahme
-    btnElement.dataset.recording = "true";
-    btnElement.style.background = "rgba(239, 68, 68, 0.2)"; 
-    btnElement.style.borderColor = "rgba(239, 68, 68, 0.5)";
-    btnElement.style.color = "#ef4444";
-    
-    // Platzhalter im Textfeld ändern
-    const input = document.getElementById('chat-input');
-    const oldPlaceholder = input ? input.placeholder : "";
-    if(input) input.placeholder = "Ich höre zu... (Sprechen Sie jetzt)";
-
-    recognition.onresult = function(event) {
-        const transcript = event.results[0][0].transcript;
-        if (input) {
-            input.value = transcript; 
-        }
-    };
-
-    recognition.onerror = function(event) {
-        console.warn("Spracherkennung Fehler:", event.error);
-        if(event.error === 'not-allowed') {
-            alert("Sie haben dem Browser den Zugriff auf das Mikrofon verweigert. Bitte überprüfen Sie die Einstellungen in der Adresszeile (Schloss-Symbol).");
-        }
-    };
-
-    recognition.onend = function() {
-        // UI Feedback: Button wieder zurücksetzen
-        btnElement.dataset.recording = "false";
-        btnElement.style.background = "rgba(255,255,255,0.05)";
-        btnElement.style.borderColor = "rgba(255,255,255,0.1)";
-        btnElement.style.color = "#9ca3af";
-        if(input) input.placeholder = oldPlaceholder;
-    };
-
-    // 4. Aufnahme starten
-    try {
-        recognition.start();
-    } catch(e) {
-        console.error("Mikrofon konnte nicht gestartet werden:", e);
-    }
-};
-
-const chatDatabase = [
-    // === WAHRNEHMUNGSSTÖRUNGEN ===
-    { keywords: ["katarakt", "grauer star", "grauerstar", "blendung", "milchig", "trübe", "star"], response: "Der <b>Graue Star (Katarakt)</b> ist eine Trübung der Augenlinse. In der Simulation führt dies zu einem milchigen Sichtfeld, stark reduzierten Kontrasten und einer extremen Blendempfindlichkeit. Pädagogischer Tipp: Setzen Sie Lernende auf keinen Fall mit Blick frontal zum Fenster und nutzen Sie stark kontrastierende, blendfreie (matte) Materialien auf den Tischen." },
-    { keywords: ["glaukom", "grüner star", "innendruck", "grünerstar", "augeninnendruck", "nebel"], response: "Das <b>Glaukom (Grüner Star)</b> wird oft durch erhöhten Augeninnendruck verursacht. Es führt zu schleichenden Gesichtsfeldausfällen (Skotomen) und Nebelsehen. Ein stressfreies, blendfreies Umfeld ist hier besonders wichtig. Achten Sie bei der Raumplanung auf konstante Lichtverhältnisse ohne harte Schattenwürfe, da die Adaption an Helligkeitswechsel stark verlangsamt ist." },
-    { keywords: ["cvi", "zerebral", "gehirn", "wimmelbild", "reizüberflutung", "crowding", "hirnschädigung"], response: "<b>CVI (Cerebral Visual Impairment)</b> bedeutet, dass das Gehirn visuelle Reize nicht richtig verarbeiten kann, obwohl das Auge intakt sein könnte. Visuelle Überfüllung (Crowding) führt schnell zu Stress und Erschöpfung. Lösung im Raum: Reizreduktion! Bieten Sie einen ruhigen Sitzplatz (z. B. mit Blick zu einer leeren Wand) und nutzen Sie optisch entschlackte Materialien sowie akustische Trennwände zur Abschirmung." },
-    { keywords: ["hemianopsie", "halbseitenblindheit", "schlaganfall", "gesichtsfeldausfall", "halb", "hälfte"], response: "<b>Hemianopsie</b> ist der Ausfall einer kompletten Gesichtsfeldhälfte, oft nach neurologischen Schäden wie einem Schlaganfall oder Tumor. Wichtig für die Planung: Sitzt der Ausfall rechts, sollte das Kind links im Raum sitzen, damit das Unterrichtsgeschehen und die Tafel im gesunden (linken) Sichtfeld liegen. Das Tool simuliert dies durch einen abgedunkelten Bereich auf einer Bildschirmseite im Avatar-Modus." },
-    { keywords: ["tunnelblick", "retinitis", "rp", "röhrengesichtsfeld", "röhrenblick", "peripher", "außen"], response: "Beim <b>Tunnelblick</b> (z. B. durch Retinitis Pigmentosa) fällt das periphere (äußere) Sehen vollständig weg. Die Orientierung im Raum ist massiv erschwert, da Hindernisse an den Seiten übersehen werden. Raumplanung: Laufwege müssen zwingend und permanent freigehalten werden (keine Rucksäcke oder Stühle im Gang). Die Simulation im Avatar-Modus zeigt nur einen winzigen zentralen Sichtbereich." },
-    { keywords: ["makula", "makuladegeneration", "spot", "stargardt", "zentraler ausfall", "mitte", "fleck"], response: "Bei der <b>Makuladegeneration</b> (oder Morbus Stargardt bei jüngeren Menschen) kommt es zum Ausfall des zentralen, scharfen Sehens. Die Lernenden können Gesichter oder Texte nicht direkt fixieren und nutzen ihr peripheres Sehen (exzentrisches Fixieren). Einfache Vergrößerung von Texten hilft oft nicht, da das Objekt dann komplett in den toten Winkel (den schwarzen Fleck in der Simulation) fällt." },
-    { keywords: ["diplopie", "schielen", "strabismus", "doppelbilder", "zwei bilder", "räumlich"], response: "<b>Diplopie (Doppelbilder)</b> oder Strabismus (Schielen) erschweren das räumliche Sehen und die Tiefenwahrnehmung massiv. Dies führt extrem schnell zu Ermüdung und Kopfschmerzen bei der Bildschirm- oder Naharbeit. Im Tool werden diese Doppelbilder visuell simuliert. In der pädagogischen Praxis: Leseportionen strikt einteilen, Pausen einplanen und Assistenz bei motorisch anspruchsvollen, räumlichen Tätigkeiten leisten." },
-    { keywords: ["achromatopsie", "farbenblind", "farbe", "rot", "grün", "farbschwäche", "daltonismus", "farbblind"], response: "Das Tool simuliert verschiedene Farbfehlsichtigkeiten, wie die totale Achromatopsie (komplette Farbenblindheit), Protanopie (Rotschwäche) oder Deuteranopie (Grünschwäche). Die wichtigste Regel für Barrierefreiheit hierbei (Zwei-Sinne-Prinzip): Informationen dürfen niemals ausschließlich über Farben codiert werden! Nutzen Sie immer zusätzlich Texturen, Muster, Formen oder Textbeschriftungen, um Bereiche zu kennzeichnen." },
-
-    // === WEITERE EINSCHRÄNKUNGEN & INKLUSION ===
-    { keywords: ["autismus", "ass", "adhs", "spektrum", "neurodivers", "reize", "ruhe", "lärmempfindlich"], response: "Für Lernende im <b>Autismus-Spektrum (ASS)</b> oder mit <b>ADHS</b> ist eine vorhersehbare, reizarme Umgebung entscheidend. Reduzieren Sie visuelle Unruhe an den Wänden, stellen Sie klare Raumstrukturen (Zonen) her und dämmen Sie akustische Störquellen konsequent ein. Ein definierter 'Rückzugsort' oder eine Ruhezone im Raumplan ist oft zwingend erforderlich." },
-    { keywords: ["hörschädigung", "taub", "schwerhörig", "fm-anlage", "hören", "ci", "cochlea"], response: "Bei <b>Hörschädigungen</b> (auch mit Hörgerät oder CI) ist eine optimale Raumakustik überlebenswichtig. Harter Nachhall macht Sprache unverständlich. Platzieren Sie ausreichend Teppiche und Schallabsorber. Zudem muss der Sitzplatz so gewählt sein, dass das Mundbild der Lehrkraft (Lippenlesen) stets gut sichtbar ist (gute Beleuchtung, keine Gegenlicht-Position)." },
-    { keywords: ["motorik", "spastik", "rollator", "gehstützen", "krücken", "laufen"], response: "Neben Rollstühlen müssen auch Nutzer von <b>Rollatoren, Gehstützen</b> oder mit motorischen Einschränkungen (z. B. Spastik) bedacht werden. Hier sind rutschfeste Böden (keine losen Teppichkanten) und breite, hindernisfreie Wege essenziell. Bei motorischer Unruhe sollten Tische gewählt werden, die schwer und stabil sind und nicht leicht wegrutschen." },
-    { keywords: ["inklusion", "udl", "universal design", "didaktik", "pädagogik", "konzept", "barrierefrei"], response: "Dieses Tool basiert auf den Prinzipien des <b>Universal Design for Learning (UDL)</b>. Das Ziel der Inklusion ist es nicht, für jeden Einzelfall ein Sonder-Möbelstück zu beschaffen, sondern den Raum von vornherein so flexibel, barrierearm und vielschichtig zu gestalten, dass er für eine möglichst breite Diversität an Lernenden ohne nachträgliche Anpassungen funktioniert." },
-
-    // === DATEI-OPERATIONEN & EXPORT ===
-    { keywords: ["speichern", "datei", "endung", ".elmeks", "sichern", "download", "herunterladen"], response: "Sie können Ihren aktuellen Raumplan sichern, indem Sie in der oberen Menüleiste auf <b>'Speichern'</b> klicken. Dies erzeugt eine Datei mit der Endung <b>.elmeks</b>. Diese Datei enthält absolut alle Daten: Möbelpositionen, Zonen, definierte Regeln und Avatar-Einstellungen. Es ist eine reine lokale Datei, die Sie sicher auf Ihrem Computer aufbewahren oder per E-Mail an Kollegen senden können." },
-    { keywords: ["laden", "öffnen", "import", "importieren", "reinladen", "upload", "hochladen"], response: "Um einen zuvor gespeicherten Raumplan weiterzubearbeiten, klicken Sie oben auf <b>'Laden'</b>. Wählen Sie Ihre zuvor gespeicherte <b>.elmeks</b>-Datei von Ihrer Festplatte aus. Das System verarbeitet die Datei sofort und stellt den kompletten 3D-Raum exakt so wieder her, wie Sie ihn verlassen haben." },
-    { keywords: ["pdf", "report", "bericht", "drucken", "auswertung", "dokument", "exportieren", "bewertung"], response: "Über den Button <b>'PDF erstellen'</b> in der oberen Leiste generiert das Tool vollautomatisch einen professionellen, mehrseitigen Bericht. Dieser enthält eine Draufsicht Ihres geplanten Raumes, eine vollständige Inventarliste und eine detaillierte Auswertung der Barrierefreiheit (z. B. Rollstuhlgerechtigkeit der Durchgänge, Raumakustik-Werte und Kontrast-Berechnungen)." },
-
-    // === TECHNIK, PERFORMANCE & OFFLINE ===
-    { keywords: ["offline", "pwa", "installieren", "app", "internet", "wlan", "verbindung"], response: "Dieses Tool ist als fortschrittliche <b>Progressive Web App (PWA)</b> konzipiert. Das bedeutet: Sobald Sie die Seite einmal im Browser geladen haben, können Sie das Tool auch <b>komplett ohne Internetverbindung (offline)</b> nutzen! Über das Menü Ihres Browsers (z. B. in Chrome oben rechts) können Sie die Seite sogar als vollwertige App auf Ihrem Gerät installieren." },
-    { keywords: ["ruckelt", "langsam", "lag", "performance", "hängt", "absturz", "langwierig", "fps"], response: "Wenn die 3D-Ansicht ruckelt oder langsam ist, liegt das meist an fehlender Hardwarebeschleunigung. <b>Tipp:</b> Stellen Sie sicher, dass in den Einstellungen Ihres Browsers (z. B. Chrome oder Edge) die Option 'Hardwarebeschleunigung verwenden' aktiviert ist. Zudem hilft es, andere speicherintensive Tabs zu schließen." },
-    { keywords: ["browser", "chrome", "firefox", "safari", "ipad", "tablet", "handy", "smartphone", "kompatibel"], response: "Das Tool ist für moderne Desktop-Browser optimiert (Google Chrome, Mozilla Firefox, Microsoft Edge, Safari). Eine Nutzung auf Tablets (wie dem iPad) ist prinzipiell möglich, erfordert aber bei der 3D-Steuerung etwas Übung. Für kleine Smartphone-Displays ist die komplexe Planungs-Oberfläche nicht ausgelegt." },
-    { keywords: ["fehler", "bug", "geht nicht", "kaputt", "problem", "hilfe", "funktioniert nicht"], response: "Sollten unerwartete Fehler auftreten: Laden Sie die Seite mit der Taste <b>F5</b> oder <b>Strg+R</b> neu. Ihre Browser-Daten bleiben dabei meist erhalten. Wenn das Problem weiterhin besteht, löschen Sie den Cache Ihres Browsers oder probieren Sie einen anderen Browser (wir empfehlen Google Chrome)." },
-
-    // === PLANUNGSMODUS & STEUERUNG ===
-    { keywords: ["steuern", "steuerung", "bewegen", "kamera", "maus", "ansicht", "drehen", "navigieren", "zoomen"], response: "<b>Kamerasteuerung im Planungsmodus:</b><br>• Linke Maustaste halten + ziehen = Kamera schwenken/drehen.<br>• Rechte Maustaste halten + ziehen = Kamera verschieben (Panning).<br>• Mausrad = Hinein- und herauszoomen.<br><br><b>Möbelsteuerung:</b><br>• Linksklick auf ein Möbelstück = Auswählen & Verschieben.<br>• Taste 'R' drücken während ein Möbel ausgewählt ist = Möbelstück drehen.<br>• Taste 'Entf' (Del) = Ausgewähltes Möbelstück löschen." },
-    { keywords: ["löschen", "entfernen", "wegmachen", "papierkorb", "rückgängig"], response: "Um ein Objekt oder eine markierte Zone restlos zu löschen, haben Sie zwei Möglichkeiten:<br>1. Klicken Sie das Objekt mit der linken Maustaste an und drücken Sie die <b>'Entf'</b> (Delete) oder 'Rücktaste' (Backspace) auf Ihrer Tastatur.<br>2. Klicken Sie mit der <b>rechten Maustaste</b> auf das Objekt und wählen Sie im erscheinenden Kontextmenü den roten Button 'Löschen'." },
-    { keywords: ["möbel", "bibliothek", "katalog", "tisch", "stuhl", "schrank", "inventar", "objekt", "einfügen"], response: "Die umfangreiche <b>Möbel-Bibliothek</b> finden Sie permanent auf der linken Bildschirmseite. Sie ist übersichtlich in Kategorien (Tische, Stühle, Schränke, Akustik, etc.) unterteilt. Klicken Sie einfach auf das gewünschte Objekt. Es wird sofort in der Mitte des Raumes platziert und kann danach mit der Maus frei an die richtige Stelle gezogen werden." },
-    { keywords: ["2d", "3d", "draufsicht", "vogelperspektive", "oben", "grundriss", "plan"], response: "Sie können jederzeit zwischen der frei drehbaren 3D-Ansicht und einem strikten 2D-Grundriss wechseln. Nutzen Sie dafür den Button <b>'Draufsicht (2D / 3D)'</b> in der oberen Menüleiste oder im rechten Panel. In der reinen Draufsicht lässt sich die Raumaufteilung oft noch übersichtlicher und präziser planen." },
-    { keywords: ["wand", "wände", "raumgröße", "maße", "messen", "abmessung", "größe", "grundriss ändern"], response: "Aktuell arbeiten Sie in einem vordefinierten Standard-Klassenzimmer. Die festen Wände und Fensterfronten bieten eine realistische Grundlage zur Simulation von Licht und Blendung. Eine komplett freie Veränderung der Raumarchitektur (Wände verschieben) ist in dieser Version nicht vorgesehen, da die pädagogischen Missionen an diesen spezifischen Raum gebunden sind." },
-
-    // === EDITOR & SPIELMODUS ===
-    { keywords: ["editor", "modus", "szenario erstellen", "aufgabe erstellen", "lehrkraft", "persona", "schüler"], response: "Der <b>Editor-Modus</b> ist speziell für Lehrkräfte konzipiert. Hier erschaffen Sie eigene Unterrichtsszenarien! Sie können virtuelle Schüler (Personas) im Raum platzieren und im rechten Menü knifflige Regeln festlegen (z. B. 'Maximaler Lärmpegel für Lukas' oder 'Benötigt Hochkontrast-Tisch für Mia'). Speichern Sie das fertige Szenario als .elmeks-Datei ab und geben Sie es Ihren Lernenden zur Lösung." },
-    { keywords: ["spielmodus", "mission", "spielen", "aufgabe lösen", "barrieren finden", "rätsel", "lösung"], response: "Im <b>Spielmodus (Mission)</b> schlüpfen Sie in die Rolle eines professionellen Raumplaners. Ihre Aufgabe ist es, einen fehlerhaft eingerichteten Raum zu korrigieren. Suchen Sie nach versteckten Barrieren (z. B. zu enge Gänge für Rollstühle oder eine grauenhafte Akustik) und klicken Sie diese an. Erfüllen Sie alle Vorgaben und Regeln im rechten Panel, um die Mission erfolgreich zu meistern!" },
-    { keywords: ["zone", "zonierung", "markierung", "boden", "bereich", "teppich", "fläche"], response: "Mit <b>Zonen</b> (verfügbar in der linken Bibliothek unter 'Markierungen') können Sie Bodenbereiche farblich und semantisch kennzeichnen (z. B. 'Ruhezone' oder 'Verkehrsweg'). Platzieren Sie eine Zone und klicken Sie darauf. Sie können die Eckpunkte an den weißen Anfassern individuell mit der Maus verschieben, um die Form der Zone exakt an die Raumarchitektur anzupassen." },
-    { keywords: ["regel", "vorgabe", "bedingung", "abstand", "kriterium", "anforderung"], response: "Im Editor-Modus können Sie strikte <b>Regeln</b> für Ihre Personas aufstellen. Klicken Sie auf eine platzierte Persona und fügen Sie im rechten Menü Bedingungen hinzu, wie z. B. 'Muss in der Ruhezone sitzen', 'Mindestabstand zur Tür: 3 Meter' oder 'Braucht einen Rollstuhltisch'. Diese Regeln bilden das Herzstück für den automatischen Check beim PDF-Export." },
-
-    // === AKUSTIK, BARRIEREFREIHEIT & EINSTELLUNGEN ===
-    { keywords: ["akustik", "lärm", "hall", "teppich", "absorber", "laut", "schall", "dezibel", "db"], response: "Die <b>Raumakustik</b> wird vom System in Echtzeit berechnet. Große, leere Räume mit harten Böden erzeugen massiven Nachhall, was für Kinder mit Hörschädigungen oder Konzentrationsschwächen gravierend ist. Lösung: Platzieren Sie schallabsorbierende Elemente aus der linken Bibliothek (wie Akustik-Teppiche, Wand-Absorber oder Trennwände), um den berechneten Lärmpegel signifikant zu senken." },
-    { keywords: ["rollstuhl", "durchgang", "platz", "breite", "eng", "kollision", "abstand"], response: "Für <b>Rollstuhlnutzende</b> gelten architektonisch strenge Platzvorgaben. Hauptdurchgänge müssen zwingend mindestens 1,20m bis 1,50m breit sein. Am Arbeitsplatz selbst wird ein Wendekreis von 1,50m x 1,50m benötigt. Das Tool prüft beim PDF-Export per Kollisionsabfrage automatisch, ob zwischen den Möbeln ausreichend Platz bleibt. Ist ein Gang zu eng, schlägt der Report sofort Alarm." },
-    { keywords: ["kontrast", "hochkontrast", "barrierefreiheit", "farben", "einstellungen", "ui", "dunkel", "hell"], response: "Über den Schalter <b>'Hochkontrast-Modus'</b> im Einstellungs-Menü können Sie die Benutzeroberfläche (UI) des Tools für Menschen mit Sehbeeinträchtigungen optimieren. Im Raumplaner selbst sollten Sie pädagogisch darauf achten, Tische mit hohem Kontrast zum Fußboden zu wählen (z. B. sehr helle Tische auf einem dunklen Boden), um die räumliche Orientierung deutlich zu erleichtern." },
-    { keywords: ["vorlesemodus", "screenreader", "vorlesen", "stimme", "audio", "sprechen", "blind"], response: "In den globalen Einstellungen können Sie den <b>'Vorlesemodus (Hover)'</b> aktivieren. Fahren Sie anschließend einfach mit der Maus über Menüs, Buttons oder Möbelstücke im Raum. Eine synthetische Systemstimme liest Ihnen die fokussierten Elemente präzise laut vor. Dies ist eine essenzielle Unterstützung für Nutzer mit starken Sehbeeinträchtigungen." },
-
-    // === AVATAR & SIMULATION ===
-    { keywords: ["avatar", "ich-perspektive", "simulation", "visus", "sehschärfe", "sehen", "figur", "männchen", "person"], response: "<b>Avatar & Simulation aktivieren:</b><br>1. Klicken Sie in der rechten Leiste auf <b>'Avatar setzen'</b>, um eine Spielfigur auf den Boden zu stellen.<br>2. Klicken Sie danach auf <b>'Ich-Perspektive'</b>, um die Kamera direkt in die Augen des Avatars zu verlegen.<br>3. Nutzen Sie nun die Slider im rechten Menü, um den Visus (die prozentuale Sehschärfe) stufenlos zu reduzieren oder komplexe Krankheitsbilder wie Katarakt oder Tunnelblick absolut realistisch aus der First-Person-Sicht zu simulieren." },
-
-    // === FALLBACK, BEGRÜßUNG & SMALLTALK ===
-    { keywords: ["wer bist du", "was bist du", "bot", "ki", "entwickler", "macher"], response: "Ich bin der <b>SensAble Assistent</b>, ein integrierter Begleiter dieses Tools. Ich wurde entwickelt, um Ihnen direkt im Planer alle Fragen zu Barrierefreiheit, Inklusion und der Steuerung dieser Software zu beantworten, ohne dass Sie ein Handbuch wälzen müssen." },
-    { keywords: ["danke", "merci", "perfekt", "super", "hilfreich", "klasse", "gut"], response: "Sehr gerne! Es freut mich, dass ich Ihnen weiterhelfen konnte. Wenn Sie weitere Fragen zur Planung oder zu bestimmten Behinderungsbildern haben, schreiben Sie mir einfach wieder." },
-    { keywords: ["hallo", "hi", "hey", "hilfe", "moin", "guten tag", "servus", "grüß gott", "start"], response: "Guten Tag! Ich bin der <b>SensAble Assistent</b>. Ich kenne absolut alle Details zu den simulierten Wahrnehmungsstörungen (wie Katarakt, CVI, Autismus), zur präzisen Steuerung des Raumplaners, den didaktischen Konzepten (UDL) und den Datei-Exporten (PDF, .elmeks). Was genau möchten Sie wissen?" }
-];
-
-window.app.sendChatMessage = function() {
-    const input = document.getElementById('chat-input');
-    const history = document.getElementById('chat-history');
-    if(!input || !history) return;
-    
-    const rawMsg = input.value.trim();
-    if(!rawMsg) return;
-
-    // XSS-SCHUTZ: Benutzereingabe sicher machen!
-    const msg = window.app.escapeHTML(rawMsg);
-
-    // Nachricht des Nutzers anzeigen (Blaues Bubble, rechtsbündig)
-    history.innerHTML += `
-        <div style="display: flex; gap: 12px; max-width: 85%; align-self: flex-end; flex-direction: row-reverse;">
-            <div style="width: 36px; height: 36px; border-radius: 50%; background: #4b5563; flex-shrink: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
-            <div style="background: #3b82f6; padding: 16px 20px; border-radius: 16px 4px 16px 16px; color: #ffffff; font-size: 14px; line-height: 1.6; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);">
-                ${msg}
-            </div>
-        </div>
-    `;
-    input.value = '';
-    history.scrollTop = history.scrollHeight;
-
-    // Bot Antwort nach kurzer Verzögerung generieren
-    setTimeout(() => {
-        const lowerMsg = msg.toLowerCase();
-        let foundResponse = "Das habe ich leider nicht exakt verstanden. Bitte versuchen Sie, Ihre Frage etwas anders zu formulieren. Fragen Sie am besten nach spezifischen Werkzeugen (z. B. 'Wie exportiere ich ein PDF?'), Simulationen (z. B. 'Was ist CVI?'), Inklusions-Konzepten oder der Steuerung.";
-        
-        for(let item of chatDatabase) {
-            // Prüft, ob irgendein Keyword im Satz des Nutzers vorkommt
-            if(item.keywords.some(kw => lowerMsg.includes(kw))) {
-                foundResponse = item.response;
-                break;
-            }
-        }
-
-        // Bot Antwort anzeigen (Dunkles Bubble, linksbündig) mit Vorlese-Button
-        history.innerHTML += `
-            <div style="display: flex; gap: 12px; max-width: 85%;">
-                <div style="width: 36px; height: 36px; border-radius: 50%; background: #2563eb; flex-shrink: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                <div style="background: rgba(40, 41, 46, 0.8); padding: 16px 20px; border-radius: 4px 16px 16px 16px; color: #e5e7eb; border: 1px solid rgba(255,255,255,0.05); font-size: 14px; line-height: 1.6; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                    <div class="chat-text-content">${foundResponse}</div>
-                    <div style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
-                        <button onclick="if(window.app && window.app.speakText) window.app.speakText(this.parentElement.previousElementSibling.innerText)" style="display: flex; align-items: center; gap: 6px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(59, 130, 246, 0.2)'; this.style.color='#fff'" onmouseout="this.style.background='rgba(59, 130, 246, 0.1)'; this.style.color='#60a5fa'">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                            Antwort vorlesen
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-        history.scrollTop = history.scrollHeight;
-    }, 600);
-};
+// Chatbot-Steuerung, Speech-to-Text und die Datenbank (chatDatabase) 
+// wurden in die js/modules/ui.js ausgelagert.
 
 window.app.updateSettings = function() {
     const home = document.getElementById('homescreen');
@@ -1947,6 +1241,10 @@ window.app.updateSettings = function() {
     settings.reducedMotion = syncVal('set-reduced-motion', 'start-reduced-motion');
     const highContrast = syncVal('set-high-contrast', 'start-high-contrast');
     settings.readAloud = syncVal('set-read-aloud', 'start-read-aloud');
+
+    // NEU: In LocalStorage speichern, damit die Practice-Module darauf zugreifen können
+    localStorage.setItem('elmeks_high_contrast', highContrast);
+    localStorage.setItem('elmeks_read_aloud', settings.readAloud);
     
     // Checkbox-Werte auslesen (nur wenn sie im HTML existieren)
     const fpsApp = document.getElementById('set-performance');
@@ -2040,32 +1338,7 @@ window.app.applyHighContrast3D = function(isActive) {
     });
 };
 
-window.app.setFontScale = function(delta) {
-    // Behebt den Floating-Point-Bug durch Runden auf 1 Nachkommastelle
-    let newScale = Math.round((settings.fontScale + delta) * 10) / 10;
-    settings.fontScale = Math.max(0.8, Math.min(1.5, newScale));
-    
-    document.getElementById('font-scale-val').innerText = Math.round(settings.fontScale * 100) + "%";
-    
-    // Da die CSS-Klassen feste Pixelwerte (px) nutzen, greift body.fontSize nicht.
-    // Lösung: Wir skalieren die gesamten UI-Ebenen proportional (inkl. Menüs & Buttons).
-    // Das 3D-Canvas bleibt davon unberührt, damit die Maus-Koordinaten intakt bleiben.
-    const uiLayers = [
-        'ui-layer', 'homescreen', 'modal-overlay', 'settings-overlay', 
-        'pwa-modal', 'notification', 'loader', 'scenario-dashboard-overlay', 'scenario-mc-modal'
-    ];
-    
-    uiLayers.forEach(id => {
-        const el = document.getElementById(id);
-        // Nutze 'zoom' für breite Browser-Unterstützung beim UI-Skalieren
-        if (el) el.style.zoom = settings.fontScale;
-    });
-
-    // Nametags (die separat im 3D-Raum schweben und an den Body angehängt sind) ebenfalls skalieren
-    document.querySelectorAll('.name-tag').forEach(tag => {
-        tag.style.zoom = settings.fontScale;
-    });
-};
+// setFontScale wurde nach js/modules/ui.js ausgelagert
 
 // === OBJECT LIST & UNDO ===
 function updateObjectList() {
@@ -2120,13 +1393,19 @@ function saveHistory() {
 }
 
 window.app.undo = function() {
-    if(historyStack.length === 0) { showNotification("Nichts zum Rückgängig machen."); return; }
+    if(historyStack.length === 0) {
+        showNotification("Nichts zum Rückgängig machen.");
+        return;
+    }
     const prevState = historyStack.pop();
-    
     const hadAvatar = movableObjects.some(o => o.userData.isAvatar);
     if(hadAvatar) app.exitSimulationMode();
-
-    movableObjects.forEach(obj => { scene.remove(obj); obj.traverse(c => { if(c.geometry) c.geometry.dispose(); }); });
+    
+    movableObjects.forEach(obj => {
+        scene.remove(obj);
+        window.app.loesche3DObjekt(obj);
+    });
+    
     movableObjects = [];
     interactionMeshes = [];
     selectedObjects = [];
@@ -2139,7 +1418,7 @@ window.app.undo = function() {
     
     updateSeatCount();
     updateObjectList();
-    updateAvatarUI(); 
+    updateAvatarUI();
     showNotification("Schritt rückgängig gemacht.");
 };
 
@@ -2171,22 +1450,47 @@ window.app.addFurniture = async function (typeId) {
     }, 50); 
 };
 
-window.app.clearRoom = function(doSave=true) { 
-    if(doSave) saveHistory(); 
+window.app.loesche3DObjekt = function(objekt) {
+    if (!objekt) return;
+    objekt.traverse((kind) => {
+        if (kind.isMesh) {
+            if (kind.geometry) {
+                kind.geometry.dispose();
+            }
+            if (kind.material) {
+                const materialien = Array.isArray(kind.material) ? kind.material : [kind.material];
+                materialien.forEach(mat => {
+                    if (mat.map) mat.map.dispose();
+                    if (mat.lightMap) mat.lightMap.dispose();
+                    if (mat.bumpMap) mat.bumpMap.dispose();
+                    if (mat.normalMap) mat.normalMap.dispose();
+                    if (mat.specularMap) mat.specularMap.dispose();
+                    if (mat.envMap) mat.envMap.dispose();
+                    mat.dispose(); 
+                });
+            }
+        }
+    });
+};
+
+window.app.clearRoom = function(doSave=true) {
+    if(doSave) saveHistory();
     const hadAvatar = movableObjects.some(o => o.userData.isAvatar);
     
-    // BUGFIX: Nametags sofort aus dem DOM löschen, damit keine Geister-Namen hängen bleiben
     document.querySelectorAll('.name-tag').forEach(el => el.remove());
     window.app.activeNameTags = [];
     
-    movableObjects.forEach(obj => { scene.remove(obj); obj.traverse(c => { if(c.geometry) c.geometry.dispose(); }); }); 
-    movableObjects = []; 
-    interactionMeshes = []; 
-    deselectObject(); 
-    updateSeatCount(); 
-    updateObjectList(); 
-    if(window.app.updateZoneListUI) window.app.updateZoneListUI(); // BUGFIX: Zonen-Liste sofort leeren!
+    movableObjects.forEach(obj => {
+        scene.remove(obj);
+        window.app.loesche3DObjekt(obj);
+    });
     
+    movableObjects = [];
+    interactionMeshes = [];
+    deselectObject();
+    updateSeatCount();
+    updateObjectList();
+    if(window.app.updateZoneListUI) window.app.updateZoneListUI();
     if (hadAvatar) updateAvatarUI();
 };
 
@@ -2197,35 +1501,39 @@ window.app.rotateSelection = function(dir) {
     if(selectedObjects.length===1) selectionBox.update(); 
 };
 
-window.app.deleteSelection = function() { 
-    if (selectedObjects.length > 0) { 
-        saveHistory(); 
+window.app.deleteSelection = function() {
+    if (selectedObjects.length > 0) {
+        saveHistory();
         let avatarDeleted = false;
+        
         selectedObjects.forEach(obj => {
             if(obj.userData.isAvatar) avatarDeleted = true;
             
-            // Cleanup Hitbox & Handles (Zonen)
             if(obj.userData.isZone) {
                 obj.userData.handles.forEach(h => {
                     const hIdx = interactionMeshes.indexOf(h);
                     if(hIdx > -1) interactionMeshes.splice(hIdx, 1);
                 });
             }
-            const hitbox = obj.userData.hitbox; 
+            
+            const hitbox = obj.userData.hitbox;
             if(hitbox) {
                 const hIdx = interactionMeshes.indexOf(hitbox);
                 if (hIdx > -1) interactionMeshes.splice(hIdx, 1);
             }
-
-            scene.remove(obj); 
-            movableObjects = movableObjects.filter(o => o !== obj); 
-            obj.traverse(c => { if(c.geometry) c.geometry.dispose(); });
+            
+            scene.remove(obj);
+            movableObjects = movableObjects.filter(o => o !== obj);
+            
+            window.app.loesche3DObjekt(obj);
         });
-        deselectObject(); 
-        updateSeatCount(); 
+        
+        deselectObject();
+        updateSeatCount();
         updateObjectList();
+        
         if(avatarDeleted) updateAvatarUI();
-    } 
+    }
 };
 
 // === WIZARD (REPAIRED & RESTORED) ===
@@ -2573,83 +1881,7 @@ window.app.exportScenario = function() {
     showNotification("Szenario erfolgreich exportiert.");
 };
 
-window.app.selectedFile = null;
-window.app.pendingLoadData = null;
-
-window.app.handleFileSelection = function(input, mode) {
-    const file = input.files[0];
-    if (!file) return;
-
-    window.app.selectedFile = file;
-
-    if (mode === 'planner') {
-        document.getElementById('planner-load-text').innerText = file.name;
-        document.getElementById('btn-planner-confirm').style.display = 'block';
-        document.getElementById('planner-load-icon').style.display = 'none';
-    } else {
-        document.getElementById('scenario-load-text').innerText = file.name;
-        document.getElementById('btn-scenario-confirm').style.display = 'block';
-        document.getElementById('scenario-load-icon').style.display = 'none';
-    }
-};
-
-window.app.resetLoadUI = function() {
-    window.app.selectedFile = null;
-    const fi = document.getElementById('file-input');
-    if(fi) fi.value = '';
-    const sfi = document.getElementById('scenario-file-input');
-    if(sfi) sfi.value = '';
-    
-    const pt = document.getElementById('planner-load-text');
-    if(pt) pt.innerText = 'Plan laden';
-    const pc = document.getElementById('btn-planner-confirm');
-    if(pc) pc.style.display = 'none';
-    const pi = document.getElementById('planner-load-icon');
-    if(pi) pi.style.display = 'block';
-
-    const st = document.getElementById('scenario-load-text');
-    if(st) st.innerText = 'Szenario laden';
-    const sc = document.getElementById('btn-scenario-confirm');
-    if(sc) sc.style.display = 'none';
-    const si = document.getElementById('scenario-load-icon');
-    if(si) si.style.display = 'block';
-};
-
-window.app.confirmLoad = function(mode) {
-    const file = window.app.selectedFile;
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-        try {
-            const data = JSON.parse(e.target.result);
-            window.app.pendingLoadData = data;
-
-            if (mode === 'scenario') {
-                if (data.scenarioData) {
-                    const html = `
-                        <p style="color:white; font-size:14px; margin-bottom:20px;">Sie haben das Szenario <b>"${data.scenarioData.title}"</b> hochgeladen. Wie möchten Sie fortfahren?</p>
-                        <div style="display:flex; flex-direction:column; gap:10px;">
-                            <button class="primary" style="padding:12px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-color: #10b981;" onclick="app.executeLoad('editor')">Szenario bearbeiten (Editor)</button>
-                            <button class="primary" style="padding:12px; background: #2563eb; border-color: #3b82f6;" onclick="app.executeLoad('play')">Lernsequenz absolvieren (Spielen)</button>
-                        </div>
-                    `;
-                    showModal("Szenariomodus wählen", html);
-                } else {
-                    showNotification("Fehler: Diese Datei enthält keine Szenario-Daten.");
-                    app.resetLoadUI();
-                }
-            } else {
-                app.executeLoad('planner');
-            }
-        } catch(err) { 
-            console.error(err); 
-            showNotification("Fehler beim Lesen der Datei."); 
-            app.resetLoadUI();
-        }
-    };
-    reader.readAsText(file);
-};
+// handleFileSelection, confirmLoad und resetLoadUI wurden für das Lazy Loading in js/modules/ui.js ausgelagert.
 
 window.app.executeLoad = async function(targetMode) {
     const data = window.app.pendingLoadData;
@@ -2734,26 +1966,7 @@ window.app.executeLoad = async function(targetMode) {
     toggleLoader(false);
 };
 
-// Wir ergänzen noch den Aufruf in goHome, damit der Screen immer sauber ist
-window.app.goHome = function() {
-    document.getElementById('modal-overlay').classList.remove('active');
-    document.body.classList.remove('theme-scenario'); // FIX: Homescreen-Button verliert das Grün wieder
-    document.getElementById('ui-layer').style.display = 'none';
-    document.getElementById('homescreen').style.display = 'flex';
-    app.resetLoadUI(); // WICHTIG: UI Reset
-    app.clearRoom(false); 
-    app.exitSimulationMode();
-
-    // BUGFIX: Auch beim Zurückkehren ins Hauptmenü die Szenario-Reste tilgen
-    window.app.scenarioData = { title: "", desc: "", tasks: [], allowedTools: [] };
-    const titleInput = document.getElementById('scenario-title');
-    if (titleInput) titleInput.value = "";
-    const descInput = document.getElementById('scenario-desc');
-    if (descInput) descInput.value = "";
-    if (window.app.renderTaskList) window.app.renderTaskList();
-    const toolsPreview = document.getElementById('allowed-tools-preview');
-    if (toolsPreview) toolsPreview.innerText = "Standardmäßig sind keine Werkzeuge erlaubt.";
-};
+// goHome wurde in js/modules/ui.js ausgelagert
 
 // === HIGH-END PDF EXPORT (FINAL DESIGN - Ohne Abfrage) ===
 window.app.exportPDF = async function() {
@@ -3932,36 +3145,7 @@ window.app.updateNameTags = function() {
 };
 
 // === SZENARIO LOGIK (Gamification) ===
-
-window.app.openScenarioDashboard = function() {
-    // Homescreen ausblenden, Dashboard zeigen
-    document.getElementById('homescreen').style.display = 'none';
-    const dash = document.getElementById('scenario-dashboard-overlay');
-    const grid = document.getElementById('scenario-grid');
-    grid.innerHTML = '';
-    
-    // Grid befüllen
-    Object.keys(SCENARIOS).forEach(key => {
-        const s = SCENARIOS[key];
-        const diffColor = s.difficulty === 'Leicht' ? '#10b981' : (s.difficulty === 'Mittel' ? '#f59e0b' : '#ef4444');
-        
-        grid.innerHTML += `
-            <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; transition: all 0.2s; cursor: pointer;" 
-                 onmouseover="this.style.background='rgba(16, 185, 129, 0.1)'; this.style.borderColor='#10b981'" 
-                 onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.1)'"
-                 onclick="app.loadScenario('${key}')">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h3 style="margin: 0; color: white; font-size: 15px;">${s.title}</h3>
-                    <span style="font-size: 10px; font-weight: bold; background: ${diffColor}40; color: ${diffColor}; padding: 3px 8px; border-radius: 4px;">${s.difficulty}</span>
-                </div>
-                <p style="font-size: 12px; color: #9ca3af; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${s.desc}</p>
-                <div style="color: #10b981; font-size: 12px; font-weight: bold;">Mission starten ➔</div>
-            </div>
-        `;
-    });
-    
-    dash.style.display = 'flex';
-};
+// openScenarioDashboard() wurde nach js/modules/ui.js ausgelagert
 
 window.app.loadScenario = async function(id) {
     const s = SCENARIOS[id];
@@ -4928,6 +4112,9 @@ document.addEventListener('fullscreenchange', () => {
     const isFull = !!document.fullscreenElement;
     const toggleHome = document.getElementById('start-fullscreen');
     if (toggleHome) toggleHome.checked = isFull;
+    
+    // NEU: Vollbild-Status für Practice-Module merken
+    localStorage.setItem('elmeks_fullscreen', isFull);
 });
 
 // === SCREEN WAKE LOCK API (DSGVO-konform) ===
